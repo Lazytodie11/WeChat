@@ -1,0 +1,8 @@
+<scroll-view class="sidebar" scroll-y>
+  <block wx:for="{{categories}}" wx:key="id">
+    <view class="item {{currentId===item.id?'active':''}}" bindtap="onTap" data-id="{{item.id}}">
+      {{item.name}}
+    </view>
+  </block>
+</scroll-view>
+

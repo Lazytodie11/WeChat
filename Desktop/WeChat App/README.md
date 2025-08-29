@@ -47,6 +47,27 @@
   - `orders` 集合新增一条记录；
   - 若云函数环境变量 `WEWORK_WEBHOOK` 已设置，企业微信群机器人会收到新订单通知。
 
+## UI 截图（占位）
+- 在 `miniprogram/assets/` 自行替换 `logo.png`、`p1.jpg~p8.jpg` 为真实图片。
+- 截图建议：
+  - 首页（home）
+  - 点单页（menu，含左侧分类、右侧商品卡片、购物车浮条）
+  - 订单页（orders，空态与列表态）
+
+## 在 menu 页新增分类和商品
+当前 Demo 将分类与商品硬编码在 `miniprogram/pages/menu/index.js` 顶部：
+
+1) 新增一个分类
+   - 编辑 `categories` 数组，新增形如 `{ id: 'newcat', name: '新品' }` 的项；
+2) 给该分类新增商品
+   - 编辑 `goods` 数组，新增形如 `{ id: 'p9', cat: 'newcat', name: '新品拿铁', price: 22, image: 'assets/p9.jpg', desc: '限时上新' }`；
+3) 资源
+   - 将对应图片放入 `miniprogram/assets/` 并在 `image` 字段填入相对路径，如 `assets/p9.jpg`；
+4) 页面行为
+   - 右侧商品列表按分类分区展示，并支持锚点滚动；
+   - 点击左侧分类时，右侧滚动至对应分区；
+   - 商品卡片右下角“+ 加入”按钮用于加购，`-` 按钮用于减少数量。
+
 ## 代码说明
 - 前端 `menu` 页加入购物车，数据存储于 `wx.setStorageSync('cart')`，在 `checkout` 页聚合下单。
 - `checkout` 调用 `wx.cloud.callFunction({ name: 'createOrder', data: {...} })`。
@@ -66,4 +87,3 @@
 ## 版本与协议
 - 版本：1.0.0
 - 许可证：MIT
-

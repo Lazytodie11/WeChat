@@ -17,23 +17,49 @@ const goods = [
   { id: 'p8', cat: 'snacks', name: '马卡龙', price: 12, image: 'assets/p8.jpg', desc: '缤纷口味' }
 ];
 
+function buildSections() {
+  return categories.map(c => ({ id: c.id, name: c.name, items: goods.filter(g => g.cat === c.id) }));
+}
+
 Page({
   data: {
     categories,
-    goods,
+    sections: buildSections(),
     currentCatId: categories[0].id,
-    filteredGoods: goods.filter(g => g.cat === categories[0].id),
-    countMap: {}
+    toView: '',
+    countMap: {},
+    sectionTops: []
   },
   onShow() {
     this.refreshCounts();
+    setTimeout(() => this.calcSectionTops(), 100);
   },
-  switchCat(e) {
-    const id = e.currentTarget.dataset.id;
-    this.setData({
-      currentCatId: id,
-      filteredGoods: goods.filter(g => g.cat === id)
-    });
+  onReady() {
+    this.calcSectionTops();
+  },
+  calcSectionTops() {
+    const q = this.createSelectorQuery();
+    q.selectAll('.section').boundingClientRect((rects) => {
+      if (!rects) return;
+      const tops = rects.map(r => ({ id: r.id.replace('section-',''), top: r.top }));
+      this.setData({ sectionTops: tops });
+    }).exec();
+  },
+  onSelectCategory(e) {
+    const id = e.detail.id;
+    this.setData({ currentCatId: id, toView: `section-${id}` });
+  },
+  onScroll(e) {
+    const scrollTop = e.detail.scrollTop;
+    // Determine current section by comparing scrollTop with cached tops
+    if (!this.data.sectionTops.length) return;
+    // Adjust for scroll container offset if necessary
+    const tops = this.data.sectionTops.slice().sort((a,b)=>a.top-b.top);
+    let current = this.data.currentCatId;
+    for (let i = tops.length - 1; i >= 0; i--) {
+      if (scrollTop >= (tops[i].top - tops[0].top)) { current = tops[i].id; break; }
+    }
+    if (current !== this.data.currentCatId) this.setData({ currentCatId: current });
   },
   refreshCounts() {
     const list = cart.getCart();
@@ -41,15 +67,7 @@ Page({
     list.forEach(x => m[x.id] = x.count);
     this.setData({ countMap: m });
   },
-  inc(e) {
-    const item = e.currentTarget.dataset.item;
-    cart.addItem(item);
-    this.refreshCounts();
-  },
-  dec(e) {
-    const id = e.currentTarget.dataset.id;
-    cart.removeItem(id);
+  onCardChange() {
     this.refreshCounts();
   }
 });
-

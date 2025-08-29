@@ -1,28 +1,7 @@
-page {
-  background: #f7f7f7;
-}
-
-.container {
-  padding: 12px;
-}
-
-.btn-primary {
-  background: #d23f57;
-  color: #fff;
-}
-
-.card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.row {
-  display: flex;
-}
-
-.col {
-  flex: 1;
-}
-
+page { background: #FBF5EC; color: #2B2B2B; }
+.container { padding: 12px; }
+.btn-primary { background: #6B4A2B; color: #fff; }
+.btn-primary:active { background: #836046; }
+.card { background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
+.row { display: flex; }
+.col { flex: 1; }

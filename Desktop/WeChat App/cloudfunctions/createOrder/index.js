@@ -18,6 +18,7 @@ exports.main = async (event, context) => {
     status: 'pending',
     _openid: wxContext.OPENID,
     createTime: now,
+    createdAt: now,
   };
 
   try {
@@ -54,4 +55,3 @@ exports.main = async (event, context) => {
     return { ok: false, error: 'DB_ERROR' };
   }
 };
-

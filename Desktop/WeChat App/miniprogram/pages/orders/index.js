@@ -10,11 +10,16 @@ Page({
     this.setData({ loading: true });
     try {
       const db = wx.cloud.database();
-      // 默认集合权限建议设为：仅创建者可读写
-      const res = await db.collection('orders').orderBy('createTime', 'desc').get();
+      // 优先按 createdAt 倒序；若字段不存在可回退到 createTime
+      let res;
+      try {
+        res = await db.collection('orders').orderBy('createdAt', 'desc').get();
+      } catch (e) {
+        res = await db.collection('orders').orderBy('createTime', 'desc').get();
+      }
       const list = res.data.map(o => ({
         ...o,
-        createTimeStr: this.formatTime(o.createTime)
+        createdAtStr: this.formatTime(o.createdAt || o.createTime)
       }));
       this.setData({ orders: list });
     } catch (e) {
@@ -34,4 +39,3 @@ Page({
     }
   }
 });
-

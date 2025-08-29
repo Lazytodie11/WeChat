@@ -1,0 +1,10 @@
+.logo {
+  width: 180px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 8px;
+}
+

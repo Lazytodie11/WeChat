@@ -1,0 +1,17 @@
+.menu-page { display: flex; height: 100vh; }
+.categories { width: 28%; background: #fff; border-right: 1px solid #f0f0f0; }
+.cat { padding: 14px; border-bottom: 1px solid #f5f5f5; }
+.cat.active { background: #fff3f6; color: #d23f57; font-weight: 600; }
+.goods { flex: 1; padding: 10px; }
+.good { display: flex; margin-bottom: 12px; }
+.pic { width: 90px; height: 90px; border-radius: 8px; }
+.info { flex: 1; margin-left: 10px; display: flex; flex-direction: column; }
+.title { font-weight: 600; }
+.desc { color: #888; font-size: 12px; margin-top: 4px; }
+.bottom { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+.price { color: #d23f57; font-weight: 600; }
+.actions { display: flex; align-items: center; }
+.count { width: 20px; text-align: center; }
+
+cart-bar { position: fixed; left: 0; right: 0; bottom: 0; }
+

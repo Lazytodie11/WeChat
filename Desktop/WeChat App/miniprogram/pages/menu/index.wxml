@@ -1,0 +1,30 @@
+<view class="menu-page">
+  <view class="categories">
+    <block wx:for="{{categories}}" wx:key="id">
+      <view class="cat {{currentCatId===item.id?'active':''}}" bindtap="switchCat" data-id="{{item.id}}">{{item.name}}</view>
+    </block>
+  </view>
+
+  <scroll-view class="goods" scroll-y>
+    <block wx:for="{{filteredGoods}}" wx:key="id">
+      <view class="good card">
+        <image src="/{{item.image}}" class="pic" mode="aspectFill"></image>
+        <view class="info">
+          <view class="title">{{item.name}}</view>
+          <view class="desc">{{item.desc}}</view>
+          <view class="bottom">
+            <view class="price">¥{{item.price}}</view>
+            <view class="actions">
+              <button size="mini" bindtap="dec" data-id="{{item.id}}">-</button>
+              <text class="count">{{(countMap[item.id]||0)}}</text>
+              <button size="mini" type="primary" bindtap="inc" data-item="{{item}}">+</button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+
+  <cart-bar />
+</view>
+

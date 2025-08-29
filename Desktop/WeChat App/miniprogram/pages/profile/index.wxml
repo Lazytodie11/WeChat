@@ -1,0 +1,11 @@
+<view class="container">
+  <view class="card">
+    <view style="font-weight:600;">甜品店小程序</view>
+    <view style="color:#888;margin-top:6px;">示例项目，用于演示点单流程。</view>
+  </view>
+  <view class="card" style="margin-top:12px;">
+    <view>版本：1.0.0</view>
+    <view>开源许可：MIT</view>
+  </view>
+</view>
+

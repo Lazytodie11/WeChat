@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log
+
+# WeChat Mini Program
+miniprogram/miniprogram_npm/
+project.private.config.json
+unpackage/
+
+# Cloud functions
+cloudfunctions/**/node_modules/
+
+# Logs
+*.log
+
+# IDE
+.idea/
+.vscode/
+

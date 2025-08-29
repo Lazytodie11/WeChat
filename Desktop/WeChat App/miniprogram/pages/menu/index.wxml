@@ -1,16 +1,21 @@
 <view class="menu-page">
   <category-sidebar class="left" categories="{{categories}}" current-id="{{currentCatId}}" bind:select="onSelectCategory" />
 
-  <scroll-view class="right" scroll-y scroll-with-animation scroll-into-view="{{toView}}" bindscroll="onScroll">
-    <block wx:for="{{sections}}" wx:key="id">
-      <view class="section" id="section-{{item.id}}">
-        <view class="section-title">{{item.name}}</view>
-        <block wx:for="{{item.items}}" wx:key="id">
-          <product-card item="{{item2}}" count="{{countMap[item2.id]||0}}" bind:change="onCardChange" />
-        </block>
-      </view>
-    </block>
-  </scroll-view>
+  <view class="right-wrap">
+    <view class="sticky-title">{{currentCatName}}</view>
+    <scroll-view class="right" scroll-y scroll-with-animation scroll-into-view="{{toView}}" bindscroll="onScroll">
+      <view id="section-top"></view>
+      <block wx:for="{{sections}}" wx:key="id">
+        <view class="section" id="section-{{item.id}}">
+          <view class="section-title">{{item.name}}</view>
+          <block wx:for="{{item.items}}" wx:key="id">
+            <product-card item="{{item2}}" count="{{countMap[item2.id]||0}}" bind:change="onCardChange" />
+          </block>
+        </view>
+      </block>
+    </scroll-view>
+    <view class="back-top" bindtap="goTop" wx:if="{{showBackTop}}">↑</view>
+  </view>
 
   <cart-bar />
 </view>

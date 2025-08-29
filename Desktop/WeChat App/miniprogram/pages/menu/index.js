@@ -28,7 +28,9 @@ Page({
     currentCatId: categories[0].id,
     toView: '',
     countMap: {},
-    sectionTops: []
+    sectionTops: [],
+    containerTop: 0,
+    showBackTop: false
   },
   onShow() {
     this.refreshCounts();
@@ -39,11 +41,16 @@ Page({
   },
   calcSectionTops() {
     const q = this.createSelectorQuery();
-    q.selectAll('.section').boundingClientRect((rects) => {
-      if (!rects) return;
-      const tops = rects.map(r => ({ id: r.id.replace('section-',''), top: r.top }));
-      this.setData({ sectionTops: tops });
-    }).exec();
+    q.select('.right').boundingClientRect();
+    q.selectAll('.section').boundingClientRect();
+    q.exec(res => {
+      const rightRect = res[0];
+      const rects = res[1] || [];
+      if (!rightRect || !rects.length) return;
+      // Compute content offsets of each section from top of scroll content (at scrollTop 0)
+      const offsets = rects.map(r => ({ id: r.id.replace('section-',''), offset: r.top - rightRect.top }));
+      this.setData({ sectionTops: offsets, containerTop: rightRect.top });
+    });
   },
   onSelectCategory(e) {
     const id = e.detail.id;
@@ -51,15 +58,17 @@ Page({
   },
   onScroll(e) {
     const scrollTop = e.detail.scrollTop;
-    // Determine current section by comparing scrollTop with cached tops
+    // Determine current section by comparing scrollTop with cached offsets
     if (!this.data.sectionTops.length) return;
-    // Adjust for scroll container offset if necessary
-    const tops = this.data.sectionTops.slice().sort((a,b)=>a.top-b.top);
+    const tops = this.data.sectionTops.slice().sort((a,b)=>a.offset-b.offset);
     let current = this.data.currentCatId;
     for (let i = tops.length - 1; i >= 0; i--) {
-      if (scrollTop >= (tops[i].top - tops[0].top)) { current = tops[i].id; break; }
+      if (scrollTop >= tops[i].offset - 10) { current = tops[i].id; break; }
     }
-    if (current !== this.data.currentCatId) this.setData({ currentCatId: current });
+    const update = {};
+    if (current !== this.data.currentCatId) update.currentCatId = current;
+    update.showBackTop = scrollTop > 120;
+    if (Object.keys(update).length) this.setData(update);
   },
   refreshCounts() {
     const list = cart.getCart();
@@ -69,5 +78,8 @@ Page({
   },
   onCardChange() {
     this.refreshCounts();
+  },
+  goTop() {
+    this.setData({ toView: 'section-top' });
   }
 });

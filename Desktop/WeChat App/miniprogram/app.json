@@ -13,38 +13,37 @@
     "backgroundTextStyle": "light"
   },
   "tabBar": {
-    "color": "#666666",
-    "selectedColor": "#d23f57",
+    "color": "#6a6a6a",
+    "selectedColor": "#6B4A2B",
     "borderStyle": "white",
     "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/home/index",
         "text": "首页",
-        "iconPath": "assets/logo.png",
-        "selectedIconPath": "assets/logo.png"
+        "iconPath": "assets/tab-home.png",
+        "selectedIconPath": "assets/tab-home.png"
       },
       {
         "pagePath": "pages/menu/index",
         "text": "点单",
-        "iconPath": "assets/logo.png",
-        "selectedIconPath": "assets/logo.png"
+        "iconPath": "assets/tab-menu.png",
+        "selectedIconPath": "assets/tab-menu.png"
       },
       {
         "pagePath": "pages/orders/index",
         "text": "订单",
-        "iconPath": "assets/logo.png",
-        "selectedIconPath": "assets/logo.png"
+        "iconPath": "assets/tab-orders.png",
+        "selectedIconPath": "assets/tab-orders.png"
       },
       {
         "pagePath": "pages/profile/index",
         "text": "我的",
-        "iconPath": "assets/logo.png",
-        "selectedIconPath": "assets/logo.png"
+        "iconPath": "assets/tab-profile.png",
+        "selectedIconPath": "assets/tab-profile.png"
       }
     ]
   },
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"
 }
-

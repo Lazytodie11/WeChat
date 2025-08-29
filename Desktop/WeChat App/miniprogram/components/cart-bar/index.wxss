@@ -14,12 +14,7 @@
 .left, .center, .right { flex: 1; text-align: center; }
 .left { text-align: left; }
 .right { text-align: right; }
-.btn {
-  background: #d23f57;
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 20px;
-}
+.btn { background: #6B4A2B; color: #fff; padding: 6px 14px; border-radius: 20px; }
+.btn:active { background: #836046; }
 
 page { padding-bottom: 70px; }
-

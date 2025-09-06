@@ -18,6 +18,7 @@ Page({
     const minPrice = variants.reduce((m, v) => Math.min(m, Number(v.price||0)), Number(variants[0]?.price||0));
     this.setData({ product: p, images, variants, minPrice, current: 0 });
   },
+  goBack(){ wx.navigateBack({ delta: 1 }); },
   chooseVariant(e) {
     const idx = Number(e.currentTarget.dataset.idx || 0);
     this.setData({ current: idx });
@@ -35,4 +36,3 @@ Page({
     this.setData({ count: Math.max(0, this.data.count - 1) });
   }
 });
-

@@ -1,4 +1,8 @@
 <view class="product-page">
+  <view class="nav">
+    <view class="back" bindtap="goBack">返回</view>
+    <view class="title">商品详情</view>
+  </view>
   <view class="gallery card">
     <swiper circular autoplay interval="3000" duration="500" indicator-dots wx:if="{{images.length>0}}">
       <block wx:for="{{images}}" wx:key="*this">
@@ -36,4 +40,3 @@
     </view>
   </view>
 </view>
-

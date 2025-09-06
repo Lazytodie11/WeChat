@@ -27,29 +27,28 @@ async function loadWorkbook(p) {
   return wb;
 }
 
-function collectDImages(ws, wb) {
+function getDImagesWithMeta(ws, wb) {
   const imgs = (typeof ws.getImages === 'function') ? ws.getImages() : [];
-  const pools = [ wb?.model?.media || [], wb?._media || [], wb?.media || [] ];
-  const findMedia = (imageId) => {
-    for (const pool of pools) {
-      const hit = pool.find(m => m?.index === imageId || m?.id === imageId);
-      if (hit) return hit;
-    }
-    return null;
-  };
-  const colDImgs = imgs
-    .filter(img => (img?.range?.tl?.nativeCol ?? -1) === 3)
-    .sort((a,b)=> (a.range.tl.nativeRow||0) - (b.range.tl.nativeRow||0));
-  const out = [];
-  for (const img of colDImgs) {
-    const media = findMedia(img.imageId);
-    if (!media) continue;
-    const ext = (media.extension || media.ext || (media.name?.split('.').pop()))?.toLowerCase() || 'png';
-    const buffer = media.buffer || media.data || Buffer.from([]);
-    out.push({ buffer, ext });
+  const pools = [ wb?.model?.media || [], wb?.media || [], wb?._media || [] ];
+  const findMedia = (id)=>{ for (const p of pools){ const m=p.find(x=>x?.index===id||x?.id===id); if(m) return m; } return null; };
+  // Map to metadata including tl/br (1-based) and buffers
+  const meta = [];
+  for (const im of imgs){
+    const m = findMedia(im.imageId);
+    const tl = im?.range?.tl || {};
+    const br = im?.range?.br || tl; // when oneCell anchor
+    const tlC = (tl?.nativeCol ?? 0)+1; const tlR = (tl?.nativeRow ?? 0)+1;
+    const brC = (br?.nativeCol ?? (tl?.nativeCol ?? 0))+1; const brR = (br?.nativeRow ?? (tl?.nativeRow ?? 0))+1;
+    const ext = (m?.extension || m?.ext || (m?.name||'').split('.').pop() || 'png').toLowerCase();
+    const buffer = m?.buffer || m?.data || Buffer.from([]);
+    meta.push({ id: im.imageId, tlC, tlR, brC, brR, ext, buffer });
   }
-  return out;
+  // Only D-column intersection
+  return meta.filter(x => intervalsOverlap(x.tlC, x.brC, 4, 4))
+             .sort((a,b)=> a.tlR - b.tlR);
 }
+
+function intervalsOverlap(a1,a2,b1,b2){ return Math.max(a1,b1) <= Math.min(a2,b2); }
 
 function parseVariants(text='') {
   const variants = [];
@@ -115,16 +114,7 @@ function writeCatalog(categories, products) {
   const wb = await loadWorkbook(EXCEL_PATH);
   const ws = wb.worksheets[0];
   if (!ws) throw new Error('No first worksheet');
-  const dImages = collectDImages(ws, wb);
-  // 归一化 D 列图片的行号：以最上面的图片作为 D2，依次递增
-  const minNativeRow = Math.min(...dImages.map((_,i)=>{
-    // getImages 里无法直接获取 nativeRow，这里重新从 ws.getImages 取一遍有序列表
-    return (ws.getImages().filter(im=> (im?.range?.tl?.nativeCol??-1)===3)
-      .sort((a,b)=>(a.range.tl.nativeRow||0)-(b.range.tl.nativeRow||0))[i].range.tl.nativeRow)||0;
-  }));
-  const imgEntries = ws.getImages().filter(im=> (im?.range?.tl?.nativeCol??-1)===3)
-    .sort((a,b)=>(a.range.tl.nativeRow||0)-(b.range.tl.nativeRow||0))
-    .map((im, idx)=>({ nativeRow: im.range.tl.nativeRow||0, row: 2+idx }));
+  const dImages = getDImagesWithMeta(ws, wb);
 
   const imported = [];
   let lastCat = '';
@@ -152,10 +142,15 @@ function writeCatalog(categories, products) {
     { name: '特调草莓奶糕', start: 17, end: 17 },
   ];
 
-  // 构建一个从“视觉顺序行号(2..)”到图片 buffer 的索引
-  const dImagesOrdered = collectDImages(ws, wb); // 与 imgEntries 同序
+  // 校验与分组：按区间交集取图
+  const expectedCounts = [3,2,2,1,1,2,2,2,1];
+  const results = [];
+  // 自动行偏移：将最小 tlR 对齐到 D2
+  const minTlR = dImages.length ? dImages[0].tlR : 0;
+  const rowOffset = minTlR ? (minTlR - 2) : 0; // nativeRow = visualRow + rowOffset
 
-  for (const map of mapping) {
+  for (let i=0;i<mapping.length;i++){
+    const map = mapping[i];
     // 找到对应名称的行（B 列）
     // 在 2..17 范围内按名称匹配一次
     let row = -1;
@@ -171,23 +166,33 @@ function writeCatalog(categories, products) {
     const price = minPrice(variants);
     const slug = slugify(map.name);
 
-    // 从 D 列有序图片中，截取 row 区间 [start..end]
+    // 通过交集判断筛图
+    const imgsForMap = dImages.filter(im =>
+      intervalsOverlap(im.tlR, im.brR, map.start + rowOffset, map.end + rowOffset) &&
+      intervalsOverlap(im.tlC, im.brC, 4, 4)
+    ).sort((a,b)=>a.tlR-b.tlR);
+
+    // 强校验数量
+    const expect = expectedCounts[i];
+    if (imgsForMap.length !== expect){
+      console.error(`IMAGE_COUNT_MISMATCH name=${map.name} expect=${expect} actual=${imgsForMap.length}`);
+      imgsForMap.forEach(x=>console.error(`  img#${x.id} tl(r${x.tlR}c${x.tlC}) br(r${x.brR}c${x.brC})`));
+      process.exit(1);
+    }
+
     const images = [];
-    for (let rr = map.start; rr <= map.end; rr++) {
-      const idx = rr - 2; // D2 对应 dImagesOrdered[0]
-      const g = dImagesOrdered[idx];
-      if (!g) continue;
+    imgsForMap.forEach((g, idx)=>{
       const ext = (g.ext || 'png').toLowerCase();
-      const fname = `flavor-milk-cake-${slug}-${images.length+1}.${ext}`;
+      const fname = `flavor-milk-cake-${slug}-${idx+1}.${ext}`;
       const out = path.join(subDir, fname);
       fs.writeFileSync(out, g.buffer);
       const rel = '/assets/flavor-milk-cake/' + fname;
       images.push(rel);
       imported.push(fname);
-    }
+    });
     const cover = images[0] || '';
     const item = { id: `flavor-milk-cake-${slug}`, categoryId: TARGET_CATEGORY_ID, name: map.name, brief, cover, images, price, variants };
-    imported.push(item);
+    results.push(item);
   }
 
   // load existing catalog
@@ -201,13 +206,11 @@ function writeCatalog(categories, products) {
   // 清理旧的 flavor-milk-cake 图片路径与占位条目（尽量保留其它类）
   products = products.filter(p => !(p.categoryId === TARGET_CATEGORY_ID && (!p.name || /-item$/.test(p.id))));
   const prodMap = new Map(products.map(p => [p.id, p]));
-  for (const it of imported.filter(x=>x && x.id)) {
-    prodMap.set(it.id, it);
-  }
+  for (const it of results) { prodMap.set(it.id, it); }
   products = Array.from(prodMap.values());
 
   writeCatalog(categories, products);
 
   const addedNames = imported.filter(x=>typeof x === 'string');
-  console.log(JSON.stringify({ count: imported.filter(x=>x && x.id).length, images: addedNames }, null, 2));
+  console.log(JSON.stringify({ count: results.length, imageFiles: addedNames }, null, 2));
 })();

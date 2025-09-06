@@ -27,25 +27,29 @@ async function loadWorkbook(p) {
   return wb;
 }
 
-function getDImagesWithMeta(ws, wb) {
+function getDImagesSorted(ws, wb) {
   const imgs = (typeof ws.getImages === 'function') ? ws.getImages() : [];
   const pools = [ wb?.model?.media || [], wb?.media || [], wb?._media || [] ];
   const findMedia = (id)=>{ for (const p of pools){ const m=p.find(x=>x?.index===id||x?.id===id); if(m) return m; } return null; };
-  // Map to metadata including tl/br (1-based) and buffers
   const meta = [];
-  for (const im of imgs){
+  for (let idx = 0; idx < imgs.length; idx++){
+    const im = imgs[idx];
     const m = findMedia(im.imageId);
     const tl = im?.range?.tl || {};
-    const br = im?.range?.br || tl; // when oneCell anchor
-    const tlC = (tl?.nativeCol ?? 0)+1; const tlR = (tl?.nativeRow ?? 0)+1;
-    const brC = (br?.nativeCol ?? (tl?.nativeCol ?? 0))+1; const brR = (br?.nativeRow ?? (tl?.nativeRow ?? 0))+1;
+    const br = im?.range?.br || tl; // oneCell anchor fallback
+    const tlC0 = tl?.nativeCol ?? 0; const tlR0 = tl?.nativeRow ?? 0;
+    const brC0 = br?.nativeCol ?? tlC0; const brR0 = br?.nativeRow ?? tlR0;
+    const tlC = tlC0+1, tlR = tlR0+1, brC = brC0+1, brR = brR0+1;
+    // D 列交集
+    if (!intervalsOverlap(tlC, brC, 4, 4)) continue;
     const ext = (m?.extension || m?.ext || (m?.name||'').split('.').pop() || 'png').toLowerCase();
     const buffer = m?.buffer || m?.data || Buffer.from([]);
-    meta.push({ id: im.imageId, tlC, tlR, brC, brR, ext, buffer });
+    const rowOff = tl?.nativeRowOff || 0;
+    meta.push({ id: im.imageId, idx, tlR0, tlC0, brR0, brC0, tlR, tlC, brR, brC, rowOff, ext, buffer });
   }
-  // Only D-column intersection
-  return meta.filter(x => intervalsOverlap(x.tlC, x.brC, 4, 4))
-             .sort((a,b)=> a.tlR - b.tlR);
+  // 排序：先按 tlRow，再按 tlRowOff，再按 index 稳定
+  meta.sort((a,b)=> (a.tlR0-b.tlR0) || (a.rowOff-b.rowOff) || (a.idx-b.idx));
+  return meta;
 }
 
 function intervalsOverlap(a1,a2,b1,b2){ return Math.max(a1,b1) <= Math.min(a2,b2); }
@@ -114,7 +118,7 @@ function writeCatalog(categories, products) {
   const wb = await loadWorkbook(EXCEL_PATH);
   const ws = wb.worksheets[0];
   if (!ws) throw new Error('No first worksheet');
-  const dImages = getDImagesWithMeta(ws, wb);
+  const dImages = getDImagesSorted(ws, wb);
 
   const imported = [];
   let lastCat = '';
@@ -145,10 +149,16 @@ function writeCatalog(categories, products) {
   // 校验与分组：按区间交集取图
   const expectedCounts = [3,2,2,1,1,2,2,2,1];
   const results = [];
-  // 自动行偏移：将最小 tlR 对齐到 D2
-  const minTlR = dImages.length ? dImages[0].tlR : 0;
-  const rowOffset = minTlR ? (minTlR - 2) : 0; // nativeRow = visualRow + rowOffset
+  // 固定分组切片（总计 16 张）
+  const G = [3,2,2,1,1,2,2,2,1];
+  const totalNeeded = G.reduce((s,n)=>s+n,0);
+  const used = dImages.slice(0, totalNeeded);
+  if (used.length !== totalNeeded){
+    const dump = dImages.map(x=>`#${x.id} tl(r${x.tlR}c${x.tlC}) br(r${x.brR}c${x.brC})`).join('\n');
+    throw new Error(`D-column images not equal to ${totalNeeded}. actual=${used.length}\n${dump}`);
+  }
 
+  let cursor = 0;
   for (let i=0;i<mapping.length;i++){
     const map = mapping[i];
     // 找到对应名称的行（B 列）
@@ -166,18 +176,12 @@ function writeCatalog(categories, products) {
     const price = minPrice(variants);
     const slug = slugify(map.name);
 
-    // 通过交集判断筛图
-    const imgsForMap = dImages.filter(im =>
-      intervalsOverlap(im.tlR, im.brR, map.start + rowOffset, map.end + rowOffset) &&
-      intervalsOverlap(im.tlC, im.brC, 4, 4)
-    ).sort((a,b)=>a.tlR-b.tlR);
-
-    // 强校验数量
-    const expect = expectedCounts[i];
+    const expect = G[i];
+    const imgsForMap = used.slice(cursor, cursor + expect);
+    cursor += expect;
     if (imgsForMap.length !== expect){
-      console.error(`IMAGE_COUNT_MISMATCH name=${map.name} expect=${expect} actual=${imgsForMap.length}`);
-      imgsForMap.forEach(x=>console.error(`  img#${x.id} tl(r${x.tlR}c${x.tlC}) br(r${x.brR}c${x.brC})`));
-      process.exit(1);
+      const dump = used.map(x=>`#${x.id} tl(r${x.tlR}c${x.tlC}) br(r${x.brR}c${x.brC})`).join('\n');
+      throw new Error(`GROUP_COUNT_MISMATCH name=${map.name} expect=${expect} actual=${imgsForMap.length}\n${dump}`);
     }
 
     const images = [];

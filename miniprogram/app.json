@@ -5,7 +5,8 @@
     "pages/orders/index",
     "pages/profile/index",
     "pages/checkout/index",
-    "pages/success/index"
+    "pages/success/index",
+    "pages/product/index"
   ],
   "window": {
     "navigationBarTitleText": "甜品店",

@@ -1,0 +1,39 @@
+<view class="product-page">
+  <view class="gallery card">
+    <swiper circular autoplay interval="3000" duration="500" indicator-dots wx:if="{{images.length>0}}">
+      <block wx:for="{{images}}" wx:key="*this">
+        <swiper-item>
+          <image class="slide" src="{{item}}" mode="aspectFill" />
+        </swiper-item>
+      </block>
+    </swiper>
+    <image wx:else class="slide" src="/assets/p1.jpg" mode="aspectFill" />
+  </view>
+
+  <view class="card info">
+    <view class="name">{{product.name}}</view>
+    <view class="brief">{{product.brief}}</view>
+    <view class="price-line">¥{{minPrice}} 起</view>
+  </view>
+
+  <view class="card variants" wx:if="{{variants.length>0}}">
+    <view class="v-title">可选尺寸</view>
+    <view class="v-list">
+      <block wx:for="{{variants}}" wx:key="size">
+        <view class="v-item {{idx===current?'active':''}}" bindtap="chooseVariant" data-idx="{{index}}">
+          <text>{{item.size}}</text>
+          <text>¥{{item.price}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="card actions">
+    <view class="qty">
+      <button size="mini" bindtap="dec">-</button>
+      <text class="count">{{count}}</text>
+      <button size="mini" type="primary" bindtap="inc">+ 加入</button>
+    </view>
+  </view>
+</view>
+

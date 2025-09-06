@@ -52,11 +52,18 @@ function collectDImages(ws, wb) {
 
 function parseVariants(text='') {
   const variants = [];
-  const tokens = String(text).trim().replace(/\n/g,' ').split(/\s+/).filter(Boolean);
-  for (const tok of tokens) {
-    const [size, price] = tok.split('/');
-    const p = Number((price||'').replace(/[^0-9.]/g,''));
-    if (size && !Number.isNaN(p)) variants.push({ size, price: p });
+  const s = String(text).replace(/，/g, ' ').replace(/；/g, ' ').replace(/,/g,' ');
+  const re = /([^\s\/]+)\s*\/\s*([0-9]+(?:\.[0-9]+)?)/g;
+  let m;
+  while ((m = re.exec(s))) {
+    const size = m[1];
+    const price = Number(m[2]);
+    if (!Number.isNaN(price)) variants.push({ size, price });
+  }
+  if (variants.length === 0) {
+    // 尝试提取单个价格
+    const m2 = s.match(/([0-9]+(?:\.[0-9]+)?)/);
+    if (m2) variants.push({ size: '默认', price: Number(m2[1]) });
   }
   return variants;
 }
@@ -124,7 +131,7 @@ function writeCatalog(categories, products) {
     const price = minPrice(variants);
 
     let cover = '';
-    const gallery = [];
+    const images = [];
     for (let k = 0; k < take && imgIdx < dImages.length; k++, imgIdx++) {
       const g = dImages[imgIdx];
       const ext = (g.ext || 'png').toLowerCase();
@@ -133,10 +140,10 @@ function writeCatalog(categories, products) {
       fs.writeFileSync(out, g.buffer);
       const rel = '/assets/' + fname;
       if (!cover) cover = rel;
-      gallery.push(rel);
+      images.push(rel);
       imported.push(fname);
     }
-    const item = { id: `flavor-milk-cake-${slug}`, categoryId: TARGET_CATEGORY_ID, name, brief, cover, price, variants, gallery };
+    const item = { id: `flavor-milk-cake-${slug}`, categoryId: TARGET_CATEGORY_ID, name, brief, cover, images, price, variants };
     imported.push(item);
   }
 

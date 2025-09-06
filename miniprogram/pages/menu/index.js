@@ -39,6 +39,11 @@ Page({
   onCardChange() {
     this.refreshCounts();
   },
+  goDetail(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    wx.navigateTo({ url: `/pages/product/index?id=${id}` });
+  },
   goTop() {
     // 右侧滚动视图回顶（通过设置 scroll-top on scroll-view 可以实现，这里省略）
   }

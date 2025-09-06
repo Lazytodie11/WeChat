@@ -26,21 +26,36 @@ async function loadWorkbook(p) {
   return wb;
 }
 
-function mapImagesByRow(ws, wb) {
+function mapImagesByRow(ws, wb, startRow = 2, endRow = 17) {
   const result = {};
   const imgs = (typeof ws.getImages === 'function') ? ws.getImages() : [];
-  for (const img of imgs) {
+  const pools = [
+    wb?.model?.media || [],
+    wb?._media || [],
+    wb?.media || []
+  ];
+  const findMedia = (imageId) => {
+    for (const pool of pools) {
+      const hit = pool.find(m => m?.index === imageId || m?.id === imageId);
+      if (hit) return hit;
+    }
+    return null;
+  };
+  // Only images in column D (index 3, zero-based)
+  const colDImgs = imgs.filter(img => (img?.range?.tl?.nativeCol ?? -1) === 3);
+  // Sort by their top row
+  colDImgs.sort((a,b)=> (a.range.tl.nativeRow||0) - (b.range.tl.nativeRow||0));
+
+  const slice = colDImgs.slice(0, Math.max(0, endRow - startRow + 1));
+  let rowPtr = startRow;
+  for (const img of slice) {
     const id = img.imageId;
-    // find media by id
-    const media = (wb.model && wb.model.media || []).find(m => m.index === id) || (wb._media || []).find(m=>m.index===id);
+    const media = findMedia(id);
     if (!media) continue;
-    const ext = media.extension || (media.type === 'image' ? (media.name?.split('.').pop() || 'png') : 'png');
-    const buf = media.buffer || media.data;
-    const tl = img.range?.tl || img.range?.native || img.range || {};
-    const row0 = Math.round(tl.nativeRow ?? tl.row ?? 0); // zero-based
-    const row = row0 + 1; // excel rows start at 1
-    // only map first image per row
-    if (!result[row]) result[row] = { buffer: buf, ext };
+    const ext = (media.extension || media.ext || (media.name?.split('.').pop()))?.toLowerCase() || 'png';
+    const buf = media.buffer || media.data || Buffer.from([]);
+    const row = rowPtr++;
+    result[row] = { buffer: buf, ext };
   }
   return result;
 }
@@ -90,13 +105,17 @@ function writeCatalog(categories, products) {
   const wb = await loadWorkbook(EXCEL_PATH);
   const ws = wb.worksheets[0];
   if (!ws) throw new Error('No first worksheet');
-  const imgByRow = mapImagesByRow(ws, wb);
+  const imgByRow = mapImagesByRow(ws, wb, START_ROW, END_ROW);
 
   const imported = [];
+  let lastCat = '';
   for (let r = START_ROW; r <= END_ROW; r++) {
-    const cat = ws.getCell(`A${r}`).text.trim();
-    if (cat !== TARGET_CATEGORY_NAME) continue;
+    const cellA = ws.getCell(`A${r}`);
+    const cat = (cellA && (cellA.text || cellA.value || '')).toString().trim();
+    if (cat) lastCat = cat; // 处理合并单元格导致的空白
+    if (lastCat !== TARGET_CATEGORY_NAME) continue;
     const name = ws.getCell(`B${r}`).text.trim();
+    if (!name) continue; // 跳过无名称的空行
     const brief = ws.getCell(`C${r}`).text.trim();
     const priceSpec = ws.getCell(`E${r}`).text.trim();
     const slug = slugify(name);

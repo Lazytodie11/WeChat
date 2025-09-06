@@ -2,6 +2,7 @@
   <image class="banner" src="/assets/p1.jpg" mode="aspectFill"></image>
 
   <view class="slogan card">
+    <image class="brand-logo" src="/assets/logo.png" mode="widthFix"></image>
     <view class="headline">今日甜品，甜在心上</view>
     <view class="sub">精选蛋糕、饮品与小食，立即开始点单吧～</view>
   </view>

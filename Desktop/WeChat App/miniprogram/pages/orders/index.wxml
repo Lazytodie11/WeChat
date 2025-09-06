@@ -13,7 +13,7 @@
   <block wx:elif="{{orders.length===0}}">
     <view class="empty">
       <image class="empty-img" src="/assets/empty.png" mode="widthFix"></image>
-      <view class="empty-tips">暂无订单，去点单吧～</view>
+      <view class="empty-tips">{{touristMode ? touristTips : '暂无订单，去点单吧～'}}</view>
     </view>
   </block>
   <block wx:else>
@@ -26,14 +26,14 @@
       <view class="card" style="margin-bottom:10px;">
         <view style="display:flex;justify-content:space-between;">
           <text>订单号：{{item._id}}</text>
-          <text class="status">{{item.status || 'pending'}}</text>
+          <text class="status">{{item.statusText}}</text>
         </view>
         <view style="color:#888;margin:6px 0;">{{item.createdAtStr}}</view>
         <view>
           <block wx:for="{{item.items}}" wx:key="id">
             <view class="row" style="justify-content:space-between;margin:4px 0;">
-              <text>{{item2.name}} x {{item2.count}}</text>
-              <text>¥{{(item2.count*item2.price).toFixed(2)}}</text>
+              <text>{{item2.name}} x {{item2.displayQty}}</text>
+              <text>¥{{item2.subtotal}}</text>
             </view>
           </block>
         </view>

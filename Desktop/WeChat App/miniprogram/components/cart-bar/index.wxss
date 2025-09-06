@@ -17,4 +17,4 @@
 .btn { background: #6B4A2B; color: #fff; padding: 6px 14px; border-radius: 20px; }
 .btn:active { background: #836046; }
 
-page { padding-bottom: 70px; }
+.cart-padding { padding-bottom: 70px; }

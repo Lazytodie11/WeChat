@@ -29,6 +29,7 @@ function findIndex(cart, id) {
 }
 
 function addItem(item) {
+  if (!item || !item.id) return;
   const cart = load();
   const idx = findIndex(cart, item.id);
   if (idx >= 0) {
@@ -40,6 +41,7 @@ function addItem(item) {
 }
 
 function removeItem(id) {
+  if (!id) return;
   const cart = load();
   const idx = findIndex(cart, id);
   if (idx >= 0) {
@@ -83,4 +85,3 @@ module.exports = {
   getSummary,
   subscribe,
 };
-

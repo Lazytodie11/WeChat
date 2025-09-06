@@ -2,17 +2,20 @@
   <category-sidebar class="left" categories="{{categories}}" current-id="{{currentCatId}}" bind:select="onSelectCategory" />
 
   <view class="right-wrap">
-    <view class="sticky-title">{{currentCatName}}</view>
+    <view class="sticky-title">
+      <image class="tiny-logo" src="/assets/logo.png" mode="widthFix"></image>
+      <text>{{currentCatName}}</text>
+    </view>
     <scroll-view class="right" scroll-y scroll-with-animation scroll-into-view="{{toView}}" bindscroll="onScroll">
       <view id="section-top"></view>
-      <block wx:for="{{sections}}" wx:key="id">
-        <view class="section" id="section-{{item.id}}">
-          <view class="section-title">{{item.name}}</view>
-          <block wx:for="{{item.items}}" wx:key="id">
-            <product-card item="{{item2}}" count="{{countMap[item2.id]||0}}" bind:change="onCardChange" />
-          </block>
-        </view>
-      </block>
+    <block wx:for="{{sectionsView}}" wx:key="id">
+      <view class="section" id="section-{{item.id}}">
+        <view class="section-title">{{item.name}}</view>
+        <block wx:for="{{item.items}}" wx:key="id">
+          <product-card item="{{item2}}" count="{{item2.count}}" bind:change="onCardChange" />
+        </block>
+      </view>
+    </block>
     </scroll-view>
     <view class="back-top" bindtap="goTop" wx:if="{{showBackTop}}">↑</view>
   </view>

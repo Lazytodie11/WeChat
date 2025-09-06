@@ -1,31 +1,16 @@
 const cart = require('../../utils/cart');
-
-const categories = [
-  { id: 'cakes', name: '蛋糕' },
-  { id: 'drinks', name: '饮品' },
-  { id: 'snacks', name: '小食' }
-];
-
-const goods = [
-  { id: 'p1', cat: 'cakes', name: '草莓蛋糕', price: 28, image: 'assets/p1.jpg', desc: '新鲜草莓搭配奶油' },
-  { id: 'p2', cat: 'cakes', name: '巧克力蛋糕', price: 26, image: 'assets/p2.jpg', desc: '丝滑巧克力口味' },
-  { id: 'p3', cat: 'cakes', name: '芝士蛋糕', price: 32, image: 'assets/p3.jpg', desc: '醇厚芝士' },
-  { id: 'p4', cat: 'drinks', name: '拿铁咖啡', price: 18, image: 'assets/p4.jpg', desc: '顺滑拿铁' },
-  { id: 'p5', cat: 'drinks', name: '抹茶拿铁', price: 20, image: 'assets/p5.jpg', desc: '清新抹茶' },
-  { id: 'p6', cat: 'drinks', name: '鲜榨橙汁', price: 16, image: 'assets/p6.jpg', desc: '每日鲜榨' },
-  { id: 'p7', cat: 'snacks', name: '曲奇饼干', price: 10, image: 'assets/p7.jpg', desc: '黄油香味' },
-  { id: 'p8', cat: 'snacks', name: '马卡龙', price: 12, image: 'assets/p8.jpg', desc: '缤纷口味' }
-];
+const { categories, products } = require('../../data/catalog');
 
 function buildSections() {
-  return categories.map(c => ({ id: c.id, name: c.name, items: goods.filter(g => g.cat === c.id) }));
+  return categories.map(c => ({ id: c.id, name: c.name, items: products.filter(p => p.categoryId === c.id) }));
 }
 
 Page({
   data: {
     categories,
-    sections: buildSections(),
+    sectionsView: buildSections().map(s => ({...s, items: s.items.map(i => ({...i, count: 0}))})),
     currentCatId: categories[0].id,
+    currentCatName: categories[0].name,
     toView: '',
     countMap: {},
     sectionTops: [],
@@ -54,7 +39,7 @@ Page({
   },
   onSelectCategory(e) {
     const id = e.detail.id;
-    this.setData({ currentCatId: id, toView: `section-${id}` });
+    this.setData({ currentCatId: id, currentCatName: categories.find(c=>c.id===id)?.name || '', toView: `section-${id}` });
   },
   onScroll(e) {
     const scrollTop = e.detail.scrollTop;
@@ -67,6 +52,7 @@ Page({
     }
     const update = {};
     if (current !== this.data.currentCatId) update.currentCatId = current;
+    if (current !== this.data.currentCatId) update.currentCatName = categories.find(c=>c.id===current)?.name || '';
     update.showBackTop = scrollTop > 120;
     if (Object.keys(update).length) this.setData(update);
   },
@@ -74,7 +60,12 @@ Page({
     const list = cart.getCart();
     const m = {};
     list.forEach(x => m[x.id] = x.count);
-    this.setData({ countMap: m });
+    // rebuild sectionsView with counts
+    const sections = buildSections().map(s => ({
+      ...s,
+      items: s.items.map(i => ({ ...i, count: m[i.id] || 0 }))
+    }));
+    this.setData({ countMap: m, sectionsView: sections });
   },
   onCardChange() {
     this.refreshCounts();

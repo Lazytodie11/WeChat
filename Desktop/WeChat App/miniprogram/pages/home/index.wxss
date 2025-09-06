@@ -1,5 +1,11 @@
-.home .banner{ width:100%; height:160px; border-radius:14px; overflow:hidden; display:block; }
+.home .banner{ width:100%; height:160px; border-radius:14px; overflow:hidden; display:block; animation: fadeIn 600ms ease-out both; }
 .slogan .headline{ font-size:20px; font-weight:700; color:#2B2B2B; }
 .slogan .sub{ color:#6a6a6a; margin-top:6px; }
+.brand-logo{ width: 180px; display:block; margin: 4px auto 10px; animation: fadeIn 800ms ease-out both; }
 .cta{ width:100%; padding:12px 0; border-radius:999px; margin:16px 0; }
 .carousel .slide-img{ width:100%; height:160px; border-radius:12px; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

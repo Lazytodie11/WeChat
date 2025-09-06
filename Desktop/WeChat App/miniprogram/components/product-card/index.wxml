@@ -1,6 +1,6 @@
 <view class="card">
   <view class="cover">
-    <image class="img" src="/{{item.image}}" mode="aspectFill"></image>
+    <image class="img" src="{{viewItem.cover}}" mode="aspectFill"></image>
     <view class="title">{{item.name}}</view>
   </view>
   <view class="meta">
@@ -15,4 +15,3 @@
     </view>
   </view>
 </view>
-

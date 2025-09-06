@@ -26,14 +26,9 @@ async function loadWorkbook(p) {
   return wb;
 }
 
-function mapImagesByRow(ws, wb, startRow = 2, endRow = 17) {
-  const result = {};
+function collectDImages(ws, wb) {
   const imgs = (typeof ws.getImages === 'function') ? ws.getImages() : [];
-  const pools = [
-    wb?.model?.media || [],
-    wb?._media || [],
-    wb?.media || []
-  ];
+  const pools = [ wb?.model?.media || [], wb?._media || [], wb?.media || [] ];
   const findMedia = (imageId) => {
     for (const pool of pools) {
       const hit = pool.find(m => m?.index === imageId || m?.id === imageId);
@@ -41,23 +36,18 @@ function mapImagesByRow(ws, wb, startRow = 2, endRow = 17) {
     }
     return null;
   };
-  // Only images in column D (index 3, zero-based)
-  const colDImgs = imgs.filter(img => (img?.range?.tl?.nativeCol ?? -1) === 3);
-  // Sort by their top row
-  colDImgs.sort((a,b)=> (a.range.tl.nativeRow||0) - (b.range.tl.nativeRow||0));
-
-  const slice = colDImgs.slice(0, Math.max(0, endRow - startRow + 1));
-  let rowPtr = startRow;
-  for (const img of slice) {
-    const id = img.imageId;
-    const media = findMedia(id);
+  const colDImgs = imgs
+    .filter(img => (img?.range?.tl?.nativeCol ?? -1) === 3)
+    .sort((a,b)=> (a.range.tl.nativeRow||0) - (b.range.tl.nativeRow||0));
+  const out = [];
+  for (const img of colDImgs) {
+    const media = findMedia(img.imageId);
     if (!media) continue;
     const ext = (media.extension || media.ext || (media.name?.split('.').pop()))?.toLowerCase() || 'png';
-    const buf = media.buffer || media.data || Buffer.from([]);
-    const row = rowPtr++;
-    result[row] = { buffer: buf, ext };
+    const buffer = media.buffer || media.data || Buffer.from([]);
+    out.push({ buffer, ext });
   }
-  return result;
+  return out;
 }
 
 function parseVariants(text='') {
@@ -105,10 +95,11 @@ function writeCatalog(categories, products) {
   const wb = await loadWorkbook(EXCEL_PATH);
   const ws = wb.worksheets[0];
   if (!ws) throw new Error('No first worksheet');
-  const imgByRow = mapImagesByRow(ws, wb, START_ROW, END_ROW);
+  const dImages = collectDImages(ws, wb);
 
   const imported = [];
   let lastCat = '';
+  const selectedRows = [];
   for (let r = START_ROW; r <= END_ROW; r++) {
     const cellA = ws.getCell(`A${r}`);
     const cat = (cellA && (cellA.text || cellA.value || '')).toString().trim();
@@ -116,6 +107,16 @@ function writeCatalog(categories, products) {
     if (lastCat !== TARGET_CATEGORY_NAME) continue;
     const name = ws.getCell(`B${r}`).text.trim();
     if (!name) continue; // 跳过无名称的空行
+    selectedRows.push(r);
+  }
+
+  // Group images per your explicit mapping for rows 2..17
+  const groups = [3,2,2,1,1,2,2,2,1];
+  let imgIdx = 0;
+  for (let i = 0; i < selectedRows.length && i < groups.length; i++) {
+    const r = selectedRows[i];
+    const take = groups[i];
+    const name = ws.getCell(`B${r}`).text.trim();
     const brief = ws.getCell(`C${r}`).text.trim();
     const priceSpec = ws.getCell(`E${r}`).text.trim();
     const slug = slugify(name);
@@ -123,25 +124,19 @@ function writeCatalog(categories, products) {
     const price = minPrice(variants);
 
     let cover = '';
-    const img = imgByRow[r];
-    if (img && img.buffer) {
-      const ext = (img.ext || 'png').toLowerCase();
-      const fname = `flavor-milk-cake-${slug}-1.${ext}`;
+    const gallery = [];
+    for (let k = 0; k < take && imgIdx < dImages.length; k++, imgIdx++) {
+      const g = dImages[imgIdx];
+      const ext = (g.ext || 'png').toLowerCase();
+      const fname = `flavor-milk-cake-${slug}-${k+1}.${ext}`;
       const out = path.join(assetsDir, fname);
-      fs.writeFileSync(out, img.buffer);
-      cover = '/assets/' + fname;
+      fs.writeFileSync(out, g.buffer);
+      const rel = '/assets/' + fname;
+      if (!cover) cover = rel;
+      gallery.push(rel);
       imported.push(fname);
     }
-
-    const item = {
-      id: `flavor-milk-cake-${slug}`,
-      categoryId: TARGET_CATEGORY_ID,
-      name,
-      brief,
-      cover,
-      price,
-      variants,
-    };
+    const item = { id: `flavor-milk-cake-${slug}`, categoryId: TARGET_CATEGORY_ID, name, brief, cover, price, variants, gallery };
     imported.push(item);
   }
 
@@ -153,6 +148,8 @@ function writeCatalog(categories, products) {
   categories = Array.from(mapCat.values());
 
   // append/merge products: replace by id if exists
+  // drop legacy placeholder item entries
+  products = products.filter(p => !(p.categoryId === TARGET_CATEGORY_ID && (!p.name || /-item$/.test(p.id))));
   const prodMap = new Map(products.map(p => [p.id, p]));
   for (const it of imported.filter(x=>x && x.id)) {
     prodMap.set(it.id, it);

@@ -1,0 +1,16 @@
+.card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 24px rgba(0,0,0,0.08); margin-bottom: 14px; }
+.cover { position: relative; height: 150px; }
+.img { width: 100%; height: 100%; display: block; }
+.title { position: absolute; left: 10px; top: 10px; background: rgba(251,245,236,0.9); color: #2B2B2B; padding: 4px 8px; border-radius: 8px; font-weight: 600; }
+.meta { padding: 10px; color: #2B2B2B; }
+.desc { color: #6a6a6a; font-size: 12px; }
+.bottom { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; }
+.price { color: #6B4A2B; font-weight: 700; }
+.actions { display: flex; align-items: center; gap: 8px; }
+.count { width: 20px; text-align: center; }
+.btn { border-radius: 999px; }
+.btn-primary { background: #6B4A2B; color: #fff; }
+.btn-primary:active { background: #836046; }
+.btn-plain { background: #F3E7D6; color: #6B4A2B; }
+.btn-plain:active { background: #e6d7c1; }
+

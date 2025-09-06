@@ -1,0 +1,12 @@
+<view class="cart-bar">
+  <view class="left">
+    <text>已选：{{summary.totalCount}} 件</text>
+  </view>
+  <view class="center">
+    <text>合计：¥{{summary.totalPrice}}</text>
+  </view>
+  <view class="right">
+    <button class="btn" bindtap="goCheckout" disabled="{{summary.totalCount === 0}}">去结算</button>
+  </view>
+</view>
+

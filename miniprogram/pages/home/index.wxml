@@ -1,0 +1,25 @@
+<view class="container home">
+  <image class="banner" src="/assets/p1.jpg" mode="aspectFill"></image>
+
+  <view class="slogan card">
+    <image class="brand-logo" src="/assets/logo.png" mode="widthFix"></image>
+    <view class="headline">今日甜品，甜在心上</view>
+    <view class="sub">精选蛋糕、饮品与小食，立即开始点单吧～</view>
+  </view>
+
+  <button class="btn-primary cta" bindtap="goMenu">开始点单</button>
+
+  <view class="carousel card">
+    <swiper circular autoplay interval="3000" duration="500" indicator-dots>
+      <swiper-item>
+        <image src="/assets/p2.jpg" mode="aspectFill" class="slide-img" />
+      </swiper-item>
+      <swiper-item>
+        <image src="/assets/p3.jpg" mode="aspectFill" class="slide-img" />
+      </swiper-item>
+      <swiper-item>
+        <image src="/assets/p4.jpg" mode="aspectFill" class="slide-img" />
+      </swiper-item>
+    </swiper>
+  </view>
+</view>

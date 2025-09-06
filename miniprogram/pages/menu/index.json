@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "点单",
+  "usingComponents": {
+    "cart-bar": "/components/cart-bar/index",
+    "category-sidebar": "/components/category-sidebar/index",
+    "product-card": "/components/product-card/index"
+  }
+}

@@ -1,0 +1,10 @@
+.status { color: #6B4A2B; }
+.empty { text-align: center; padding: 40px 0; color: #6a6a6a; }
+.empty-img { width: 160px; opacity: 0.9; }
+.skeleton .sk-card{ margin-bottom:10px; }
+.sk-line { height: 14px; background: linear-gradient(90deg,#f0ede7,#eae6df,#f0ede7); background-size: 200% 100%; animation: shine 1.2s infinite linear; border-radius: 8px; margin: 10px 0; }
+@keyframes shine { 0%{ background-position: 200% 0} 100%{ background-position: -200% 0 } }
+.filters { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+.filters .tag { padding:6px 10px; border-radius:999px; background:#F3E7D6; color:#6B4A2B; }
+.filters .tag.active { background:#6B4A2B; color:#fff; }
+.loadmore { text-align:center; padding:10px; color:#6B4A2B; }

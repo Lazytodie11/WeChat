@@ -1,0 +1,23 @@
+<view class="menu-page">
+  <category-sidebar class="left" categories="{{categories}}" current-id="{{currentCatId}}" bind:select="onSelectCategory" />
+
+  <view class="right-wrap">
+    <view class="sticky-title">
+      <image class="tiny-logo" src="/assets/logo.png" mode="widthFix"></image>
+      <text>{{currentCatName}}</text>
+    </view>
+    <scroll-view class="right" scroll-y scroll-with-animation bindscroll="onScroll">
+      <block wx:if="{{filteredProducts.length > 0}}">
+        <block wx:for="{{filteredProducts}}" wx:key="id">
+          <product-card item="{{item}}" count="{{item.count}}" bind:change="onCardChange" />
+        </block>
+      </block>
+      <block wx:else>
+        <view class="empty">不含商品，敬请期待</view>
+      </block>
+    </scroll-view>
+    <view class="back-top" bindtap="goTop" wx:if="{{showBackTop}}">↑</view>
+  </view>
+
+  <cart-bar />
+</view>

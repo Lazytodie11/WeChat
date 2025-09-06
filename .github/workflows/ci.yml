@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies (if any)
+        run: |
+          if [ -f package-lock.json ] || [ -f package.json ]; then npm ci || npm i; fi
+      - name: Basic checks
+        run: |
+          test -f miniprogram/app.json
+          test -f miniprogram/app.js
+          test -f cloudfunctions/createOrder/index.js
+          test -f miniprogram/utils/env.js
+          echo "Key files exist."
+      - name: Archive artifact
+        run: |
+          zip -r weapp-artifact.zip miniprogram cloudfunctions README.md project.config.json || true
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weapp-artifact
+          path: weapp-artifact.zip

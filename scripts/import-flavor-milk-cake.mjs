@@ -10,6 +10,7 @@ const START_ROW = 2, END_ROW = 17; // inclusive
 
 const repoRoot = process.cwd();
 const assetsDir = path.join(repoRoot, 'miniprogram', 'assets');
+const subDir = path.join(assetsDir, 'flavor-milk-cake');
 const catalogFile = path.join(repoRoot, 'miniprogram', 'data', 'catalog.js');
 
 function slugify(s) {
@@ -74,6 +75,15 @@ function minPrice(variants) {
 }
 
 function ensureDir(d){ if(!fs.existsSync(d)) fs.mkdirSync(d,{recursive:true}); }
+function emptyDirSync(dir){
+  if (fs.existsSync(dir)) {
+    for (const f of fs.readdirSync(dir)) {
+      fs.rmSync(path.join(dir, f), { recursive: true, force: true });
+    }
+  } else {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
 
 function loadExistingCatalog() {
   let categories = [];
@@ -99,10 +109,22 @@ function writeCatalog(categories, products) {
 
 (async () => {
   ensureDir(assetsDir);
+  // 清理子目录，避免旧文件残留
+  ensureDir(subDir);
+  emptyDirSync(subDir);
   const wb = await loadWorkbook(EXCEL_PATH);
   const ws = wb.worksheets[0];
   if (!ws) throw new Error('No first worksheet');
   const dImages = collectDImages(ws, wb);
+  // 归一化 D 列图片的行号：以最上面的图片作为 D2，依次递增
+  const minNativeRow = Math.min(...dImages.map((_,i)=>{
+    // getImages 里无法直接获取 nativeRow，这里重新从 ws.getImages 取一遍有序列表
+    return (ws.getImages().filter(im=> (im?.range?.tl?.nativeCol??-1)===3)
+      .sort((a,b)=>(a.range.tl.nativeRow||0)-(b.range.tl.nativeRow||0))[i].range.tl.nativeRow)||0;
+  }));
+  const imgEntries = ws.getImages().filter(im=> (im?.range?.tl?.nativeCol??-1)===3)
+    .sort((a,b)=>(a.range.tl.nativeRow||0)-(b.range.tl.nativeRow||0))
+    .map((im, idx)=>({ nativeRow: im.range.tl.nativeRow||0, row: 2+idx }));
 
   const imported = [];
   let lastCat = '';
@@ -117,33 +139,54 @@ function writeCatalog(categories, products) {
     selectedRows.push(r);
   }
 
-  // Group images per your explicit mapping for rows 2..17
-  const groups = [3,2,2,1,1,2,2,2,1];
-  let imgIdx = 0;
-  for (let i = 0; i < selectedRows.length && i < groups.length; i++) {
-    const r = selectedRows[i];
-    const take = groups[i];
-    const name = ws.getCell(`B${r}`).text.trim();
-    const brief = ws.getCell(`C${r}`).text.trim();
-    const priceSpec = ws.getCell(`E${r}`).text.trim();
-    const slug = slugify(name);
+  // 映射表：名称与 D 列图片行号区间
+  const mapping = [
+    { name: '伯牙绝弦', start: 2, end: 4 },
+    { name: '海盐奥利奥', start: 5, end: 6 },
+    { name: '可可蓝莓', start: 7, end: 8 },
+    { name: '梦龙巧克力', start: 9, end: 9 },
+    { name: '焦糖玛奇朵', start: 10, end: 10 },
+    { name: '开心果奶芙', start: 11, end: 12 },
+    { name: '蜜桃红茶', start: 13, end: 14 },
+    { name: '芋泥椰香斑斓', start: 15, end: 16 },
+    { name: '特调草莓奶糕', start: 17, end: 17 },
+  ];
+
+  // 构建一个从“视觉顺序行号(2..)”到图片 buffer 的索引
+  const dImagesOrdered = collectDImages(ws, wb); // 与 imgEntries 同序
+
+  for (const map of mapping) {
+    // 找到对应名称的行（B 列）
+    // 在 2..17 范围内按名称匹配一次
+    let row = -1;
+    for (let r = START_ROW; r <= END_ROW; r++) {
+      const nm = (ws.getCell(`B${r}`).text||'').trim();
+      if (nm === map.name) { row = r; break; }
+    }
+    if (row === -1) continue; // 未找到名称则跳过
+
+    const brief = (ws.getCell(`C${row}`).text||'').trim();
+    const priceSpec = (ws.getCell(`E${row}`).text||'').trim();
     const variants = parseVariants(priceSpec);
     const price = minPrice(variants);
+    const slug = slugify(map.name);
 
-    let cover = '';
+    // 从 D 列有序图片中，截取 row 区间 [start..end]
     const images = [];
-    for (let k = 0; k < take && imgIdx < dImages.length; k++, imgIdx++) {
-      const g = dImages[imgIdx];
+    for (let rr = map.start; rr <= map.end; rr++) {
+      const idx = rr - 2; // D2 对应 dImagesOrdered[0]
+      const g = dImagesOrdered[idx];
+      if (!g) continue;
       const ext = (g.ext || 'png').toLowerCase();
-      const fname = `flavor-milk-cake-${slug}-${k+1}.${ext}`;
-      const out = path.join(assetsDir, fname);
+      const fname = `flavor-milk-cake-${slug}-${images.length+1}.${ext}`;
+      const out = path.join(subDir, fname);
       fs.writeFileSync(out, g.buffer);
-      const rel = '/assets/' + fname;
-      if (!cover) cover = rel;
+      const rel = '/assets/flavor-milk-cake/' + fname;
       images.push(rel);
       imported.push(fname);
     }
-    const item = { id: `flavor-milk-cake-${slug}`, categoryId: TARGET_CATEGORY_ID, name, brief, cover, images, price, variants };
+    const cover = images[0] || '';
+    const item = { id: `flavor-milk-cake-${slug}`, categoryId: TARGET_CATEGORY_ID, name: map.name, brief, cover, images, price, variants };
     imported.push(item);
   }
 
@@ -155,7 +198,7 @@ function writeCatalog(categories, products) {
   categories = Array.from(mapCat.values());
 
   // append/merge products: replace by id if exists
-  // drop legacy placeholder item entries
+  // 清理旧的 flavor-milk-cake 图片路径与占位条目（尽量保留其它类）
   products = products.filter(p => !(p.categoryId === TARGET_CATEGORY_ID && (!p.name || /-item$/.test(p.id))));
   const prodMap = new Map(products.map(p => [p.id, p]));
   for (const it of imported.filter(x=>x && x.id)) {

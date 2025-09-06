@@ -10,7 +10,12 @@ Component({
   },
   observers: {
     'item': function(it) {
-      const cover = (it && (it.cover || it.image)) ? (it.cover || (it.image.startsWith('/') ? it.image : '/' + it.image)) : '/assets/p1.jpg';
+      let cover = '/assets/p1.jpg';
+      if (it) {
+        if (Array.isArray(it.images) && it.images.length) cover = it.images[0];
+        else if (it.cover) cover = it.cover;
+        else if (it.image) cover = it.image.startsWith('/') ? it.image : '/' + it.image;
+      }
       const viewItem = { cover };
       this.setData({ viewItem });
     }

@@ -16,11 +16,11 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "伯牙绝弦",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-伯牙绝弦-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-伯牙绝弦-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-伯牙绝弦-1.jpeg",
-      "/assets/flavor-milk-cake-伯牙绝弦-2.jpeg",
-      "/assets/flavor-milk-cake-伯牙绝弦-3.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-伯牙绝弦-1.jpeg",
+      "/assets/flavor-milk-cake/flavor-milk-cake-伯牙绝弦-2.jpeg",
+      "/assets/flavor-milk-cake/flavor-milk-cake-伯牙绝弦-3.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -43,10 +43,10 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "海盐奥利奥",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-海盐奥利奥-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-海盐奥利奥-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-海盐奥利奥-1.jpeg",
-      "/assets/flavor-milk-cake-海盐奥利奥-2.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-海盐奥利奥-1.jpeg",
+      "/assets/flavor-milk-cake/flavor-milk-cake-海盐奥利奥-2.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -69,10 +69,10 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "可可蓝莓",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-可可蓝莓-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-可可蓝莓-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-可可蓝莓-1.jpeg",
-      "/assets/flavor-milk-cake-可可蓝莓-2.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-可可蓝莓-1.jpeg",
+      "/assets/flavor-milk-cake/flavor-milk-cake-可可蓝莓-2.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -95,9 +95,9 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "梦龙巧克力",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-梦龙巧克力-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-梦龙巧克力-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-梦龙巧克力-1.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-梦龙巧克力-1.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -120,9 +120,9 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "焦糖玛奇朵",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-焦糖玛奇朵-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-焦糖玛奇朵-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-焦糖玛奇朵-1.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-焦糖玛奇朵-1.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -145,10 +145,10 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "开心果奶芙",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-开心果奶芙-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-开心果奶芙-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-开心果奶芙-1.jpeg",
-      "/assets/flavor-milk-cake-开心果奶芙-2.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-开心果奶芙-1.jpeg",
+      "/assets/flavor-milk-cake/flavor-milk-cake-开心果奶芙-2.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -171,10 +171,10 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "蜜桃红茶",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-蜜桃红茶-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-蜜桃红茶-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-蜜桃红茶-1.jpeg",
-      "/assets/flavor-milk-cake-蜜桃红茶-2.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-蜜桃红茶-1.jpeg",
+      "/assets/flavor-milk-cake/flavor-milk-cake-蜜桃红茶-2.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -197,10 +197,10 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "芋泥椰香斑斓",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-芋泥椰香斑斓-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-芋泥椰香斑斓-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-芋泥椰香斑斓-1.jpeg",
-      "/assets/flavor-milk-cake-芋泥椰香斑斓-2.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-芋泥椰香斑斓-1.jpeg",
+      "/assets/flavor-milk-cake/flavor-milk-cake-芋泥椰香斑斓-2.jpeg"
     ],
     "price": 39.9,
     "variants": [
@@ -223,9 +223,9 @@ const products = [
     "categoryId": "flavor-milk-cake",
     "name": "特调草莓奶糕",
     "brief": "可做4/6/8寸",
-    "cover": "/assets/flavor-milk-cake-特调草莓奶糕-1.jpeg",
+    "cover": "/assets/flavor-milk-cake/flavor-milk-cake-特调草莓奶糕-1.jpeg",
     "images": [
-      "/assets/flavor-milk-cake-特调草莓奶糕-1.jpeg"
+      "/assets/flavor-milk-cake/flavor-milk-cake-特调草莓奶糕-1.jpeg"
     ],
     "price": 39.9,
     "variants": [

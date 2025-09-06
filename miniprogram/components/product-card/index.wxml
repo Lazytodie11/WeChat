@@ -4,7 +4,7 @@
     <view class="title">{{item.name}}</view>
   </view>
   <view class="meta">
-    <view class="desc">{{item.desc}}</view>
+    <view class="desc">{{item.brief}}</view>
     <view class="bottom">
       <view class="price">¥{{item.price}}</view>
       <view class="actions">

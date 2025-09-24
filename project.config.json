@@ -1,6 +1,6 @@
 {
   "description": "Dessert shop mini program",
-  "appid": "touristappid",
+  "appid": "wxcaba9c3cd9259c35",
   "setting": {
     "urlCheck": false,
     "es6": true,
@@ -28,7 +28,7 @@
     "libVersion": "stable"
   },
   "compileType": "miniprogram",
-  "libVersion": "2.32.0",
+  "libVersion": "3.9.3",
   "packOptions": {
     "ignore": [],
     "include": []

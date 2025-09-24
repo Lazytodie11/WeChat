@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "import:catalog": "node scripts/import-catalog.mjs",
-    "import:flavor": "node scripts/import-flavor-milk-cake.mjs"
+    "import:flavor": "node scripts/import-flavor-milk-cake.mjs",
+    "import:girls-local": "node scripts/import-girls-cake-local.mjs",
+    "verify:girls": "node scripts/verify-girls-cake.mjs"
   },
   "devDependencies": {
     "csv-parse": "^5.5.6",

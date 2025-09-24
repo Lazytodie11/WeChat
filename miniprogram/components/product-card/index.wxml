@@ -1,5 +1,5 @@
 <view class="card">
-  <view class="cover">
+  <view class="cover" catchtap="detailTap">
     <image class="img" src="{{viewItem.cover}}" mode="aspectFill"></image>
     <view class="title">{{item.name}}</view>
   </view>
@@ -8,9 +8,9 @@
     <view class="bottom">
       <view class="price">¥{{item.price}}</view>
       <view class="actions">
-        <button class="btn btn-plain" size="mini" bindtap="dec" data-id="{{item.id}}">-</button>
+        <button class="btn btn-plain" size="mini" catchtap="dec" data-id="{{item.id}}">-</button>
         <text class="count">{{count}}</text>
-        <button class="btn btn-primary" size="mini" bindtap="inc" data-item="{{item}}">+ 加入</button>
+        <button class="btn btn-primary" size="mini" catchtap="inc" data-item="{{item}}">+ 加入</button>
       </view>
     </view>
   </view>

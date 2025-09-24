@@ -15,6 +15,7 @@ Page({
     // 确保从其他页面返回时数据也同步
     this.updateFromStorage();
   },
+  goBack(){ wx.navigateBack({ delta: 1 }); },
   updateFromStorage() {
     const list = cart.getCart().map((it) => {
       const qty = (it.qty != null ? it.qty : it.count) || 0;
@@ -23,6 +24,22 @@ Page({
       return { ...it, displayQty: qty, subtotal };
     });
     this.setData({ cart: list, summary: cart.getSummary() });
+  },
+  inc(e) {
+    const id = e.currentTarget.dataset.id;
+    const size = e.currentTarget.dataset.size;
+    const name = e.currentTarget.dataset.name;
+    const price = Number(e.currentTarget.dataset.price || 0);
+    if (!id || !size) return;
+    cart.addItem({ id, name }, { size, price });
+    this.updateFromStorage();
+  },
+  dec(e) {
+    const id = e.currentTarget.dataset.id;
+    const size = e.currentTarget.dataset.size;
+    if (!id || !size) return;
+    cart.removeItem(id, { size });
+    this.updateFromStorage();
   },
   onInput(e) {
     const field = e.currentTarget.dataset.field;

@@ -1,5 +1,5 @@
 <view class="cart-bar">
-  <view class="left">
+  <view class="left clickable" bindtap="openSheet">
     <text>已选：{{summary.totalCount}} 件</text>
   </view>
   <view class="center">
@@ -10,3 +10,35 @@
   </view>
 </view>
 
+<!-- Bottom Sheet: Manage all selections -->
+<view class="sheet-mask" wx:if="{{showSheet}}" bindtap="closeSheet">
+  <view class="sheet-panel" catchtap="noop">
+    <view class="sheet-header">
+      <text>已选商品</text>
+      <text class="close" bindtap="closeSheet">完成</text>
+    </view>
+    <block wx:if="{{items.length}}">
+      <block wx:for="{{items}}" wx:key="variantKey">
+        <view class="sheet-row">
+          <view class="sheet-info">
+            <text>{{item.name}}</text>
+            <text class="muted">（{{item.variantSize}}）</text>
+          </view>
+          <view class="sheet-actions">
+            <button size="mini" bindtap="sheetDec" data-id="{{item.id}}" data-size="{{item.variantSize}}">-</button>
+            <text class="count">{{item.count}}</text>
+            <button size="mini" type="primary" bindtap="sheetInc" data-id="{{item.id}}" data-size="{{item.variantSize}}" data-name="{{item.name}}" data-price="{{item.price}}">+</button>
+            <text class="subtotal">¥{{item.subtotal}}</text>
+          </view>
+        </view>
+      </block>
+      <view class="sheet-footer">
+        <text>合计：¥{{total}}</text>
+        <view class="ops">
+          <button size="mini" class="btn-danger" bindtap="clearAll">清空全部</button>
+        </view>
+      </view>
+    </block>
+    <view wx:else class="sheet-empty">暂无已选</view>
+  </view>
+</view>

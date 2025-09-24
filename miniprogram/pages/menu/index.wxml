@@ -9,8 +9,8 @@
     <scroll-view class="right" scroll-y scroll-with-animation bindscroll="onScroll">
       <block wx:if="{{filteredProducts.length > 0}}">
         <block wx:for="{{filteredProducts}}" wx:key="id">
-          <view class="prod-item" data-id="{{item.id}}" bindtap="goDetail">
-            <product-card item="{{item}}" count="{{item.count}}" bind:change="onCardChange" />
+          <view class="prod-item" data-id="{{item.id}}">
+            <product-card item="{{item}}" count="{{item.count}}" bind:change="onCardChange" bind:detail="onCardDetail" />
           </view>
         </block>
       </block>

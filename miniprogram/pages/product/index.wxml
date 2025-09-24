@@ -17,18 +17,24 @@
   <view class="card info">
     <view class="name">{{product.name}}</view>
     <view class="brief">{{product.brief}}</view>
-    <view class="price-line">¥{{minPrice}} 起</view>
+    <view class="price-line">¥{{selectedVariant ? selectedVariant.price : (variants.length>0 ? variants[current].price : minPrice)}}</view>
   </view>
 
   <view class="card variants" wx:if="{{variants.length>0}}">
     <view class="v-title">可选尺寸</view>
     <view class="v-list">
       <block wx:for="{{variants}}" wx:key="size">
-        <view class="v-item {{idx===current?'active':''}}" bindtap="chooseVariant" data-idx="{{index}}">
+        <view class="v-item {{index===current?'active':''}}" bindtap="chooseVariant" data-idx="{{index}}">
           <text>{{item.size}}</text>
           <text>¥{{item.price}}</text>
         </view>
       </block>
+    </view>
+    <view class="selected clickable" wx:if="{{variants.length>0}}" bindtap="openSheet">
+      <view>
+        已选：{{selectedVariant ? selectedVariant.size : variants[current].size}} x {{count}}，单价 ¥{{selectedVariant ? selectedVariant.price : variants[current].price}}
+      </view>
+      <view class="arrow">管理</view>
     </view>
   </view>
 
@@ -37,6 +43,40 @@
       <button size="mini" bindtap="dec">-</button>
       <text class="count">{{count}}</text>
       <button size="mini" type="primary" bindtap="inc">+ 加入</button>
+    </view>
+  </view>
+
+  <!-- Bottom Sheet: Manage selected variants -->
+  <view class="sheet-mask" wx:if="{{showSheet}}" bindtap="closeSheet">
+    <view class="sheet-panel" catchtap="noop">
+      <view class="sheet-header">
+        <text>当前已选</text>
+        <text class="close" bindtap="closeSheet">完成</text>
+      </view>
+      <block wx:if="{{sheetItems.length}}">
+        <block wx:for="{{sheetItems}}" wx:key="variantKey">
+          <view class="sheet-row">
+            <view class="sheet-info">
+              <text>{{item.name}}</text>
+              <text class="muted">（{{item.variantSize}}）</text>
+            </view>
+            <view class="sheet-actions">
+              <button size="mini" bindtap="sheetDec" data-size="{{item.variantSize}}">-</button>
+              <text class="count">{{item.count}}</text>
+              <button size="mini" type="primary" bindtap="sheetInc" data-size="{{item.variantSize}}">+</button>
+              <text class="subtotal">¥{{item.subtotal}}</text>
+            </view>
+          </view>
+        </block>
+        <view class="sheet-footer">
+          <text>合计：¥{{sheetTotal}}</text>
+          <view class="ops">
+            <button size="mini" class="btn-plain" bindtap="clearCurrent">清空本商品</button>
+            <button size="mini" class="btn-danger" bindtap="clearAll">清空全部</button>
+          </view>
+        </view>
+      </block>
+      <view wx:else class="sheet-empty">暂无已选</view>
     </view>
   </view>
 </view>

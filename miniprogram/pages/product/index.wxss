@@ -11,5 +11,24 @@
 .v-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .v-item { border: 1px solid #F3E7D6; border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; color: #6B4A2B; }
 .v-item.active { background: #6B4A2B; color: #fff; border-color: #6B4A2B; }
+.variants .selected { margin-top: 8px; color: #6B4A2B; font-size: 13px; }
+.variants .selected.clickable { border: 1px solid #F3E7D6; border-radius: 10px; padding: 10px; display:flex; justify-content:space-between; align-items:center; }
+.variants .selected .arrow { color:#6B4A2B; opacity: .8; }
 .actions .qty { display:flex; justify-content:center; align-items:center; gap: 10px; }
 .actions .count { width: 30px; text-align:center; }
+
+/* Bottom sheet */
+.sheet-mask { position: fixed; left:0; right:0; top:0; bottom:0; background: rgba(0,0,0,0.35); z-index: 2000; display:flex; align-items:flex-end; }
+.sheet-panel { background:#fff; border-top-left-radius: 16px; border-top-right-radius: 16px; width:100%; max-height: 70vh; padding: 12px; }
+.sheet-header { display:flex; justify-content:space-between; align-items:center; font-weight:700; color:#2B2B2B; padding-bottom: 8px; border-bottom:1px solid #f3f3f3; }
+.sheet-header .close { color:#6B4A2B; font-weight:600; }
+.sheet-row { display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid #f6f6f6; }
+.sheet-row:last-child { border-bottom: none; }
+.sheet-info .muted { color:#999; margin-left: 6px; }
+.sheet-actions { display:flex; gap:10px; align-items:center; }
+.sheet-actions .subtotal { margin-left:auto; color:#2B2B2B; font-weight:600; }
+.sheet-footer { display:flex; justify-content:flex-end; padding-top:8px; font-weight:700; color:#2B2B2B; }
+.sheet-footer .ops{ margin-left:auto; display:flex; gap:8px; font-weight:400; }
+.btn-plain{ background:#f6f1ea; color:#6B4A2B; border-radius:16px; padding: 4px 10px; }
+.btn-danger{ background:#d9534f; color:#fff; border-radius:16px; padding: 4px 10px; }
+.sheet-empty { text-align:center; color:#999; padding: 16px 0; }

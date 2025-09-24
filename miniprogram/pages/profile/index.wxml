@@ -1,11 +1,20 @@
 <view class="container">
-  <view class="card">
-    <view style="font-weight:600;">甜品店小程序</view>
-    <view style="color:#888;margin-top:6px;">示例项目，用于演示点单流程。</view>
+  <view class="card profile">
+    <image class="avatar" src="{{user && user.avatarUrl ? user.avatarUrl : '/assets/logo.png'}}" mode="aspectFill" />
+    <view class="info">
+      <view class="name">{{user && user.nickName ? user.nickName : '未登录'}}</view>
+      <view class="desc">{{user ? '欢迎回来' : '登录后可查看个人订单'}}</view>
+    </view>
+    <button wx:if="{{!user}}" size="mini" bindtap="login">登录</button>
+    <button wx:else size="mini" bindtap="logout">退出</button>
   </view>
-  <view class="card" style="margin-top:12px;">
-    <view>版本：1.0.0</view>
-    <view>开源许可：MIT</view>
+
+  <view class="card actions">
+    <button class="btn" bindtap="goOrders">我的订单</button>
+  </view>
+
+  <view class="card about">
+    <view class="row"><text>版本</text><text>1.0.0</text></view>
+    <view class="row"><text>说明</text><text>仅作示例演示</text></view>
   </view>
 </view>
-

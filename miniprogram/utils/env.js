@@ -4,6 +4,7 @@ function getAppSafe() {
 
 function isCloudEnabled() {
   const app = getAppSafe();
+  // 仅以全局标识为准（由 app.js 探测后设置）
   return !!(app && app.globalData && app.globalData.cloudEnabled);
 }
 
@@ -17,4 +18,3 @@ module.exports = {
   isCloudEnabled,
   getEnvId,
 };
-

@@ -1,2 +1,8 @@
 .container .card + .card { margin-top: 12px; }
-
+.profile { display:flex; gap:12px; align-items:center; }
+.profile .avatar { width: 56px; height:56px; border-radius: 50%; background:#f3f3f3; }
+.profile .info { flex: 1; }
+.profile .name { font-weight: 700; }
+.profile .desc { color:#888; font-size: 12px; margin-top:4px; }
+.actions .btn { width: 100%; background:#6B4A2B; color:#fff; border-radius: 8px; }
+.about .row { display:flex; justify-content:space-between; color:#555; }

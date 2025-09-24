@@ -1,10 +1,22 @@
 <view class="container">
+  <view class="nav">
+    <view class="back" bindtap="goBack">返回</view>
+    <view class="title">结算</view>
+  </view>
   <view class="card">
     <view class="title">购物车</view>
-    <block wx:for="{{cart}}" wx:key="id">
+    <block wx:for="{{cart}}" wx:key="variantKey">
       <view class="row" style="margin:6px 0;align-items:center;">
-        <view class="col">{{item.name}} x {{item.displayQty}}</view>
-        <view>¥{{item.subtotal}}</view>
+        <view class="col">
+          <text>{{item.name}}</text>
+          <text wx:if="{{item.variantSize}}">（{{item.variantSize}}）</text>
+        </view>
+        <view class="row-actions">
+          <button size="mini" bindtap="dec" data-id="{{item.id}}" data-size="{{item.variantSize}}">-</button>
+          <text class="count">{{item.displayQty}}</text>
+          <button size="mini" type="primary" bindtap="inc" data-id="{{item.id}}" data-size="{{item.variantSize}}" data-name="{{item.name}}" data-price="{{item.price}}">+</button>
+        </view>
+        <view class="price">¥{{item.subtotal}}</view>
       </view>
     </block>
     <view class="row" style="justify-content:space-between;margin-top:8px;font-weight:600;">

@@ -12,7 +12,14 @@ Page({
   },
   onShow() {
     this.refreshCounts();
+    if (!this._unsubCart) {
+      this._unsubCart = cart.subscribe(() => {
+        try { this.refreshCounts(); } catch (e) {}
+      });
+    }
   },
+  onHide() { if (this._unsubCart) { try { this._unsubCart(); } catch(e) {} this._unsubCart = null; } },
+  onUnload() { if (this._unsubCart) { try { this._unsubCart(); } catch(e) {} this._unsubCart = null; } },
   onSelectCategory(e) {
     const id = e.detail.id;
     this.setData({ currentCatId: id, currentCatName: categories.find(c=>c.id===id)?.name || '' });
@@ -25,7 +32,9 @@ Page({
   refreshCounts() {
     const list = cart.getCart();
     const m = {};
-    list.forEach(x => m[x.id] = x.count);
+    list.forEach(x => {
+      m[x.id] = (m[x.id] || 0) + (x.count || 0);
+    });
     this.setData({ countMap: m }, () => this.applyFilter());
   },
   applyFilter() {
@@ -38,6 +47,11 @@ Page({
   },
   onCardChange() {
     this.refreshCounts();
+  },
+  onCardDetail(e) {
+    const id = e?.detail?.id;
+    if (!id) return;
+    wx.navigateTo({ url: `/pages/product/index?id=${id}` });
   },
   goDetail(e) {
     const id = e.currentTarget.dataset.id;

@@ -4,7 +4,24 @@ let listeners = [];
 
 function load() {
   try {
-    return wx.getStorageSync(STORAGE_KEY) || [];
+    const arr = wx.getStorageSync(STORAGE_KEY) || [];
+    // 兼容旧数据：补齐 variant 字段
+    arr.forEach((it) => {
+      if (!it) return;
+      if (!it.variantSize) {
+        const size = (Array.isArray(it.variants) && it.variants[0]?.size) || it.size || '默认';
+        it.variantSize = size;
+      }
+      if (!it.variantKey && it.id) {
+        it.variantKey = `${it.id}__${it.variantSize}`;
+      }
+      if (it.price == null) {
+        // 尝试从 variants 补充价格
+        const price = (Array.isArray(it.variants) && it.variants[0]?.price) || it.price || 0;
+        it.price = Number(price);
+      }
+    });
+    return arr;
   } catch (e) {
     return [];
   }
@@ -24,26 +41,39 @@ function notify() {
   });
 }
 
-function findIndex(cart, id) {
+function findIndex(cart, id, variantKey) {
+  if (variantKey) return cart.findIndex((x) => x.id === id && x.variantKey === variantKey);
   return cart.findIndex((x) => x.id === id);
 }
 
-function addItem(item) {
+function addItem(item, variant) {
   if (!item || !item.id) return;
   const cart = load();
-  const idx = findIndex(cart, item.id);
+  const size = variant?.size || (Array.isArray(item.variants) && item.variants[0]?.size) || item.size || '默认';
+  const price = Number(variant?.price != null ? variant.price : (Array.isArray(item.variants) && item.variants[0]?.price != null ? item.variants[0].price : item.price || 0));
+  const variantKey = `${item.id}__${size}`;
+  const idx = findIndex(cart, item.id, variantKey);
   if (idx >= 0) {
     cart[idx].count += 1;
   } else {
-    cart.push({ ...item, count: 1 });
+    const toSave = { ...item, price, count: 1, variantSize: size, variantKey };
+    // 减少冗余字段体积
+    delete toSave.variants;
+    cart.push(toSave);
   }
   save(cart);
 }
 
-function removeItem(id) {
+function removeItem(id, variant) {
   if (!id) return;
   const cart = load();
-  const idx = findIndex(cart, id);
+  let idx = -1;
+  if (variant && (variant.size || variant.variantSize)) {
+    const size = variant.size || variant.variantSize;
+    const variantKey = `${id}__${size}`;
+    idx = findIndex(cart, id, variantKey);
+  }
+  if (idx < 0) idx = findIndex(cart, id);
   if (idx >= 0) {
     cart[idx].count -= 1;
     if (cart[idx].count <= 0) cart.splice(idx, 1);
@@ -53,6 +83,13 @@ function removeItem(id) {
 
 function clear() {
   save([]);
+}
+
+function removeProduct(id) {
+  if (!id) return;
+  const cart = load();
+  const next = cart.filter(x => x.id !== id);
+  save(next);
 }
 
 function getCart() {
@@ -81,6 +118,7 @@ module.exports = {
   addItem,
   removeItem,
   clear,
+  removeProduct,
   getCart,
   getSummary,
   subscribe,

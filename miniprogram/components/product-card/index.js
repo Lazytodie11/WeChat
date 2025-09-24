@@ -22,6 +22,11 @@ Component({
     }
   },
   methods: {
+    detailTap() {
+      const item = this.data.item;
+      if (!item || !item.id) return;
+      this.triggerEvent('detail', { id: item.id });
+    },
     inc() {
       const item = this.data.item;
       if (!item || !item.id) return;

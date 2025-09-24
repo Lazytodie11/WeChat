@@ -247,7 +247,7 @@ const products = [
     "id": "girls-cake-草莓蛋糕2025",
     "categoryId": "girls-cake",
     "name": "草莓蛋糕2025",
-    "brief": "草莓蛋糕2025",
+    "brief": "6寸草莓蛋糕2025",
     "images": [
       "/assets/girls-cake/girls-cake-草莓蛋糕2025-1.jpg"
     ],
@@ -264,7 +264,7 @@ const products = [
     "id": "girls-cake-郁金香蛋糕",
     "categoryId": "girls-cake",
     "name": "郁金香蛋糕",
-    "brief": "郁金香蛋糕",
+    "brief": "4寸加高郁金香蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-郁金香蛋糕-1.jpg"
     ],
@@ -281,7 +281,7 @@ const products = [
     "id": "girls-cake-纪念日蛋糕",
     "categoryId": "girls-cake",
     "name": "纪念日蛋糕",
-    "brief": "纪念日蛋糕",
+    "brief": "6寸纪念日蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-纪念日蛋糕-1.jpg"
     ],
@@ -298,7 +298,7 @@ const products = [
     "id": "girls-cake-简约巧克力爱心蛋糕",
     "categoryId": "girls-cake",
     "name": "简约巧克力爱心蛋糕",
-    "brief": "简约巧克力爱心蛋糕",
+    "brief": "6寸简约巧克力爱心蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-简约巧克力爱心蛋糕-1.jpg"
     ],
@@ -332,7 +332,7 @@ const products = [
     "id": "girls-cake-高脚杯蛋糕",
     "categoryId": "girls-cake",
     "name": "高脚杯蛋糕",
-    "brief": "高脚杯蛋糕",
+    "brief": "6寸高脚杯蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-高脚杯蛋糕-1.jpg"
     ],
@@ -349,7 +349,7 @@ const products = [
     "id": "girls-cake-简约水果款",
     "categoryId": "girls-cake",
     "name": "简约水果款",
-    "brief": "简约水果款",
+    "brief": "6寸简约水果款",
     "images": [
       "/assets/girls-cake/girls-cake-简约水果款-1.jpg"
     ],
@@ -366,7 +366,7 @@ const products = [
     "id": "girls-cake-仿真白色郁金香蛋糕",
     "categoryId": "girls-cake",
     "name": "仿真白色郁金香蛋糕",
-    "brief": "仿真白色郁金香蛋糕",
+    "brief": "6寸仿真白色郁金香蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-仿真白色郁金香蛋糕-1.jpg"
     ],
@@ -383,7 +383,7 @@ const products = [
     "id": "girls-cake-ins风鱼尾纱丝带蛋糕",
     "categoryId": "girls-cake",
     "name": "ins风鱼尾纱丝带蛋糕",
-    "brief": "ins风鱼尾纱丝带蛋糕",
+    "brief": "6寸ins风鱼尾纱丝带蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-ins风鱼尾纱丝带蛋糕-1.jpg"
     ],
@@ -400,7 +400,7 @@ const products = [
     "id": "girls-cake-日历纪念日蛋糕",
     "categoryId": "girls-cake",
     "name": "日历纪念日蛋糕",
-    "brief": "日历纪念日蛋糕",
+    "brief": "6寸 日历纪念日蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-日历纪念日蛋糕-1.jpg"
     ],
@@ -417,7 +417,7 @@ const products = [
     "id": "girls-cake-抱抱熊蛋糕-手绘小熊款",
     "categoryId": "girls-cake",
     "name": "抱抱熊蛋糕(手绘小熊款)",
-    "brief": "抱抱熊蛋糕(手绘小熊款)",
+    "brief": "6寸抱抱熊蛋糕（手绘小熊款）",
     "images": [
       "/assets/girls-cake/girls-cake-抱抱熊蛋糕-手绘小熊款-1.jpg"
     ],
@@ -434,7 +434,7 @@ const products = [
     "id": "girls-cake-简约裱花黑丝带蛋糕",
     "categoryId": "girls-cake",
     "name": "简约裱花黑丝带蛋糕",
-    "brief": "简约裱花黑丝带蛋糕",
+    "brief": "6寸简约裱花黑丝带蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-简约裱花黑丝带蛋糕-1.jpg"
     ],
@@ -451,7 +451,7 @@ const products = [
     "id": "girls-cake-翻糖糖牌爱心",
     "categoryId": "girls-cake",
     "name": "翻糖糖牌爱心",
-    "brief": "翻糖糖牌爱心",
+    "brief": "6寸翻糖糖牌爱心",
     "images": [
       "/assets/girls-cake/girls-cake-翻糖糖牌爱心-1.jpg"
     ],
@@ -468,7 +468,7 @@ const products = [
     "id": "girls-cake-应季水果巧克力淋面",
     "categoryId": "girls-cake",
     "name": "应季水果巧克力淋面",
-    "brief": "应季水果巧克力淋面",
+    "brief": "6寸应季水果巧克力淋面",
     "images": [
       "/assets/girls-cake/girls-cake-应季水果巧克力淋面-1.jpg"
     ],
@@ -485,7 +485,7 @@ const products = [
     "id": "girls-cake-海盐奥利奥-公主请发财",
     "categoryId": "girls-cake",
     "name": "海盐奥利奥 公主请发财",
-    "brief": "海盐奥利奥 公主请发财",
+    "brief": "6寸海盐奥利奥 公主请发财",
     "images": [
       "/assets/girls-cake/girls-cake-海盐奥利奥-公主请发财-1.jpg"
     ],
@@ -502,7 +502,7 @@ const products = [
     "id": "girls-cake-恶搞便便-可可口味",
     "categoryId": "girls-cake",
     "name": "恶搞便便 可可口味",
-    "brief": "恶搞便便 可可口味",
+    "brief": "6寸 恶搞便便 可可口味",
     "images": [
       "/assets/girls-cake/girls-cake-恶搞便便-可可口味-1.jpg"
     ],
@@ -519,7 +519,7 @@ const products = [
     "id": "girls-cake-蓝色笑脸",
     "categoryId": "girls-cake",
     "name": "蓝色笑脸",
-    "brief": "蓝色笑脸",
+    "brief": "6寸蓝色笑脸",
     "images": [
       "/assets/girls-cake/girls-cake-蓝色笑脸-1.jpg"
     ],
@@ -536,7 +536,7 @@ const products = [
     "id": "girls-cake-二次元破壳纪念",
     "categoryId": "girls-cake",
     "name": "二次元破壳纪念",
-    "brief": "二次元破壳纪念",
+    "brief": "6寸二次元破壳纪念",
     "images": [
       "/assets/girls-cake/girls-cake-二次元破壳纪念-1.jpg"
     ],
@@ -553,7 +553,7 @@ const products = [
     "id": "girls-cake-破壳纪念",
     "categoryId": "girls-cake",
     "name": "破壳纪念",
-    "brief": "破壳纪念",
+    "brief": "6寸破壳纪念",
     "images": [
       "/assets/girls-cake/girls-cake-破壳纪念-1.jpg"
     ],
@@ -570,7 +570,7 @@ const products = [
     "id": "girls-cake-暗黑雏菊-可改字",
     "categoryId": "girls-cake",
     "name": "暗黑雏菊(可改字)",
-    "brief": "暗黑雏菊(可改字)",
+    "brief": "6寸暗黑雏菊（可改字）",
     "images": [
       "/assets/girls-cake/girls-cake-暗黑雏菊-可改字-1.jpg"
     ],
@@ -587,7 +587,7 @@ const products = [
     "id": "girls-cake-简约happy",
     "categoryId": "girls-cake",
     "name": "简约happy",
-    "brief": "简约happy",
+    "brief": "6寸 简约happy",
     "images": [
       "/assets/girls-cake/girls-cake-简约happy-1.jpg"
     ],
@@ -604,7 +604,7 @@ const products = [
     "id": "girls-cake-简约裱花款",
     "categoryId": "girls-cake",
     "name": "简约裱花款",
-    "brief": "简约裱花款",
+    "brief": "6寸简约裱花款",
     "images": [
       "/assets/girls-cake/girls-cake-简约裱花款-1.jpg"
     ],
@@ -621,7 +621,7 @@ const products = [
     "id": "girls-cake-手绘小动物情侣款",
     "categoryId": "girls-cake",
     "name": "手绘小动物情侣款",
-    "brief": "手绘小动物情侣款",
+    "brief": "6寸手绘小动物情侣款",
     "images": [
       "/assets/girls-cake/girls-cake-手绘小动物情侣款-1.jpg"
     ],
@@ -638,7 +638,7 @@ const products = [
     "id": "girls-cake-半圆小动物情侣款",
     "categoryId": "girls-cake",
     "name": "半圆小动物情侣款",
-    "brief": "半圆小动物情侣款",
+    "brief": "6寸半圆小动物情侣款",
     "images": [
       "/assets/girls-cake/girls-cake-半圆小动物情侣款-1.jpg"
     ],
@@ -655,7 +655,7 @@ const products = [
     "id": "girls-cake-玫红色简约写字款",
     "categoryId": "girls-cake",
     "name": "玫红色简约写字款",
-    "brief": "玫红色简约写字款",
+    "brief": "6寸玫红色简约写字款",
     "images": [
       "/assets/girls-cake/girls-cake-玫红色简约写字款-1.jpg"
     ],
@@ -672,7 +672,7 @@ const products = [
     "id": "girls-cake-简约风裱花款",
     "categoryId": "girls-cake",
     "name": "简约风裱花款",
-    "brief": "简约风裱花款",
+    "brief": "6寸简约风裱花款",
     "images": [
       "/assets/girls-cake/girls-cake-简约风裱花款-1.jpg"
     ],
@@ -689,7 +689,7 @@ const products = [
     "id": "girls-cake-三十-鹅-立",
     "categoryId": "girls-cake",
     "name": "三十\"鹅\"立",
-    "brief": "三十\"鹅\"立",
+    "brief": "6寸三十\"鹅\"立",
     "images": [
       "/assets/girls-cake/girls-cake-三十-鹅-立-1.jpg"
     ],
@@ -706,7 +706,7 @@ const products = [
     "id": "girls-cake-简约星之卡比",
     "categoryId": "girls-cake",
     "name": "简约星之卡比",
-    "brief": "简约星之卡比",
+    "brief": "6寸 简约星之卡比",
     "images": [
       "/assets/girls-cake/girls-cake-简约星之卡比-1.jpg"
     ],
@@ -723,7 +723,7 @@ const products = [
     "id": "girls-cake-日历纪念日裱花蛋糕",
     "categoryId": "girls-cake",
     "name": "日历纪念日裱花蛋糕",
-    "brief": "日历纪念日裱花蛋糕",
+    "brief": "6寸 日历纪念日裱花蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-日历纪念日裱花蛋糕-1.jpg"
     ],
@@ -740,7 +740,7 @@ const products = [
     "id": "girls-cake-小王子玫瑰",
     "categoryId": "girls-cake",
     "name": "小王子玫瑰",
-    "brief": "小王子玫瑰",
+    "brief": "6寸小王子玫瑰",
     "images": [
       "/assets/girls-cake/girls-cake-小王子玫瑰-1.jpg"
     ],
@@ -757,7 +757,7 @@ const products = [
     "id": "girls-cake-荔枝玫瑰",
     "categoryId": "girls-cake",
     "name": "荔枝玫瑰",
-    "brief": "荔枝玫瑰",
+    "brief": "6寸 荔枝玫瑰",
     "images": [
       "/assets/girls-cake/girls-cake-荔枝玫瑰-1.jpg"
     ],
@@ -774,7 +774,7 @@ const products = [
     "id": "girls-cake-简约款裱花鲜花",
     "categoryId": "girls-cake",
     "name": "简约款裱花鲜花",
-    "brief": "简约款裱花鲜花",
+    "brief": "6寸简约款裱花鲜花",
     "images": [
       "/assets/girls-cake/girls-cake-简约款裱花鲜花-1.jpg"
     ],
@@ -791,7 +791,7 @@ const products = [
     "id": "girls-cake-黑色奶油爱心loveforever",
     "categoryId": "girls-cake",
     "name": "黑色奶油爱心LoveForever",
-    "brief": "黑色奶油爱心LoveForever",
+    "brief": "6寸 黑色奶油爱心LoveForever",
     "images": [
       "/assets/girls-cake/girls-cake-黑色奶油爱心loveforever-1.jpg"
     ],
@@ -808,7 +808,7 @@ const products = [
     "id": "girls-cake-奶油裱花蛋糕",
     "categoryId": "girls-cake",
     "name": "奶油裱花蛋糕",
-    "brief": "奶油裱花蛋糕",
+    "brief": "6寸奶油裱花蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-奶油裱花蛋糕-1.jpg"
     ],
@@ -825,7 +825,7 @@ const products = [
     "id": "girls-cake-白色桔梗花蛋糕",
     "categoryId": "girls-cake",
     "name": "白色桔梗花蛋糕",
-    "brief": "白色桔梗花蛋糕",
+    "brief": "6寸 白色桔梗花蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-白色桔梗花蛋糕-1.jpg"
     ],
@@ -842,7 +842,7 @@ const products = [
     "id": "girls-cake-鲜花红玫瑰",
     "categoryId": "girls-cake",
     "name": "鲜花红玫瑰",
-    "brief": "鲜花红玫瑰",
+    "brief": "6寸鲜花红玫瑰",
     "images": [
       "/assets/girls-cake/girls-cake-鲜花红玫瑰-1.jpg"
     ],
@@ -859,7 +859,7 @@ const products = [
     "id": "girls-cake-鲜花白色桔梗花",
     "categoryId": "girls-cake",
     "name": "鲜花白色桔梗花",
-    "brief": "鲜花白色桔梗花",
+    "brief": "6寸 鲜花白色桔梗花",
     "images": [
       "/assets/girls-cake/girls-cake-鲜花白色桔梗花-1.jpg"
     ],
@@ -876,7 +876,7 @@ const products = [
     "id": "girls-cake-爱心loveyou",
     "categoryId": "girls-cake",
     "name": "爱心loveyou",
-    "brief": "爱心loveyou",
+    "brief": "6寸 爱心loveyou",
     "images": [
       "/assets/girls-cake/girls-cake-爱心loveyou-1.jpg"
     ],
@@ -893,7 +893,7 @@ const products = [
     "id": "girls-cake-简约韩式裱花",
     "categoryId": "girls-cake",
     "name": "简约韩式裱花",
-    "brief": "简约韩式裱花",
+    "brief": "6寸简约韩式裱花",
     "images": [
       "/assets/girls-cake/girls-cake-简约韩式裱花-1.jpg"
     ],
@@ -910,7 +910,7 @@ const products = [
     "id": "girls-cake-羊了个羊",
     "categoryId": "girls-cake",
     "name": "羊了个羊",
-    "brief": "羊了个羊",
+    "brief": "6寸 羊了个羊",
     "images": [
       "/assets/girls-cake/girls-cake-羊了个羊-1.jpg"
     ],
@@ -927,7 +927,7 @@ const products = [
     "id": "girls-cake-小熊奶油小动物",
     "categoryId": "girls-cake",
     "name": "小熊奶油小动物",
-    "brief": "小熊奶油小动物",
+    "brief": "6寸 小熊奶油小动物",
     "images": [
       "/assets/girls-cake/girls-cake-小熊奶油小动物-1.jpg"
     ],
@@ -944,7 +944,7 @@ const products = [
     "id": "girls-cake-粉色裱花-小蛋糕",
     "categoryId": "girls-cake",
     "name": "粉色裱花➕小蛋糕",
-    "brief": "粉色裱花➕小蛋糕",
+    "brief": "6寸 粉色裱花➕小蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-粉色裱花-小蛋糕-1.jpg"
     ],
@@ -961,7 +961,7 @@ const products = [
     "id": "girls-cake-仙女粉色系鲜花",
     "categoryId": "girls-cake",
     "name": "仙女粉色系鲜花",
-    "brief": "仙女粉色系鲜花",
+    "brief": "6寸 仙女粉色系鲜花",
     "images": [
       "/assets/girls-cake/girls-cake-仙女粉色系鲜花-1.jpg"
     ],
@@ -978,7 +978,7 @@ const products = [
     "id": "girls-cake-仙女裱花款",
     "categoryId": "girls-cake",
     "name": "仙女裱花款",
-    "brief": "仙女裱花款",
+    "brief": "6寸 仙女裱花款",
     "images": [
       "/assets/girls-cake/girls-cake-仙女裱花款-1.jpg"
     ],
@@ -995,7 +995,7 @@ const products = [
     "id": "girls-cake-粉色系裱花",
     "categoryId": "girls-cake",
     "name": "粉色系裱花",
-    "brief": "粉色系裱花",
+    "brief": "6寸粉色系裱花",
     "images": [
       "/assets/girls-cake/girls-cake-粉色系裱花-1.jpg"
     ],
@@ -1012,7 +1012,7 @@ const products = [
     "id": "girls-cake-郁金香手绘",
     "categoryId": "girls-cake",
     "name": "郁金香手绘",
-    "brief": "郁金香手绘",
+    "brief": "6寸郁金香手绘",
     "images": [
       "/assets/girls-cake/girls-cake-郁金香手绘-1.jpg"
     ],
@@ -1029,7 +1029,7 @@ const products = [
     "id": "girls-cake-简约淋面裱花",
     "categoryId": "girls-cake",
     "name": "简约淋面裱花",
-    "brief": "简约淋面裱花",
+    "brief": "6寸 简约淋面裱花",
     "images": [
       "/assets/girls-cake/girls-cake-简约淋面裱花-1.jpg"
     ],
@@ -1046,7 +1046,7 @@ const products = [
     "id": "girls-cake-简约裱花款",
     "categoryId": "girls-cake",
     "name": "简约裱花款",
-    "brief": "简约裱花款",
+    "brief": "6寸简约裱花款",
     "images": [
       "/assets/girls-cake/girls-cake-简约裱花款-1.jpg"
     ],
@@ -1063,7 +1063,7 @@ const products = [
     "id": "girls-cake-白色系蝴蝶款",
     "categoryId": "girls-cake",
     "name": "白色系蝴蝶款",
-    "brief": "白色系蝴蝶款",
+    "brief": "6寸白色系蝴蝶款",
     "images": [
       "/assets/girls-cake/girls-cake-白色系蝴蝶款-1.jpg"
     ],
@@ -1080,7 +1080,7 @@ const products = [
     "id": "girls-cake-极简风梯形款",
     "categoryId": "girls-cake",
     "name": "极简风梯形款",
-    "brief": "极简风梯形款",
+    "brief": "6寸极简风梯形款",
     "images": [
       "/assets/girls-cake/girls-cake-极简风梯形款-1.jpg"
     ],
@@ -1097,7 +1097,7 @@ const products = [
     "id": "girls-cake-莓有烦恼-草莓熊",
     "categoryId": "girls-cake",
     "name": "\"莓有烦恼\"草莓熊",
-    "brief": "\"莓有烦恼\"草莓熊",
+    "brief": "6寸\"莓有烦恼\"草莓熊",
     "images": [
       "/assets/girls-cake/girls-cake-莓有烦恼-草莓熊-1.jpg"
     ],
@@ -1114,7 +1114,7 @@ const products = [
     "id": "girls-cake-鲜花蛋糕",
     "categoryId": "girls-cake",
     "name": "鲜花蛋糕",
-    "brief": "鲜花蛋糕",
+    "brief": "6寸鲜花蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-鲜花蛋糕-1.jpg"
     ],
@@ -1131,7 +1131,7 @@ const products = [
     "id": "girls-cake-心形纪念日蛋糕",
     "categoryId": "girls-cake",
     "name": "心形纪念日蛋糕",
-    "brief": "心形纪念日蛋糕",
+    "brief": "6寸 心形纪念日蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-心形纪念日蛋糕-1.jpg"
     ],
@@ -1148,7 +1148,7 @@ const products = [
     "id": "girls-cake-奶油裱花爱心淋面",
     "categoryId": "girls-cake",
     "name": "奶油裱花爱心淋面",
-    "brief": "奶油裱花爱心淋面",
+    "brief": "6寸 奶油裱花爱心淋面",
     "images": [
       "/assets/girls-cake/girls-cake-奶油裱花爱心淋面-1.jpg"
     ],
@@ -1165,7 +1165,7 @@ const products = [
     "id": "girls-cake-复古奶油裱花",
     "categoryId": "girls-cake",
     "name": "复古奶油裱花",
-    "brief": "复古奶油裱花",
+    "brief": "6寸复古奶油裱花",
     "images": [
       "/assets/girls-cake/girls-cake-复古奶油裱花-1.jpg"
     ],
@@ -1182,7 +1182,7 @@ const products = [
     "id": "girls-cake-简约-卡布奇诺鲜花",
     "categoryId": "girls-cake",
     "name": "简约 卡布奇诺鲜花",
-    "brief": "简约 卡布奇诺鲜花",
+    "brief": "6寸简约 卡布奇诺鲜花",
     "images": [
       "/assets/girls-cake/girls-cake-简约-卡布奇诺鲜花-1.jpg"
     ],
@@ -1199,7 +1199,7 @@ const products = [
     "id": "girls-cake-二次元系列心形定制蛋糕",
     "categoryId": "girls-cake",
     "name": "二次元系列心形定制蛋糕",
-    "brief": "二次元系列心形定制蛋糕",
+    "brief": "6寸 二次元系列心形定制蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-二次元系列心形定制蛋糕-1.jpg"
     ],
@@ -1216,7 +1216,7 @@ const products = [
     "id": "girls-cake-裱花手绘小熊",
     "categoryId": "girls-cake",
     "name": "裱花手绘小熊",
-    "brief": "裱花手绘小熊",
+    "brief": "6寸 裱花手绘小熊",
     "images": [
       "/assets/girls-cake/girls-cake-裱花手绘小熊-1.jpg"
     ],
@@ -1233,7 +1233,7 @@ const products = [
     "id": "girls-cake-维尼熊主题手绘蛋糕",
     "categoryId": "girls-cake",
     "name": "维尼熊主题手绘蛋糕",
-    "brief": "维尼熊主题手绘蛋糕",
+    "brief": "6寸 维尼熊主题手绘蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-维尼熊主题手绘蛋糕-1.jpg"
     ],
@@ -1250,7 +1250,7 @@ const products = [
     "id": "girls-cake-草莓奶油裱花芝士淋面",
     "categoryId": "girls-cake",
     "name": "草莓奶油裱花芝士淋面",
-    "brief": "草莓奶油裱花芝士淋面",
+    "brief": "6寸草莓奶油裱花芝士淋面",
     "images": [
       "/assets/girls-cake/girls-cake-草莓奶油裱花芝士淋面-1.jpg"
     ],
@@ -1267,7 +1267,7 @@ const products = [
     "id": "girls-cake-爱心款蛋糕",
     "categoryId": "girls-cake",
     "name": "爱心款蛋糕",
-    "brief": "爱心款蛋糕",
+    "brief": "6寸爱心款蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-爱心款蛋糕-1.jpg"
     ],
@@ -1284,7 +1284,7 @@ const products = [
     "id": "girls-cake-草莓奶油裱花",
     "categoryId": "girls-cake",
     "name": "草莓奶油裱花",
-    "brief": "草莓奶油裱花",
+    "brief": "6寸草莓奶油裱花",
     "images": [
       "/assets/girls-cake/girls-cake-草莓奶油裱花-1.jpg"
     ],
@@ -1301,7 +1301,7 @@ const products = [
     "id": "girls-cake-异形立体小动物手绘",
     "categoryId": "girls-cake",
     "name": "异形立体小动物手绘",
-    "brief": "异形立体小动物手绘",
+    "brief": "6寸 异形立体小动物手绘",
     "images": [
       "/assets/girls-cake/girls-cake-异形立体小动物手绘-1.jpg"
     ],
@@ -1318,7 +1318,7 @@ const products = [
     "id": "girls-cake-ins风立体小猪手绘",
     "categoryId": "girls-cake",
     "name": "ins风立体小猪手绘",
-    "brief": "ins风立体小猪手绘",
+    "brief": "6寸 ins风立体小猪手绘",
     "images": [
       "/assets/girls-cake/girls-cake-ins风立体小猪手绘-1.jpg"
     ],
@@ -1335,7 +1335,7 @@ const products = [
     "id": "girls-cake-小猪猪复古手绘",
     "categoryId": "girls-cake",
     "name": "小猪猪复古手绘",
-    "brief": "小猪猪复古手绘",
+    "brief": "6寸 小猪猪复古手绘",
     "images": [
       "/assets/girls-cake/girls-cake-小猪猪复古手绘-1.jpg"
     ],
@@ -1352,7 +1352,7 @@ const products = [
     "id": "girls-cake-猪猪立体小动物款",
     "categoryId": "girls-cake",
     "name": "猪猪立体小动物款",
-    "brief": "猪猪立体小动物款",
+    "brief": "6寸猪猪立体小动物款",
     "images": [
       "/assets/girls-cake/girls-cake-猪猪立体小动物款-1.jpg"
     ],
@@ -1369,7 +1369,7 @@ const products = [
     "id": "girls-cake-手绘草莓熊-裱花款",
     "categoryId": "girls-cake",
     "name": "手绘草莓熊 裱花款",
-    "brief": "手绘草莓熊 裱花款",
+    "brief": "6寸 手绘草莓熊 裱花款",
     "images": [
       "/assets/girls-cake/girls-cake-手绘草莓熊-裱花款-1.jpg"
     ],
@@ -1386,7 +1386,7 @@ const products = [
     "id": "girls-cake-手绘kt猫",
     "categoryId": "girls-cake",
     "name": "手绘kt猫",
-    "brief": "手绘kt猫",
+    "brief": "6寸手绘kt猫",
     "images": [
       "/assets/girls-cake/girls-cake-手绘kt猫-1.jpg"
     ],
@@ -1403,7 +1403,7 @@ const products = [
     "id": "girls-cake-星之卡比奶油霜",
     "categoryId": "girls-cake",
     "name": "星之卡比奶油霜",
-    "brief": "星之卡比奶油霜",
+    "brief": "6寸星之卡比奶油霜",
     "images": [
       "/assets/girls-cake/girls-cake-星之卡比奶油霜-1.jpg"
     ],
@@ -1420,7 +1420,7 @@ const products = [
     "id": "girls-cake-立体小动物蛋糕裱花",
     "categoryId": "girls-cake",
     "name": "立体小动物蛋糕裱花",
-    "brief": "立体小动物蛋糕裱花",
+    "brief": "6寸立体小动物蛋糕裱花",
     "images": [
       "/assets/girls-cake/girls-cake-立体小动物蛋糕裱花-1.jpg"
     ],
@@ -1437,7 +1437,7 @@ const products = [
     "id": "girls-cake-立体小动物蛋糕",
     "categoryId": "girls-cake",
     "name": "立体小动物蛋糕",
-    "brief": "立体小动物蛋糕",
+    "brief": "6寸立体小动物蛋糕",
     "images": [
       "/assets/girls-cake/girls-cake-立体小动物蛋糕-1.jpg"
     ],
@@ -1454,7 +1454,7 @@ const products = [
     "id": "girls-cake-玉桂狗主题裱花款",
     "categoryId": "girls-cake",
     "name": "玉桂狗主题裱花款",
-    "brief": "玉桂狗主题裱花款",
+    "brief": "6寸 玉桂狗主题裱花款",
     "images": [
       "/assets/girls-cake/girls-cake-玉桂狗主题裱花款-1.jpg"
     ],
@@ -1471,7 +1471,7 @@ const products = [
     "id": "girls-cake-异形立体派大星",
     "categoryId": "girls-cake",
     "name": "异形立体派大星",
-    "brief": "异形立体派大星",
+    "brief": "6寸 加高异形立体派大星",
     "images": [
       "/assets/girls-cake/girls-cake-异形立体派大星-1.jpg"
     ],
@@ -1488,7 +1488,7 @@ const products = [
     "id": "girls-cake-三只立体小动物裱花",
     "categoryId": "girls-cake",
     "name": "三只立体小动物裱花",
-    "brief": "三只立体小动物裱花",
+    "brief": "6寸三只立体小动物裱花",
     "images": [
       "/assets/girls-cake/girls-cake-三只立体小动物裱花-1.jpg"
     ],
@@ -1505,7 +1505,7 @@ const products = [
     "id": "girls-cake-圆形猪猪翻糖定制",
     "categoryId": "girls-cake",
     "name": "圆形猪猪翻糖定制",
-    "brief": "圆形猪猪翻糖定制",
+    "brief": "6寸 圆形猪猪翻糖定制",
     "images": [
       "/assets/girls-cake/girls-cake-圆形猪猪翻糖定制-1.jpg"
     ],
@@ -1522,7 +1522,7 @@ const products = [
     "id": "girls-cake-kt猫玉桂狗手绘裱花定制",
     "categoryId": "girls-cake",
     "name": "kT猫玉桂狗手绘裱花定制",
-    "brief": "kT猫玉桂狗手绘裱花定制",
+    "brief": "6寸kT猫玉桂狗手绘裱花定制",
     "images": [
       "/assets/girls-cake/girls-cake-kt猫玉桂狗手绘裱花定制-1.jpg"
     ],
@@ -1556,7 +1556,7 @@ const products = [
     "id": "girls-cake-立体异形小熊",
     "categoryId": "girls-cake",
     "name": "立体异形小熊",
-    "brief": "立体异形小熊",
+    "brief": "4寸加高立体异形小熊",
     "images": [
       "/assets/girls-cake/girls-cake-立体异形小熊-1.jpg"
     ],

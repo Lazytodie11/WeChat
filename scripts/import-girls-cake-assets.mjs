@@ -128,7 +128,7 @@ async function main() {
     const name = cleanDisplayName(nameRaw);
     if (!name) continue;
     const priceRaw = String(priceCell && priceCell.value ? (priceCell.value.richText ? priceCell.value.richText.map(x=>x.text).join('') : priceCell.value) : '').trim();
-    rows.push({ r, name, priceRaw });
+    rows.push({ r, rawName: nameRaw, displayName: name, priceRaw });
   }
 
   // Load source images WechatIMG23..WechatIMG105 and sort by number
@@ -160,8 +160,8 @@ async function main() {
   const products = [];
   let copied = 0;
   for (let i = 0; i < rows.length; i++) {
-    const { r, name, priceRaw } = rows[i];
-    const slug = slugify(name);
+    const { r, displayName, rawName, priceRaw } = rows[i];
+    const slug = slugify(displayName);
     const variants = parseVariantsFromE(priceRaw);
     const minPrice = variants.length ? Math.min(...variants.map(v => Number(v.price||0))) : 0;
     // Images already exported previously: collect all girls-cake-<slug>-*.jpg
@@ -184,14 +184,14 @@ async function main() {
         imgs.push(`/assets/girls-cake/${dstFile}`);
         copied++;
       } catch (e) {
-        console.warn(`[WARN] copy failed for row ${r} (${name}): ${e.message}`);
+        console.warn(`[WARN] copy failed for row ${r} (${displayName}): ${e.message}`);
       }
     }
     products.push({
       id: `girls-cake-${slug}`,
       categoryId: 'girls-cake',
-      name,
-      brief: name,
+      name: displayName,
+      brief: rawName,
       images: imgs,
       cover: imgs[0] || '/assets/p1.jpg',
       price: Number(minPrice),

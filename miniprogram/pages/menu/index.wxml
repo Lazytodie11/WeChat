@@ -14,9 +14,7 @@
           </view>
         </block>
       </block>
-      <block wx:else>
-        <view class="empty">不含商品，敬请期待</view>
-      </block>
+      <!-- 空列表时不再显示占位提示 -->
     </scroll-view>
     <view class="back-top" bindtap="goTop" wx:if="{{showBackTop}}">↑</view>
   </view>

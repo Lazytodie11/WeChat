@@ -52,7 +52,7 @@
         </view>
         <view class="chip-wrap">
           <block wx:for="{{group.items}}" wx:key="id" wx:for-item="opt" wx:for-index="oi">
-            <view class="chip {{ isGroupSelectedId(group.key, opt.id) ? 'chip--active' : '' }} {{ !isGroupSelectedId(group.key, opt.id) && groupSelectedCount(group.key)>=group.max && group.type==='multi' ? 'chip--disabled' : '' }}"
+            <view class="chip {{ opt.__selected ? 'chip--active' : '' }} {{ opt.__disabled ? 'chip--disabled' : '' }}"
                   data-gkey="{{group.key}}" data-oid="{{opt.id}}" bindtap="onTapGroupItem">
               {{opt.name}}
             </view>

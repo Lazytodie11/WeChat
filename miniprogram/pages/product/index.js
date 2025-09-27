@@ -42,6 +42,9 @@ Page({
     const g0 = (Array.isArray(p.groups) && p.groups.find(g=>g.key==='variant'));
     if (g0 && Array.isArray(g0.items) && g0.items.length) defVariantId = g0.items[0].id;
     const selected = { variant: defVariantId, extras: [] };
+    // 初始化 UI 选中态
+    const groupsWithUI = this.computeGroupUI(p.groups || [], selected);
+    p.groups = groupsWithUI;
     this.setData({ 
       product: p, images, variants, minPrice, current: 0, selectedVariant: variants[0],
       selected,
@@ -50,26 +53,25 @@ Page({
     try { console.log('[product.groups]', p.name, JSON.stringify(p.groups || [])); } catch(_) {}
     this.refreshCount();
   },
-  groupSelectedCount(key) {
-    const sel = (this.data && this.data.selected) ? this.data.selected : {};
-    if (key === 'extras') return Array.isArray(sel.extras) ? sel.extras.length : 0;
-    if (key === 'variant') return sel.variant ? 1 : 0;
-    return 0;
-  },
-  isGroupSelected(key, index) {
-    const groups = this.data.product.groups || []; const g = groups.find(x=>x.key===key); if(!g) return false;
-    const oid = (g.items && g.items[index] && g.items[index].id) || '';
-    const sel = (this.data && this.data.selected) ? this.data.selected : {};
-    if (key==='variant') return sel.variant === oid;
-    if (key==='extras') return (Array.isArray(sel.extras)?sel.extras:[]).includes(oid);
-    return false;
-  },
-  isGroupSelectedId(key, oid) {
-    if (!oid) return false;
-    const sel = (this.data && this.data.selected) ? this.data.selected : {};
-    if (key==='variant') return sel.variant === oid;
-    if (key==='extras') return (Array.isArray(sel.extras)?sel.extras:[]).includes(oid);
-    return false;
+  computeGroupUI(groups=[], selected={}){
+    const s = selected || {}; const out = (Array.isArray(groups)?groups:[]).map(function(g){
+      const isMulti = g.type === 'multi';
+      const items = Array.isArray(g.items)? g.items.slice() : [];
+      const selExtras = Array.isArray(s.extras)? s.extras : [];
+      let selectedCount = 0;
+      const items2 = items.map(function(it){
+        const chosen = (g.key==='variant') ? (s.variant && s.variant===it.id) : (selExtras.indexOf(it.id) >= 0);
+        if (chosen) selectedCount++;
+        return { ...it, __selected: chosen };
+      });
+      const atMax = isMulti && g.max!=null ? (selectedCount >= Number(g.max)) : false;
+      const items3 = items2.map(function(it){
+        const disabled = isMulti ? (!it.__selected && atMax) : false;
+        return { ...it, __disabled: disabled };
+      });
+      return { ...g, items: items3 };
+    });
+    return out;
   },
   onTapGroupItem(e) {
     const key = e.currentTarget.dataset.gkey; const oid = e.currentTarget.dataset.oid;
@@ -86,7 +88,9 @@ Page({
       }
       selected = { ...selected, extras: Array.from(cur) };
     }
-    this.setData({ selected, selectedDesc: this.buildOptionsDesc() }, () => { try { console.log('[selected]', JSON.stringify(this.data.selected)); } catch(_) {} this.refreshCount(); });
+    // 更新 groups UI 选中/禁用态
+    const nextGroups = this.computeGroupUI(this.data.product.groups || [], selected);
+    this.setData({ selected, selectedDesc: this.buildOptionsDesc(), 'product.groups': nextGroups }, () => { try { console.log('[selected]', JSON.stringify(this.data.selected)); } catch(_) {} this.refreshCount(); });
   },
   buildOptionsSignature() {
     const s = this.data.selected || {}; const v = s.variant || '默认';

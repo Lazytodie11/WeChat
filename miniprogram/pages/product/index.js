@@ -58,6 +58,12 @@ Page({
     if (key==='extras') return (this.data.selected?.extras||[]).includes(oid);
     return false;
   },
+  isGroupSelectedId(key, oid) {
+    if (!oid) return false;
+    if (key==='variant') return this.data.selected?.variant === oid;
+    if (key==='extras') return (this.data.selected?.extras||[]).includes(oid);
+    return false;
+  },
   onTapGroupItem(e) {
     const key = e.currentTarget.dataset.gkey; const oid = e.currentTarget.dataset.oid;
     const groups = this.data.product.groups || []; const g = groups.find(x=>x.key===key); if(!g) return;

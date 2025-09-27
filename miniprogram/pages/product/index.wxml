@@ -20,7 +20,7 @@
     <view class="price-line">¥{{selectedVariant ? selectedVariant.price : (variants.length>0 ? variants[current].price : minPrice)}}</view>
   </view>
 
-  <view wx:if="{{(product.groups || []).length}}" class="dev-flag">[groups enabled]</view>
+  <view wx:if="{{product.groups && product.groups.length > 0}}" class="dev-flag">[groups enabled]</view>
 
   <!-- 当存在 groups 时，优先使用新分组渲染；否则回退到旧 variants 渲染 -->
   <view class="card variants" wx:if="{{!(product.groups && product.groups.length) && variants.length>0}}">

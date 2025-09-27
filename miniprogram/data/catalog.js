@@ -1578,8 +1578,17 @@ const products = [
     "categoryId": "stack-mille",
     "name": "堆堆千层",
     "brief": "堆堆千层",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/stack-mille/stack-mille-1.jpeg",
+      "/assets/stack-mille/stack-mille-2.jpeg",
+      "/assets/stack-mille/stack-mille-3.jpeg",
+      "/assets/stack-mille/stack-mille-4.jpeg",
+      "/assets/stack-mille/stack-mille-5.jpeg",
+      "/assets/stack-mille/stack-mille-6.jpeg",
+      "/assets/stack-mille/stack-mille-7.jpeg",
+      "/assets/stack-mille/stack-mille-8.jpeg"
+    ],
+    "cover": "/assets/stack-mille/stack-mille-1.jpeg",
     "price": 69.9,
     "variants": [
       {

@@ -87,6 +87,30 @@ async function main() {
     outImages.push(`/assets/stack-mille/${filename}`);
   }
 
+  // Fallback: if no embedded images found, try local directory
+  if (outImages.length === 0) {
+    const envDir = process.env.STACK_MILLE_IMG_DIR && String(process.env.STACK_MILLE_IMG_DIR).trim();
+    const candidates = [
+      envDir,
+      path.resolve(__dirname, '..', 'tmp', 'stack-mille-src'),
+      path.resolve(__dirname, '..', 'tmp', 'debug-D-col'),
+    ].filter(Boolean).filter(p => fs.existsSync(p) && fs.statSync(p).isDirectory());
+    if (candidates.length) {
+      const srcDir = candidates[0];
+      const list = fs.readdirSync(srcDir)
+        .filter(f => /\.(jpe?g|png)$/i.test(f))
+        .map(f => ({ f, n: Number((f.match(/(\d+)/)||[])[1] || '0') }))
+        .sort((a,b) => a.n - b.n || a.f.localeCompare(b.f))
+        .slice(0, 8);
+      list.forEach((it, i) => {
+        const idx = i + 1;
+        const src = path.join(srcDir, it.f);
+        const dst = path.join(ASSET_DIR, `stack-mille-${idx}.jpeg`);
+        try { fs.copyFileSync(src, dst); outImages.push(`/assets/stack-mille/stack-mille-${idx}.jpeg`); } catch(_) {}
+      });
+    }
+  }
+
   // Read price and options
   const priceRaw = sheet.getCell(CELL_E2)?.value;
   const price = Number(String(priceRaw).replace(/[^0-9.]/g, '')) || 0;
@@ -117,7 +141,9 @@ async function main() {
   fs.writeFileSync(CATALOG_PATH, out, 'utf8');
 
   console.log(`[STACK-MILLE] images: ${outImages.length}, price: ${price}, options: ${options.length}`);
+  if (outImages.length === 0) {
+    console.warn('[STACK-MILLE] Fallback not found images. Set env STACK_MILLE_IMG_DIR to a folder with 8 images to import.');
+  }
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
-

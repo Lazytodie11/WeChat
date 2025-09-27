@@ -17,7 +17,7 @@ Component({
         else if (it.image) cover = it.image.startsWith('/') ? it.image : '/' + it.image;
       }
       const viewItem = { cover };
-      try { console.log('CARD_COVER', it?.name || '', cover); } catch(_) {}
+      try { console.log('CARD_COVER', (it && it.name) || '', cover); } catch(_) {}
       this.setData({ viewItem });
     }
   },

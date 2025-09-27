@@ -55,7 +55,7 @@ Page({
       // 获取 openid 并仅查询当前用户订单
       let openid = user.getStoredOpenId();
       if (!openid) {
-        try { const r = await wx.cloud.callFunction({ name: 'login' }); openid = r?.result?.openid || ''; } catch(_) {}
+        try { const r = await wx.cloud.callFunction({ name: 'login' }); openid = (r && r.result && r.result.openid) || ''; } catch(_) {}
         if (openid) user.setStoredOpenId(openid);
       }
       const { page, pageSize, statusFilter } = this.data;

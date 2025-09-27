@@ -9,7 +9,7 @@ function load() {
     arr.forEach((it) => {
       if (!it) return;
       if (!it.variantSize) {
-        const size = (Array.isArray(it.variants) && it.variants[0]?.size) || it.size || '默认';
+        const size = (Array.isArray(it.variants) && it.variants[0] && it.variants[0].size) || it.size || '默认';
         it.variantSize = size;
       }
       if (!it.variantKey && it.id) {
@@ -17,7 +17,7 @@ function load() {
       }
       if (it.price == null) {
         // 尝试从 variants 补充价格
-        const price = (Array.isArray(it.variants) && it.variants[0]?.price) || it.price || 0;
+        const price = (Array.isArray(it.variants) && it.variants[0] && it.variants[0].price) || it.price || 0;
         it.price = Number(price);
       }
     });
@@ -49,12 +49,12 @@ function findIndex(cart, id, variantKey) {
 function addItem(item, variant) {
   if (!item || !item.id) return;
   const cart = load();
-  const size = variant?.size || (Array.isArray(item.variants) && item.variants[0]?.size) || item.size || '默认';
-  const price = Number(variant?.price != null ? variant.price : (Array.isArray(item.variants) && item.variants[0]?.price != null ? item.variants[0].price : item.price || 0));
-  const optName = variant?.optName || variant?.optionName || item.optionName || '';
-  const fillings = Array.isArray(variant?.fillings) ? variant.fillings : (Array.isArray(item?.fillings) ? item.fillings : []);
+  const size = (variant && variant.size) || (Array.isArray(item.variants) && item.variants[0] && item.variants[0].size) || item.size || '默认';
+  const price = Number((variant && variant.price != null) ? variant.price : (Array.isArray(item.variants) && item.variants[0] && item.variants[0].price != null ? item.variants[0].price : item.price || 0));
+  const optName = (variant && (variant.optName || variant.optionName)) || item.optionName || '';
+  const fillings = Array.isArray(variant && variant.fillings) ? variant.fillings : (Array.isArray(item && item.fillings) ? item.fillings : []);
   const fillKey = fillings && fillings.length ? `__fill:${fillings.join('|')}` : '';
-  const optionsSignature = variant?.optionsSignature || item?.optionsSignature || '';
+  const optionsSignature = (variant && variant.optionsSignature) || (item && item.optionsSignature) || '';
   const sigKey = optionsSignature ? `__sig:${optionsSignature}` : '';
   const variantKey = `${item.id}__${size}__${optName}${fillKey}${sigKey}`;
   const idx = findIndex(cart, item.id, variantKey);
@@ -64,8 +64,8 @@ function addItem(item, variant) {
     const toSave = { ...item, price, count: 1, variantSize: size, variantKey, optionName: optName };
     if (fillings && fillings.length) toSave.fillings = fillings.slice();
     if (optionsSignature) toSave.optionsSignature = optionsSignature;
-    if (variant?.options || item?.options) toSave.options = (variant?.options || item?.options);
-    if (variant?.optionsDesc || item?.optionsDesc) toSave.optionsDesc = (variant?.optionsDesc || item?.optionsDesc);
+    if ((variant && variant.options) || (item && item.options)) toSave.options = (variant && variant.options) || (item && item.options);
+    if ((variant && variant.optionsDesc) || (item && item.optionsDesc)) toSave.optionsDesc = (variant && variant.optionsDesc) || (item && item.optionsDesc);
     // 减少冗余字段体积
     delete toSave.variants;
     cart.push(toSave);
@@ -79,10 +79,10 @@ function removeItem(id, variant) {
   let idx = -1;
   if (variant && (variant.size || variant.variantSize)) {
     const size = variant.size || variant.variantSize;
-    const optName = variant.optName || variant.optionName || '';
-    const fillings = Array.isArray(variant?.fillings) ? variant.fillings : [];
+    const optName = (variant && (variant.optName || variant.optionName)) || '';
+    const fillings = Array.isArray(variant && variant.fillings) ? variant.fillings : [];
     const fillKey = fillings && fillings.length ? `__fill:${fillings.join('|')}` : '';
-    const optionsSignature = variant?.optionsSignature || '';
+    const optionsSignature = (variant && variant.optionsSignature) || '';
     const sigKey = optionsSignature ? `__sig:${optionsSignature}` : '';
     const variantKey = `${id}__${size}__${optName}${fillKey}${sigKey}`;
     idx = findIndex(cart, id, variantKey);

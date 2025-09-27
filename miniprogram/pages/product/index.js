@@ -50,18 +50,25 @@ Page({
     try { console.log('[product.groups]', p.name, JSON.stringify(p.groups || [])); } catch(_) {}
     this.refreshCount();
   },
-  groupSelectedCount(key) { return Array.isArray(this.data.selected?.extras) && key==='extras' ? this.data.selected.extras.length : (key==='variant' && this.data.selected?.variant ? 1 : 0); },
+  groupSelectedCount(key) {
+    const sel = (this.data && this.data.selected) ? this.data.selected : {};
+    if (key === 'extras') return Array.isArray(sel.extras) ? sel.extras.length : 0;
+    if (key === 'variant') return sel.variant ? 1 : 0;
+    return 0;
+  },
   isGroupSelected(key, index) {
     const groups = this.data.product.groups || []; const g = groups.find(x=>x.key===key); if(!g) return false;
     const oid = (g.items && g.items[index] && g.items[index].id) || '';
-    if (key==='variant') return this.data.selected?.variant === oid;
-    if (key==='extras') return (this.data.selected?.extras||[]).includes(oid);
+    const sel = (this.data && this.data.selected) ? this.data.selected : {};
+    if (key==='variant') return sel.variant === oid;
+    if (key==='extras') return (Array.isArray(sel.extras)?sel.extras:[]).includes(oid);
     return false;
   },
   isGroupSelectedId(key, oid) {
     if (!oid) return false;
-    if (key==='variant') return this.data.selected?.variant === oid;
-    if (key==='extras') return (this.data.selected?.extras||[]).includes(oid);
+    const sel = (this.data && this.data.selected) ? this.data.selected : {};
+    if (key==='variant') return sel.variant === oid;
+    if (key==='extras') return (Array.isArray(sel.extras)?sel.extras:[]).includes(oid);
     return false;
   },
   onTapGroupItem(e) {
@@ -82,13 +89,26 @@ Page({
   },
   buildOptionsSignature() {
     const s = this.data.selected || {}; const v = s.variant || '默认';
-    const e = (s.extras||[]).slice().sort().join('+') || '默认';
+    const eList = Array.isArray(s.extras) ? s.extras.slice() : [];
+    const e = eList.sort().join('+') || '默认';
     return `variant:${v}|extras:${e}`;
   },
   buildOptionsDesc() {
     const g = this.data.product.groups || []; const s = this.data.selected || {}; const parts = [];
-    const gV = g.find(x=>x.key==='variant'); if (gV) { const vname = (gV.items||[]).find(o=>o.id===(s.variant||''))?.name; if (vname) parts.push(`${gV.title}：${vname}`); }
-    const gE = g.find(x=>x.key==='extras'); if (gE) { const names = (gE.items||[]).filter(o => (s.extras||[]).includes(o.id)).map(o=>o.name); parts.push(`${gE.title}：${names.length?names.join('、'):'默认'}`); }
+    const gV = g.find(function(x){ return x.key==='variant'; });
+    if (gV) {
+      const items = Array.isArray(gV.items) ? gV.items : [];
+      const target = items.find(function(o){ return o.id === (s.variant||''); });
+      const vname = target ? target.name : '';
+      if (vname) parts.push(`${gV.title}：${vname}`);
+    }
+    const gE = g.find(function(x){ return x.key==='extras'; });
+    if (gE) {
+      const items = Array.isArray(gE.items) ? gE.items : [];
+      const sel = Array.isArray(s.extras) ? s.extras : [];
+      const names = items.filter(function(o){ return sel.indexOf(o.id) >= 0; }).map(function(o){ return o.name; });
+      parts.push(`${gE.title}：${names.length?names.join('、'):'默认'}`);
+    }
     return parts.join(' ｜ ');
   },
   onShow() { this.refreshCount(); },
@@ -120,9 +140,11 @@ Page({
     const item = this.data.product;
     if (!item || !item.id) return;
     // 校验 extras 分组 min/max（若存在）
-    const gE = (this.data.product.groups||[]).find(x=>x.key==='extras');
+    const groups = this.data.product.groups || [];
+    const gE = groups.find(function(x){ return x.key==='extras'; });
     if (gE) {
-      const n = (this.data.selected?.extras||[]).length;
+      const sel = (this.data.selected && Array.isArray(this.data.selected.extras)) ? this.data.selected.extras : [];
+      const n = sel.length;
       const min = Number(gE.min||0); const max = Number(gE.max||Infinity);
       if (n < min || n > max) {
         wx.showToast({ icon:'none', title: `请先选择口味/夹心（至少${min}种，至多${max}种）` });
@@ -135,8 +157,18 @@ Page({
     const selected = this.data.selected || {};
     const optObj = {
       variantId: selected.variant || null,
-      variantName: (this.data.product.groups||[]).find(x=>x.key==='variant')?.items?.find(o=>o.id===selected.variant)?.name || (variant.size||'默认'),
-      extras: ((this.data.product.groups||[]).find(x=>x.key==='extras')?.items||[]).filter(o=>(selected.extras||[]).includes(o.id)).map(o=>({id:o.id,name:o.name}))
+      variantName: (function(){
+        const g = (this.data.product.groups||[]).find(function(x){return x.key==='variant';});
+        const items = g && Array.isArray(g.items) ? g.items : [];
+        const t = items.find(function(o){ return o.id === selected.variant; });
+        return (t && t.name) || (variant.size||'默认');
+      }).call(this),
+      extras: (function(){
+        const g = (this.data.product.groups||[]).find(function(x){return x.key==='extras';});
+        const items = g && Array.isArray(g.items) ? g.items : [];
+        const sel = Array.isArray(selected.extras) ? selected.extras : [];
+        return items.filter(function(o){ return sel.indexOf(o.id) >= 0; }).map(function(o){ return {id:o.id, name:o.name}; });
+      }).call(this)
     };
     cart.addItem({ ...item, optionsSignature, options: optObj, optionsDesc }, { ...variant, optionsSignature, options: optObj, optionsDesc });
     this.setData({ count: this.data.count + 1 });
@@ -153,7 +185,7 @@ Page({
   // Bottom sheet logic
   openSheet() {
     const list = cart.getCart();
-    const id = this.data.product?.id;
+    const id = (this.data.product && this.data.product.id) ? this.data.product.id : '';
     const items = list.filter(x => x.id === id).map(x => {
       const subtotal = Number(((Number(x.price || 0)) * (Number(x.count || 0))).toFixed(2));
       return {

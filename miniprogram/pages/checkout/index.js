@@ -88,7 +88,7 @@ Page({
             contact: this.data.contact
           }
         });
-        const orderId = res?.result?.orderId || '';
+        const orderId = (res && res.result && res.result.orderId) || '';
         cart.clear();
         wx.redirectTo({ url: `/pages/success/index?orderId=${orderId}` });
       }

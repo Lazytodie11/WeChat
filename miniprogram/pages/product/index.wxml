@@ -38,6 +38,15 @@
     </view>
   </view>
 
+  <view class="card options" wx:if="{{options && options.length}}">
+    <view class="v-title">可选项</view>
+    <view class="opt-list">
+      <block wx:for="{{options}}" wx:key="name">
+        <view class="opt-tag {{item.selected?'active':''}}" data-name="{{item.name}}" bindtap="toggleOption">{{item.name}}</view>
+      </block>
+    </view>
+  </view>
+
   <view class="card actions">
     <view class="qty">
       <button size="mini" bindtap="dec">-</button>

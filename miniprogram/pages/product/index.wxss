@@ -11,6 +11,9 @@
 .v-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .v-item { border: 1px solid #F3E7D6; border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; color: #6B4A2B; }
 .v-item.active { background: #6B4A2B; color: #fff; border-color: #6B4A2B; }
+.options .opt-list { display:flex; flex-wrap: wrap; gap: 8px; }
+.options .opt-tag { border:1px solid #F3E7D6; color:#6B4A2B; border-radius: 16px; padding: 6px 10px; }
+.options .opt-tag.active { background:#6B4A2B; color:#fff; border-color:#6B4A2B; }
 .variants .selected { margin-top: 8px; color: #6B4A2B; font-size: 13px; }
 .variants .selected.clickable { border: 1px solid #F3E7D6; border-radius: 10px; padding: 10px; display:flex; justify-content:space-between; align-items:center; }
 .variants .selected .arrow { color:#6B4A2B; opacity: .8; }

@@ -7,6 +7,10 @@ const categories = [
   {
     "id": "girls-cake",
     "name": "女生款蛋糕"
+  },
+  {
+    "id": "stack-mille",
+    "name": "堆堆千层"
   }
 ];
 
@@ -1566,6 +1570,127 @@ const products = [
       {
         "size": "默认",
         "price": 198
+      }
+    ]
+  },
+  {
+    "id": "stack-mille",
+    "categoryId": "stack-mille",
+    "name": "堆堆千层",
+    "brief": "堆堆千层",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 69.9,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 69.9
+      }
+    ],
+    "options": [
+      {
+        "name": "麻薯",
+        "selected": false
+      },
+      {
+        "name": "血糯米",
+        "selected": false
+      },
+      {
+        "name": "芋泥",
+        "selected": false
+      },
+      {
+        "name": "奥利奥",
+        "selected": false
+      },
+      {
+        "name": "榛子巧克力酱",
+        "selected": false
+      },
+      {
+        "name": "海盐奥利奥奶芙",
+        "selected": false
+      },
+      {
+        "name": "开心果奶芙",
+        "selected": false
+      },
+      {
+        "name": "芒果",
+        "selected": false
+      },
+      {
+        "name": "蓝莓",
+        "selected": false
+      },
+      {
+        "name": "红提",
+        "selected": false
+      },
+      {
+        "name": "青提",
+        "selected": false
+      },
+      {
+        "name": "凤梨",
+        "selected": false
+      },
+      {
+        "name": "草莓",
+        "selected": false
+      },
+      {
+        "name": "黄桃（罐头）",
+        "selected": false
+      },
+      {
+        "name": "榴莲（80g)哈密瓜",
+        "selected": false
+      },
+      {
+        "name": "香蕉",
+        "selected": false
+      },
+      {
+        "name": "坚果燕麦脆",
+        "selected": false
+      },
+      {
+        "name": "杏仁燕麦脆",
+        "selected": false
+      },
+      {
+        "name": "抹茶慕斯",
+        "selected": false
+      },
+      {
+        "name": "桑葚慕斯",
+        "selected": false
+      },
+      {
+        "name": "可可奶冻",
+        "selected": false
+      },
+      {
+        "name": "伯爵红茶奶冻",
+        "selected": false
+      },
+      {
+        "name": "开心果奶冻",
+        "selected": false
+      },
+      {
+        "name": "椰奶冻",
+        "selected": false
+      },
+      {
+        "name": "焦糖布雷",
+        "selected": false
+      },
+      {
+        "name": "莓果库里",
+        "selected": false
       }
     ]
   }

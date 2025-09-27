@@ -11,7 +11,8 @@ Page({
     selectedVariant: null,
     count: 0,
     showSheet: false,
-    sheetItems: []
+    sheetItems: [],
+    options: []
   },
   onLoad(query) {
     const id = (query && query.id) ? query.id : '';
@@ -20,8 +21,21 @@ Page({
     const variants = Array.isArray(p.variants) && p.variants.length ? p.variants : [{ size: '默认', price: Number(p.price || 0) }];
     const firstPrice = Number((variants[0] && variants[0].price) != null ? variants[0].price : 0);
     const minPrice = variants.reduce((m, v) => Math.min(m, Number(v.price||0)), firstPrice);
-    this.setData({ product: p, images, variants, minPrice, current: 0, selectedVariant: variants[0] });
+    const options = Array.isArray(p.options) ? p.options : [];
+    const optKey = `options_${p.id}`;
+    let saved = [];
+    try { saved = wx.getStorageSync(optKey) || []; } catch(_) {}
+    // merge saved selected state by name
+    const mergedOpts = options.map(o => ({ ...o, selected: !!(saved.find(s => s.name===o.name)?.selected) }));
+    this.setData({ product: p, images, variants, minPrice, current: 0, selectedVariant: variants[0], options: mergedOpts });
     this.refreshCount();
+  },
+  toggleOption(e) {
+    const name = e.currentTarget.dataset.name;
+    const list = (this.data.options || []).map(o => o.name===name ? ({ ...o, selected: !o.selected }) : o);
+    this.setData({ options: list });
+    const key = `options_${this.data.product.id}`;
+    try { wx.setStorageSync(key, list); } catch(_) {}
   },
   onShow() { this.refreshCount(); },
   refreshCount() {

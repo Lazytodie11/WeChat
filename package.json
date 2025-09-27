@@ -8,7 +8,9 @@
     "import:flavor": "node scripts/import-flavor-milk-cake.mjs",
     "import:girls-assets": "node scripts/import-girls-cake-assets.mjs",
     "import:girls-local": "node scripts/import-girls-cake-local.mjs",
-    "verify:girls": "node scripts/verify-girls-cake.mjs"
+    "verify:girls": "node scripts/verify-girls-cake.mjs",
+    "import:stack": "node scripts/import-stack-mille.mjs",
+    "verify:stack": "node scripts/verify-stack-mille.mjs"
   },
   "devDependencies": {
     "csv-parse": "^5.5.6",

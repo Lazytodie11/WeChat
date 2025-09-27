@@ -27,7 +27,9 @@
 .sheet-header .close { color:#6B4A2B; font-weight:600; }
 .sheet-row { display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid #f6f6f6; }
 .sheet-row:last-child { border-bottom: none; }
+.sheet-info { flex: 1; min-width: 0; }
 .sheet-info .muted { color:#999; margin-left: 6px; }
+.sheet-info .options-desc { color:#9c8a7a; margin-top: 4px; white-space: normal; word-break: break-word; }
 .sheet-actions { display:flex; gap:10px; align-items:center; }
 .sheet-actions .subtotal { margin-left:auto; color:#2B2B2B; font-weight:600; }
 .sheet-footer { display:flex; justify-content:flex-end; padding-top:8px; font-weight:700; color:#2B2B2B; }

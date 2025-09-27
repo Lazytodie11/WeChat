@@ -88,9 +88,11 @@
         <block wx:for="{{sheetItems}}" wx:key="variantKey">
           <view class="sheet-row">
             <view class="sheet-info">
-              <text>{{item.name}}</text>
-              <text class="muted">（{{item.variantSize}}）</text>
-              <text class="muted" wx:if="{{item.optionsDesc}}">｜{{item.optionsDesc}}</text>
+              <view>
+                <text>{{item.name}}</text>
+                <text class="muted">（{{item.variantSize}}）</text>
+              </view>
+              <view class="options-desc" wx:if="{{item.optionsDesc}}">{{item.optionsDesc}}</view>
             </view>
             <view class="sheet-actions">
               <button size="mini" bindtap="sheetDec" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">-</button>

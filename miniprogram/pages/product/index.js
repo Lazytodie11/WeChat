@@ -210,13 +210,14 @@ Page({
     const id = (this.data.product && this.data.product.id) ? this.data.product.id : '';
     const items = list.filter(x => x.id === id).map(x => {
       const subtotal = Number(((Number(x.price || 0)) * (Number(x.count || 0))).toFixed(2));
+      const desc = this.buildCartItemDesc(x);
       return {
         name: x.name,
         variantSize: x.variantSize,
         optionName: x.optionName,
         optionsDetail: x.optionsDetail,
         optionsSignature: x.optionsSignature,
-        optionsDesc: x.optionsDesc,
+        optionsDesc: desc,
         count: x.count,
         price: Number(x.price || 0),
         subtotal,
@@ -262,5 +263,24 @@ Page({
     cart.clear();
     this.refreshCount();
     this.openSheet();
+  }
+  ,
+  buildCartItemDesc(x){
+    if (x && x.optionsDesc) return x.optionsDesc;
+    if (x && x.options) {
+      const v = x.options.variantName || '';
+      const extras = Array.isArray(x.options.extras) ? x.options.extras.map(function(e){return e.name;}) : [];
+      const parts = [];
+      parts.push('可选尺寸：' + (v || '默认'));
+      if (extras.length) parts.push('蛋糕夹心：' + extras.join('、'));
+      return parts.join(' ｜ ');
+    }
+    if (x && x.optionsDetail && x.optionsDetail.flavors && x.optionsDetail.flavors.length) {
+      return '可选尺寸：' + (x.variantSize || '默认') + ' ｜ 口味：' + x.optionsDetail.flavors.join('、');
+    }
+    if (x && Array.isArray(x.fillings) && x.fillings.length) {
+      return '可选尺寸：' + (x.variantSize || '默认') + ' ｜ 夹心：' + x.fillings.join('、');
+    }
+    return '';
   }
 });

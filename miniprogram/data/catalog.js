@@ -15,6 +15,10 @@ const categories = [
   {
     "id": "ty-stack-cake",
     "name": "T·y堆堆蛋糕"
+  },
+  {
+    "id": "french-mille-cake",
+    "name": "法式千层蛋糕"
   }
 ];
 
@@ -1712,8 +1716,10 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "生椰拿铁",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-生椰拿铁-1.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-生椰拿铁-1.jpeg",
     "price": 138,
     "variants": [
       {
@@ -1731,8 +1737,12 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "榴芒与白糯",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-榴芒与白糯-1.jpeg",
+      "/assets/ty-stack-cake/ty-stack-cake-榴芒与白糯-2.jpeg",
+      "/assets/ty-stack-cake/ty-stack-cake-榴芒与白糯-3.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-榴芒与白糯-1.jpeg",
     "price": 178,
     "variants": [
       {
@@ -1750,8 +1760,11 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "薄荷巧克力",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-薄荷巧克力-1.jpeg",
+      "/assets/ty-stack-cake/ty-stack-cake-薄荷巧克力-2.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-薄荷巧克力-1.jpeg",
     "price": 138,
     "variants": [
       {
@@ -1769,8 +1782,11 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "杨枝甘露",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-杨枝甘露-1.jpeg",
+      "/assets/ty-stack-cake/ty-stack-cake-杨枝甘露-2.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-杨枝甘露-1.jpeg",
     "price": 138,
     "variants": [
       {
@@ -1788,8 +1804,10 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "斑斓芋芒",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-斑斓芋芒-1.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-斑斓芋芒-1.jpeg",
     "price": 128,
     "variants": [
       {
@@ -1807,8 +1825,11 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "桃之夭夭",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-桃之夭夭-1.jpeg",
+      "/assets/ty-stack-cake/ty-stack-cake-桃之夭夭-2.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-桃之夭夭-1.jpeg",
     "price": 138,
     "variants": [
       {
@@ -1826,8 +1847,10 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "斑斓芋芒",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-斑斓芋芒-1.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-斑斓芋芒-1.jpeg",
     "price": 128,
     "variants": [
       {
@@ -1845,8 +1868,10 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "生椰拿铁",
     "brief": "生椰拿铁",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-生椰拿铁-1.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-生椰拿铁-1.jpeg",
     "price": 0,
     "variants": [
       {
@@ -1860,8 +1885,11 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "开心的榴莲",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-开心的榴莲-1.jpeg",
+      "/assets/ty-stack-cake/ty-stack-cake-开心的榴莲-2.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-开心的榴莲-1.jpeg",
     "price": 189,
     "variants": [
       {
@@ -1879,8 +1907,11 @@ const products = [
     "categoryId": "ty-stack-cake",
     "name": "巧可遇蓝莓",
     "brief": "可做6/8寸",
-    "images": [],
-    "cover": "/assets/p1.jpg",
+    "images": [
+      "/assets/ty-stack-cake/ty-stack-cake-巧可遇蓝莓-1.jpeg",
+      "/assets/ty-stack-cake/ty-stack-cake-巧可遇蓝莓-2.jpeg"
+    ],
+    "cover": "/assets/ty-stack-cake/ty-stack-cake-巧可遇蓝莓-1.jpeg",
     "price": 128,
     "variants": [
       {
@@ -1890,6 +1921,148 @@ const products = [
       {
         "size": "8寸",
         "price": 188
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-海蓝椰椰千层",
+    "categoryId": "french-mille-cake",
+    "name": "海蓝椰椰千层",
+    "brief": "6寸海蓝椰椰千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-海蓝椰椰千层-1.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-海蓝椰椰千层-1.jpeg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 138
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-开心果奶油千层",
+    "categoryId": "french-mille-cake",
+    "name": "开心果奶油千层",
+    "brief": "6寸开心果奶油千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-开心果奶油千层-1.jpeg",
+      "/assets/french-mille-cake/french-mille-cake-开心果奶油千层-2.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-开心果奶油千层-1.jpeg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 138
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-海蓝椰椰千层",
+    "categoryId": "french-mille-cake",
+    "name": "海蓝椰椰千层",
+    "brief": "6寸海蓝椰椰千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-海蓝椰椰千层-1.jpeg",
+      "/assets/french-mille-cake/french-mille-cake-海蓝椰椰千层-2.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-海蓝椰椰千层-1.jpeg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 138
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-伯爵红茶千层",
+    "categoryId": "french-mille-cake",
+    "name": "伯爵红茶千层",
+    "brief": "6寸伯爵红茶千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-伯爵红茶千层-1.jpeg",
+      "/assets/french-mille-cake/french-mille-cake-伯爵红茶千层-2.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-伯爵红茶千层-1.jpeg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 138
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-伯爵红茶千层",
+    "categoryId": "french-mille-cake",
+    "name": "伯爵红茶千层",
+    "brief": "6寸伯爵红茶千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-伯爵红茶千层-1.jpeg",
+      "/assets/french-mille-cake/french-mille-cake-伯爵红茶千层-2.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-伯爵红茶千层-1.jpeg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 138
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-覆盆子草莓千层",
+    "categoryId": "french-mille-cake",
+    "name": "覆盆子草莓千层",
+    "brief": "6寸覆盆子草莓千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-覆盆子草莓千层-1.jpeg",
+      "/assets/french-mille-cake/french-mille-cake-覆盆子草莓千层-2.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-覆盆子草莓千层-1.jpeg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 138
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-超薄抹茶千层",
+    "categoryId": "french-mille-cake",
+    "name": "超薄抹茶千层",
+    "brief": "6寸超薄抹茶千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-超薄抹茶千层-1.jpeg",
+      "/assets/french-mille-cake/french-mille-cake-超薄抹茶千层-2.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-超薄抹茶千层-1.jpeg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 138
+      }
+    ]
+  },
+  {
+    "id": "french-mille-cake-超薄榴莲千层",
+    "categoryId": "french-mille-cake",
+    "name": "超薄榴莲千层",
+    "brief": "6寸超薄榴莲千层",
+    "images": [
+      "/assets/french-mille-cake/french-mille-cake-超薄榴莲千层-1.jpeg"
+    ],
+    "cover": "/assets/french-mille-cake/french-mille-cake-超薄榴莲千层-1.jpeg",
+    "price": 0,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 0
       }
     ]
   }

@@ -19,20 +19,32 @@ function loadCatalog(){ const src=fs.readFileSync(CATALOG_PATH,'utf8'); const m=
 function main(){
   const { categories=[], products=[] } = loadCatalog();
   const list = products.filter(p => p.categoryId === 'ty-stack-cake');
+  // read import source map if exists
+  let srcMap = {};
+  try { srcMap = JSON.parse(fs.readFileSync(path.resolve(__dirname,'..','tmp','ty-stack-cake-source.json'),'utf8')); } catch(_) {}
   let anomalies=0;
+  let excelCount = 0; let fallbackCount = 0; let noneCount = 0;
+  const seen = new Map(); // path -> count
+  let totalImages = 0;
   for(const p of list){
     const imgs = Array.isArray(p.images)?p.images:[];
+    totalImages += imgs.length;
     const allInDir = imgs.length>0 && imgs.every(s=>typeof s==='string' && s.startsWith('/assets/ty-stack-cake/'));
     const firstExists = imgs.length>0 && fs.existsSync(path.resolve(__dirname,'..','miniprogram', imgs[0].replace(/^\//,'')));
     const coverOk = imgs.length>0 ? p.cover===imgs[0] : true;
     const priceMin = Array.isArray(p.variants)&&p.variants.length?Math.min(...p.variants.map(v=>Number(v.price||0))):0;
     const priceOk = Number(p.price)===Number(priceMin);
     const nameOk = cleanDisplayName(p.name)===p.name;
-    if(!(Array.isArray(p.variants)&&p.variants.length) || !priceOk || imgs.length<1 || !allInDir || !coverOk || !nameOk) anomalies++;
-    console.log(`[OK] ${p.name} | imgs:${imgs.length} inDir:${allInDir} coverOk:${coverOk} priceMin:${priceMin} price:${p.price} nameClean:${nameOk} first:${firstExists}`);
+    const briefOk = !!(p.brief && String(p.brief).trim());
+    // duplicates across products
+    let crossDup = false;
+    imgs.forEach(s => { const c=(seen.get(s)||0)+1; seen.set(s,c); if(c>1) crossDup=true; });
+    if(!(Array.isArray(p.variants)&&p.variants.length) || !priceOk || imgs.length<1 || !allInDir || !coverOk || !nameOk || !briefOk || crossDup) anomalies++;
+    const from = srcMap[p.id] || 'unknown';
+    if (from==='excel') excelCount++; else if (from==='fallback') fallbackCount++; else noneCount++;
+    console.log(`[OK] ${p.name} | from:${from} | imgs:${imgs.length} inDir:${allInDir} coverOk:${coverOk} priceMin:${priceMin} price:${p.price} nameClean:${nameOk} briefOk:${briefOk} first:${firstExists}`);
   }
-  console.log(`Total products: ${list.length}, anomalies: ${anomalies}`);
+  console.log(`Total products: ${list.length}, images total: ${totalImages}, anomalies: ${anomalies}, from: excel=${excelCount}, fallback=${fallbackCount}, none/unknown=${noneCount}`);
 }
 
 main();
-

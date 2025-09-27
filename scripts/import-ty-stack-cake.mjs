@@ -7,7 +7,7 @@ import ExcelJS from 'exceljs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Config
-const EXCEL_PATH = '/Users/yipengli/Desktop/cake_name5.xlsx';
+const EXCEL_PATH = process.env.TY_STACK_EXCEL || '/Users/yipengli/Desktop/cake_name5.xlsx';
 const SHEET_INDEX = 1; // 1-based
 const ROW_START = 11;
 const ROW_END = 28;
@@ -114,29 +114,32 @@ function saveCatalog(categories, products) {
 }
 
 function getEmbeddedImagesForRow(sheet, workbook, rowIndex) {
-  const list = [];
+  // rowIndex is 1-based. We need zero-based for anchor compare
+  const rowIdx0 = rowIndex - 1;
+  const minCol = 2; // C
+  const maxCol = 5; // F
+  const hits = [];
   const imgs = sheet.getImages ? sheet.getImages() : [];
   for (const img of imgs) {
-    const { range } = img;
-    if (!range || !range.tl || !range.br) continue;
-    const tl = range.tl; const br = range.br;
-    // Check intersect column D
-    const colFrom = (tl.nativeCol ?? tl.col ?? 0) + 1;
-    const colTo = (br.nativeCol ?? br.col ?? 0) + 1;
-    if (colTo < COL_D || colFrom > COL_D) continue;
-    // Check row intersection with [rowIndex,rowIndex]
-    const rowFrom = (tl.nativeRow ?? tl.row ?? 0) + 1;
-    const rowTo = (br.nativeRow ?? br.row ?? 0) + 1;
-    if (rowTo < rowIndex || rowFrom > rowIndex) continue;
-    list.push(img);
+    const range = img.range || {};
+    const tl = range.tl || range || {};
+    const br = range.br || range.tl || range || {};
+    const tlc = (tl.nativeCol ?? tl.col ?? range.col ?? 0);
+    const tlr = (tl.nativeRow ?? tl.row ?? range.row ?? 0);
+    const brc = (br.nativeCol ?? br.col ?? tlc);
+    const brr = (br.nativeRow ?? br.row ?? tlr);
+    const rowHit = tlr <= rowIdx0 && brr >= rowIdx0;
+    const colHit = !(brc < minCol || tlc > maxCol); // intersects C..F
+    // Aggressive mode: ignore column constraint to maximize hits
+    const hit = rowHit; // previously: rowHit && colHit
+    if (hit) hits.push({ img, tlc, tlr });
   }
-  // Sort by top position
-  list.sort((a,b) => (a.range.tl.nativeRow - b.range.tl.nativeRow) || ((a.range.tl.offsetY||0) - (b.range.tl.offsetY||0)));
+  hits.sort((a,b) => (a.tlr - b.tlr) || (a.tlc - b.tlc));
   // Extract buffers
   const media = (workbook.model && workbook.model.media) || [];
   const out = [];
-  for (const img of list) {
-    const found = media.find(m => m && m.index === img.imageId);
+  for (const h of hits) {
+    const found = media.find(m => m && m.index === h.img.imageId);
     if (!found) continue;
     let buffer = found.buffer || (found.base64 ? Buffer.from(found.base64, 'base64') : null);
     if (!buffer) continue;
@@ -194,32 +197,68 @@ async function main() {
 
   const others = (Array.isArray(prod0) ? prod0 : []).filter(p => p.categoryId !== CATEGORY_ID);
   const outProducts = [];
+  const sourceMap = {}; // id -> 'excel' | 'fallback' | 'none'
 
+  // 1) starters: B 列非空行
+  const starters = [];
   for (let r = ROW_START; r <= ROW_END; r++) {
+    const bRaw = sheet.getCell(r, COL_B)?.value;
+    const rawName = String(bRaw && bRaw.richText ? bRaw.richText.map(x=>x.text).join('') : bRaw || '').trim();
+    if (rawName) starters.push(r);
+  }
+  const ranges = starters.map((p, i) => ({ start: p, end: (i < starters.length - 1 ? starters[i+1] - 1 : ROW_END) }));
+
+  // 2) flatten images with anchors, sort
+  const allImgs = (sheet.getImages ? sheet.getImages() : []).map(img => {
+    const range = img.range || {};
+    const tl = range.tl || range || {};
+    const br = range.br || range.tl || range || {};
+    const tlc = (tl.nativeCol ?? tl.col ?? range.col ?? 0);
+    const tlr = (tl.nativeRow ?? tl.row ?? range.row ?? 0);
+    const brc = (br.nativeCol ?? br.col ?? tlc);
+    const brr = (br.nativeRow ?? br.row ?? tlr);
+    return { img, tlc, tlr, brc, brr };
+  }).sort((a,b) => (a.tlr - b.tlr) || (a.tlc - b.tlc));
+
+  const media = (workbook.model && workbook.model.media) || [];
+
+  for (let i = 0; i < starters.length; i++) {
+    const r = starters[i];
     const bRaw = sheet.getCell(r, COL_B)?.value;
     const cText = sheet.getCell(r, COL_C)?.value;
     const eText = sheet.getCell(r, COL_E)?.value;
     const rawName = String(bRaw && bRaw.richText ? bRaw.richText.map(x=>x.text).join('') : bRaw || '').trim();
-    if (!rawName) continue;
     const displayName = cleanDisplayName(rawName);
-    const brief = String(cText && cText.richText ? cText.richText.map(x=>x.text).join('') : cText || '').trim() || displayName;
+    const brief = String(cText && cText.richText ? cText.richText.map(x=>x.text).join('') : cText || '').trim() || rawName || displayName;
     const variants = parseVariantsFromE(String(eText && eText.richText ? eText.richText.map(x=>x.text).join('') : eText || ''));
     const price = variants.length ? Math.min(...variants.map(v=>Number(v.price||0))) : 0;
     const slug = slugify(displayName);
 
-    // images from embedded, else fallback directory
-    const buffers = getEmbeddedImagesForRow(sheet, workbook, r);
+    const range = ranges[i];
+    const hits = allImgs.filter(h => {
+      const row0 = h.tlr;
+      return (row0 + 1) >= range.start && (row0 + 1) <= range.end;
+    });
     let images = [];
-    if (buffers.length) {
-      buffers.forEach((bin, idx) => {
-        const filename = `ty-stack-cake-${slug}-${idx+1}.${bin.ext}`;
+    if (hits.length) {
+      hits.forEach((h, k) => {
+        const found = media.find(m => m && m.index === h.img.imageId);
+        if (!found) return;
+        const buffer = found.buffer || (found.base64 ? Buffer.from(found.base64, 'base64') : null);
+        if (!buffer) return;
+        const ext0 = (found.extension || found.type || 'jpeg').toLowerCase();
+        const ext = ext0 === 'jpg' ? 'jpeg' : ext0;
+        const filename = `ty-stack-cake-${slug}-${k+1}.${ext}`;
         const abs = path.join(ASSET_DIR, filename);
-        fs.writeFileSync(abs, bin.buffer);
+        fs.writeFileSync(abs, buffer);
         images.push(`/assets/ty-stack-cake/${filename}`);
       });
+      sourceMap[`ty-stack-cake-${slug}`] = 'excel';
     } else {
       images = importFromLocalFallbackOne(slug);
+      sourceMap[`ty-stack-cake-${slug}`] = images.length ? 'fallback' : 'none';
     }
+    console.log(`row ${r} -> images:${images.length}, from:${sourceMap[`ty-stack-cake-${slug}`]}`);
     const cover = images[0] || '/assets/p1.jpg';
 
     outProducts.push({
@@ -236,6 +275,12 @@ async function main() {
 
   const products = others.concat(outProducts);
   saveCatalog(categories, products);
+  // write source map for verifier
+  try {
+    const tmpDir = path.resolve(__dirname, '..', 'tmp');
+    ensureDir(tmpDir);
+    fs.writeFileSync(path.join(tmpDir, 'ty-stack-cake-source.json'), JSON.stringify(sourceMap, null, 2));
+  } catch(_) {}
   console.log(`[TY-STACK] rows: ${outProducts.length}, assets: ${ASSET_DIR}`);
 }
 

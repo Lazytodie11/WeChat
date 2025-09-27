@@ -11,6 +11,8 @@
     "verify:girls": "node scripts/verify-girls-cake.mjs",
     "import:stack": "node scripts/import-stack-mille.mjs",
     "verify:stack": "node scripts/verify-stack-mille.mjs",
+    "import:french": "node scripts/import-french-mille-cake.mjs",
+    "verify:french": "node scripts/verify-french-mille-cake.mjs",
     "import:ty": "node scripts/import-ty-stack-cake.mjs",
     "verify:ty": "node scripts/verify-ty-stack-cake.mjs"
   },

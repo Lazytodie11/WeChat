@@ -45,10 +45,11 @@ Page({
     // 初始化 UI 选中态
     const groupsWithUI = this.computeGroupUI(p.groups || [], selected);
     p.groups = groupsWithUI;
+    const initialDesc = this.buildOptionsDescFrom(p.groups || [], selected);
     this.setData({ 
       product: p, images, variants, minPrice, current: 0, selectedVariant: variants[0],
       selected,
-      selectedDesc: ''
+      selectedDesc: initialDesc
     });
     try { console.log('[product.groups]', p.name, JSON.stringify(p.groups || [])); } catch(_) {}
     this.refreshCount();
@@ -113,6 +114,22 @@ Page({
       const sel = Array.isArray(s.extras) ? s.extras : [];
       const names = items.filter(function(o){ return sel.indexOf(o.id) >= 0; }).map(function(o){ return o.name; });
       parts.push(`${gE.title}：${names.length?names.join('、'):'默认'}`);
+    }
+    return parts.join(' ｜ ');
+  },
+  buildOptionsDescFrom(groups, selected) {
+    const g = Array.isArray(groups) ? groups : []; const s = selected || {}; const parts = [];
+    const gV = g.find(function(x){ return x.key==='variant'; }); if (gV) {
+      const items = Array.isArray(gV.items) ? gV.items : [];
+      const target = items.find(function(o){ return o.id === (s.variant||''); });
+      const vname = target ? target.name : '';
+      if (vname) parts.push(gV.title + '：' + vname);
+    }
+    const gE = g.find(function(x){ return x.key==='extras'; }); if (gE) {
+      const items = Array.isArray(gE.items) ? gE.items : [];
+      const sel = Array.isArray(s.extras) ? s.extras : [];
+      const names = items.filter(function(o){ return sel.indexOf(o.id) >= 0; }).map(function(o){ return o.name; });
+      parts.push(gE.title + '：' + (names.length?names.join('、'):'默认'));
     }
     return parts.join(' ｜ ');
   },

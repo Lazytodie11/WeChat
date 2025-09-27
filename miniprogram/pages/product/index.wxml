@@ -60,6 +60,13 @@
         </view>
       </block>
     </view>
+    <view class="selected clickable" bindtap="openSheet">
+      <view>
+        已选：{{selectedVariant ? selectedVariant.size : (variants.length>0 ? variants[current].size : '默认')}} x {{count}}，单价 ¥{{selectedVariant ? selectedVariant.price : (variants.length>0 ? variants[current].price : minPrice)}}
+        <block wx:if="{{selectedDesc}}">｜{{selectedDesc}}</block>
+      </view>
+      <view class="arrow">管理</view>
+    </view>
   </block>
 
   <view class="card actions">

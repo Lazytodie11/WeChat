@@ -24,6 +24,7 @@ async function main() {
     process.exit(1);
   }
   const imgCount = Array.isArray(p.images) ? p.images.length : 0;
+  const allStackPaths = imgCount > 0 && p.images.every(s => typeof s === 'string' && s.startsWith('/assets/stack-mille/'));
   const firstExists = imgCount > 0 && fs.existsSync(path.resolve(__dirname, '..', 'miniprogram', p.images[0].replace(/^\//,'')));
   const variantsOk = Array.isArray(p.variants) && p.variants.length === 1 && p.variants[0].size === '默认' && Number(p.variants[0].price) === 69.9;
   const priceOk = Number(p.price) === 69.9;
@@ -37,8 +38,11 @@ async function main() {
   } catch (_) {}
   const optionsOk = c2NonEmpty ? (Array.isArray(p.options) && p.options.length >= 1) : true;
 
-  console.log(`[CHECK] images=${imgCount} (firstExists=${firstExists}) variantsOk=${variantsOk} priceOk=${priceOk} optionsOk=${optionsOk}`);
-  if (imgCount !== 8) console.warn(`[WARN] expected 8 images, got ${imgCount}`);
+  const coverOk = imgCount > 0 ? p.cover === p.images[0] : true;
+  console.log(`[CHECK] images=${imgCount} allInDir=${allStackPaths} coverOk=${coverOk} (firstExists=${firstExists}) variantsOk=${variantsOk} priceOk=${priceOk} optionsOk=${optionsOk}`);
+  if (imgCount < 1) console.warn(`[WARN] expected at least 1 image, got ${imgCount}`);
+  if (!allStackPaths) console.warn('[WARN] some image path not in /assets/stack-mille/');
+  if (!coverOk) console.warn('[WARN] cover != images[0]');
   if (!firstExists) console.warn('[WARN] first image missing on disk');
   if (!variantsOk) console.warn('[WARN] variants invalid, expect [{size:"默认",price:69.9}]');
   if (!priceOk) console.warn('[WARN] price not 69.9');
@@ -46,4 +50,3 @@ async function main() {
 }
 
 main();
-

@@ -10,11 +10,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const EXCEL_PATH = '/Users/yipengli/Desktop/cake_name5.xlsx';
 const SHEET_INDEX = 1; // 1-based
 const NAME_CONST = '堆堆千层';
-const ROW_IMG_START = 2; // D2 .. D9
-const ROW_IMG_END = 9;
-const COL_D_NATIVE = 3; // zero-based column index for D
 const CELL_C2 = 'C2';
 const CELL_E2 = 'E2';
+// Local import directory (explicit, contains spaces and dot)
+const SRC_DIR = '/Users/yipengli/Desktop/T.y 堆堆千层系列';
 const ASSET_DIR = path.resolve(__dirname, '..', 'miniprogram', 'assets', 'stack-mille');
 const CATALOG_PATH = path.resolve(__dirname, '..', 'miniprogram', 'data', 'catalog.js');
 
@@ -28,15 +27,6 @@ function clearDir(dir) {
   } else {
     ensureDir(dir);
   }
-}
-
-function getImageData(workbook, imageId) {
-  const media = (workbook.model && workbook.model.media) || [];
-  const found = media.find(m => m && m.index === imageId);
-  if (!found) return null;
-  if (found.buffer) return { buffer: found.buffer, ext: (found.extension || found.type || 'jpeg').toLowerCase() };
-  if (found.base64) return { buffer: Buffer.from(found.base64, 'base64'), ext: (found.extension || 'jpeg').toLowerCase() };
-  return null;
 }
 
 function parseOptionsFromC(text) {
@@ -57,59 +47,44 @@ function loadCatalog() {
 }
 
 async function main() {
+  // Excel still used for price/options; images now come from local folder only
   if (!fs.existsSync(EXCEL_PATH)) throw new Error(`Excel not found: ${EXCEL_PATH}`);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(EXCEL_PATH);
   const sheet = workbook.worksheets[SHEET_INDEX - 1];
   if (!sheet) throw new Error(`Sheet ${SHEET_INDEX} not found`);
 
-  // Collect images anchored to D column and rows 2..9
-  const imgs = (sheet.getImages ? sheet.getImages() : [])
-    .filter(img => img.range && img.range.tl && img.range.tl.nativeCol === COL_D_NATIVE)
-    .filter(img => {
-      const r = img.range.tl.nativeRow; // 0-based
-      return r >= (ROW_IMG_START - 1) && r <= (ROW_IMG_END - 1);
-    })
-    .sort((a,b) => a.range.tl.nativeRow - b.range.tl.nativeRow);
-
   // Prepare asset dir: clear then ensure
   ensureDir(ASSET_DIR);
   clearDir(ASSET_DIR);
 
-  const outImages = [];
-  for (let i = 0; i < imgs.length; i++) {
-    const data = getImageData(workbook, imgs[i].imageId);
-    if (!data || !data.buffer) continue;
-    const idx = i + 1; // 1..n
-    const filename = `stack-mille-${idx}.jpeg`;
-    const abs = path.join(ASSET_DIR, filename);
-    fs.writeFileSync(abs, data.buffer);
-    outImages.push(`/assets/stack-mille/${filename}`);
-  }
-
-  // Fallback: if no embedded images found, try local directory
-  if (outImages.length === 0) {
-    const envDir = process.env.STACK_MILLE_IMG_DIR && String(process.env.STACK_MILLE_IMG_DIR).trim();
-    const candidates = [
-      envDir,
-      path.resolve(__dirname, '..', 'tmp', 'stack-mille-src'),
-      path.resolve(__dirname, '..', 'tmp', 'debug-D-col'),
-    ].filter(Boolean).filter(p => fs.existsSync(p) && fs.statSync(p).isDirectory());
-    if (candidates.length) {
-      const srcDir = candidates[0];
-      const list = fs.readdirSync(srcDir)
-        .filter(f => /\.(jpe?g|png)$/i.test(f))
-        .map(f => ({ f, n: Number((f.match(/(\d+)/)||[])[1] || '0') }))
-        .sort((a,b) => a.n - b.n || a.f.localeCompare(b.f))
-        .slice(0, 8);
-      list.forEach((it, i) => {
-        const idx = i + 1;
-        const src = path.join(srcDir, it.f);
-        const dst = path.join(ASSET_DIR, `stack-mille-${idx}.jpeg`);
-        try { fs.copyFileSync(src, dst); outImages.push(`/assets/stack-mille/stack-mille-${idx}.jpeg`); } catch(_) {}
-      });
+  // Local directory import (explicit path)
+  if (!fs.existsSync(SRC_DIR)) throw new Error(`Source dir not found: ${SRC_DIR}`);
+  const files = fs.readdirSync(SRC_DIR).filter(f => /\.(jpe?g|png|webp)$/i.test(f));
+  const naturalCompare = (a,b) => {
+    const ax = [], bx = [];
+    a.replace(/(\d+)|(\D+)/g, (_, $1, $2) => { ax.push([$1 || Infinity, $2 || '']); });
+    b.replace(/(\d+)|(\D+)/g, (_, $1, $2) => { bx.push([$1 || Infinity, $2 || '']); });
+    while (ax.length && bx.length) {
+      const an = ax.shift(); const bn = bx.shift();
+      const ad = an[0] === Infinity ? an[1] : Number(an[0]);
+      const bd = bn[0] === Infinity ? bn[1] : Number(bn[0]);
+      if (ad === bd) continue;
+      return ad > bd ? 1 : -1;
     }
-  }
+    return ax.length - bx.length;
+  };
+  files.sort(naturalCompare);
+  const outImages = [];
+  files.forEach((f, i) => {
+    const idx = i + 1;
+    const ext0 = path.extname(f).slice(1).toLowerCase();
+    const ext = ext0 === 'jpg' ? 'jpeg' : ext0; // unify .jpg -> .jpeg
+    const dstName = `stack-mille-${idx}.${ext}`;
+    const src = path.join(SRC_DIR, f);
+    const dst = path.join(ASSET_DIR, dstName);
+    try { fs.copyFileSync(src, dst); outImages.push(`/assets/stack-mille/${dstName}`); } catch(e) { console.warn('[COPY_FAIL]', f, e.message); }
+  });
 
   // Read price and options
   const priceRaw = sheet.getCell(CELL_E2)?.value;
@@ -137,15 +112,15 @@ async function main() {
     variants,
     options,
   };
+  if (product.images.some(p => p.includes('girls-cake'))) {
+    throw new Error('Invalid path mixed with girls-cake in stack-mille images');
+  }
   const products = others.concat([product]);
 
   const out = `// 数据源由脚本生成/更新\nconst categories = ${JSON.stringify(categories, null, 2)};\n\nconst products = ${JSON.stringify(products, null, 2)};\n\nmodule.exports = { categories, products };\n`;
   fs.writeFileSync(CATALOG_PATH, out, 'utf8');
 
   console.log(`[STACK-MILLE] images: ${outImages.length}, price: ${price}, options: ${options.length}`);
-  if (outImages.length === 0) {
-    console.warn('[STACK-MILLE] Fallback not found images. Set env STACK_MILLE_IMG_DIR to a folder with 8 images to import.');
-  }
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

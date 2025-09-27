@@ -73,6 +73,7 @@ Page({
   },
   onTapGroupItem(e) {
     const key = e.currentTarget.dataset.gkey; const oid = e.currentTarget.dataset.oid;
+    try { console.log('[tap chip]', key, oid); } catch(_) {}
     const groups = this.data.product.groups || []; const g = groups.find(x=>x.key===key); if(!g) return;
     let selected = this.data.selected || { variant:'', extras: [] };
     if (key === 'variant') {
@@ -80,12 +81,12 @@ Page({
     } else if (key === 'extras') {
       const cur = new Set(selected.extras || []);
       if (cur.has(oid)) cur.delete(oid); else {
-        if (g.max && cur.size >= g.max) return; // 达上限
+        if (g.max && cur.size >= g.max) { try { console.log('[max reached]', g.max); } catch(_) {} return; }
         cur.add(oid);
       }
       selected = { ...selected, extras: Array.from(cur) };
     }
-    this.setData({ selected, selectedDesc: this.buildOptionsDesc() }, () => this.refreshCount());
+    this.setData({ selected, selectedDesc: this.buildOptionsDesc() }, () => { try { console.log('[selected]', JSON.stringify(this.data.selected)); } catch(_) {} this.refreshCount(); });
   },
   buildOptionsSignature() {
     const s = this.data.selected || {}; const v = s.variant || '默认';

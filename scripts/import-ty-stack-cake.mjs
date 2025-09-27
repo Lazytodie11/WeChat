@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -179,7 +183,7 @@ function importFromLocalFallbackOne(slug) {
   const ext = ext0 === 'jpg' ? 'jpeg' : ext0;
   const dst = path.join(ASSET_DIR, `ty-stack-cake-${slug}-1.${ext}`);
   fs.copyFileSync(path.join(dir, f), dst);
-  return [`/assets/ty-stack-cake/${path.basename(dst)}`];
+  return [assetUrl('ty-stack-cake', path.basename(dst))];
 }
 
 async function main() {
@@ -251,7 +255,7 @@ async function main() {
         const filename = `ty-stack-cake-${slug}-${k+1}.${ext}`;
         const abs = path.join(ASSET_DIR, filename);
         fs.writeFileSync(abs, buffer);
-        images.push(`/assets/ty-stack-cake/${filename}`);
+        images.push(assetUrl('ty-stack-cake', filename));
       });
       sourceMap[`ty-stack-cake-${slug}`] = 'excel';
     } else {
@@ -259,7 +263,7 @@ async function main() {
       sourceMap[`ty-stack-cake-${slug}`] = images.length ? 'fallback' : 'none';
     }
     console.log(`row ${r} -> images:${images.length}, from:${sourceMap[`ty-stack-cake-${slug}`]}`);
-    const cover = images[0] || '/assets/p1.jpg';
+    const cover = images[0] || (ASSET_BASE_URL? assetUrl('', 'p1.jpg') : '/assets/p1.jpg');
 
     outProducts.push({
       id: `ty-stack-cake-${slug}`,

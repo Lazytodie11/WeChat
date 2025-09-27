@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -59,7 +63,7 @@ async function main(){
   // images: collect all row-anchored images within the range
   const media=(wb.model&&wb.model.media)||[]; const images=[];
   const allImgs=(sh.getImages?sh.getImages():[]).map(img=>{ const r=img.range||{}; const tl=r.tl||r||{}; const tlr=(tl.nativeRow??tl.row??r.row??0); return {img, tlr}; }).filter(o=> (o.tlr+1)>=ROW_START && (o.tlr+1)<=ROW_END).sort((a,b)=>a.tlr-b.tlr);
-  allImgs.forEach((h,i)=>{ const found=media.find(m=>m&&m.index===h.img.imageId); if(!found) return; const buf=found.buffer||(found.base64?Buffer.from(found.base64,'base64'):null); if(!buf) return; const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const fn=`ins-swiss-roll-${slug}-${i+1}.${ext}`; fs.writeFileSync(path.join(ASSET_DIR,fn),buf); images.push(`/assets/ins-swiss-roll/${fn}`); });
+  allImgs.forEach((h,i)=>{ const found=media.find(m=>m&&m.index===h.img.imageId); if(!found) return; const buf=found.buffer||(found.base64?Buffer.from(found.base64,'base64'):null); if(!buf) return; const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const fn=`ins-swiss-roll-${slug}-${i+1}.${ext}`; fs.writeFileSync(path.join(ASSET_DIR,fn),buf); images.push(assetUrl('ins-swiss-roll', fn)); });
 
   // variants: union of sizes from E column for rows
   const vmap=new Map();
@@ -82,7 +86,7 @@ async function main(){
     {name:'伯爵红茶瑞士',selected:false}
   ];
 
-  const product={ id:'ins-swiss-roll', categoryId:CATEGORY_ID, name:displayName, brief:displayName, images, cover: images[0]||'/assets/p1.jpg', price:Number(price), variants: variants.length?variants:[{size:'默认',price:Number(price)}], optionsTitle, optionsType, options };
+  const product={ id:'ins-swiss-roll', categoryId:CATEGORY_ID, name:displayName, brief:displayName, images, cover: images[0]|| (ASSET_BASE_URL? assetUrl('', 'p1.jpg') : '/assets/p1.jpg'), price:Number(price), variants: variants.length?variants:[{size:'默认',price:Number(price)}], optionsTitle, optionsType, options };
 
   const products=others.concat([product]);
   saveCatalog(categories, products);
@@ -90,4 +94,3 @@ async function main(){
 }
 
 main().catch(e=>{ console.error(e); process.exit(1); });
-

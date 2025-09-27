@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -150,7 +154,7 @@ async function main() {
       const fileName = `girls-cake-${slug}-${imgIndex}.${ext}`;
       const abs = path.join(ASSET_DIR, fileName);
       fs.writeFileSync(abs, data.buffer);
-      outImages.push(`/assets/girls-cake/${fileName}`);
+      outImages.push(assetUrl('girls-cake', fileName));
       savedImagesCount++;
     }
 

@@ -93,6 +93,7 @@
                 <text class="muted">（{{item.variantSize}}）</text>
               </view>
               <view class="options-desc" wx:if="{{item.optionsDesc}}">{{item.optionsDesc}}</view>
+              <view class="options-desc" wx:elif="{{item.variantSize}}">可选尺寸：{{item.variantSize}}</view>
             </view>
             <view class="sheet-actions">
               <button size="mini" bindtap="sheetDec" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">-</button>

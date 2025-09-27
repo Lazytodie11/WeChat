@@ -30,7 +30,10 @@
   "compileType": "miniprogram",
   "libVersion": "3.9.3",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "glob", "value": "miniprogram/assets/**" },
+      { "type": "glob", "value": "**/*.psd" }
+    ],
     "include": []
   },
   "condition": {},

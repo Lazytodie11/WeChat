@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -173,7 +177,7 @@ async function main() {
         const nb = Number((b.match(/-(\d+)\./)||[])[1]||'0');
         return na - nb;
       })
-      .map(f => `/assets/girls-cake/${f}`);
+      .map(f => assetUrl('girls-cake', f));
     if (imgs.length === 0 && i < filtered.length) {
       // Fallback: ensure at least one image by copying the i-th WechatIMG
       const src = path.join(IMG_SRC_DIR, filtered[i].name);
@@ -181,7 +185,7 @@ async function main() {
       const dstPath = path.join(ASSET_DIR, dstFile);
       try {
         fs.copyFileSync(src, dstPath);
-        imgs.push(`/assets/girls-cake/${dstFile}`);
+        imgs.push(assetUrl('girls-cake', dstFile));
         copied++;
       } catch (e) {
         console.warn(`[WARN] copy failed for row ${r} (${displayName}): ${e.message}`);
@@ -193,7 +197,7 @@ async function main() {
       name: displayName,
       brief: rawName,
       images: imgs,
-      cover: imgs[0] || '/assets/p1.jpg',
+      cover: imgs[0] || (ASSET_BASE_URL? assetUrl('', 'p1.jpg') : '/assets/p1.jpg'),
       price: Number(minPrice),
       variants: variants.length ? variants : [{ size: '默认', price: Number(minPrice) }]
     });

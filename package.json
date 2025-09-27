@@ -28,7 +28,9 @@
     "import:batch": "node scripts/import-batch.mjs",
     "verify:batch": "node scripts/verify-batch.mjs",
     "fix:cats": "node scripts/fix-duplicate-categories.mjs",
-    "verify:cats": "node scripts/verify-categories.mjs"
+    "verify:cats": "node scripts/verify-categories.mjs",
+    "upload:assets": "node scripts/upload-assets.mjs",
+    "import:all": "npm run import:flavor && npm run import:girls-assets && npm run import:girls-local && npm run import:stack && npm run import:french && npm run import:boys && npm run import:ins-roll && npm run import:accessories && npm run import:basque && npm run import:tiramisu && npm run import:eight-inch && npm run import:ty && npm run import:batch"
   },
   "devDependencies": {
     "csv-parse": "^5.5.6",

@@ -2,6 +2,10 @@
 import fs from 'fs';
 import path from 'path';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const EXCEL_PATH = '/Users/yipengli/Desktop/Product Price List1.xlsx';
 const TARGET_CATEGORY_NAME = '口味奶糕';
@@ -190,7 +194,7 @@ function writeCatalog(categories, products) {
       const fname = `flavor-milk-cake-${slug}-${idx+1}.${ext}`;
       const out = path.join(subDir, fname);
       fs.writeFileSync(out, g.buffer);
-      const rel = '/assets/flavor-milk-cake/' + fname;
+      const rel = assetUrl('flavor-milk-cake', fname);
       images.push(rel);
       imported.push(fname);
     });

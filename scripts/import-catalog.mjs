@@ -4,6 +4,19 @@ import fs from 'fs';
 import path from 'path';
 import { parse } from 'csv-parse/sync';
 import xlsx from 'xlsx';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+
+function assetUrl(category, filename){
+  const cat = String(category||'').replace(/^\/+|\/+$/g,'');
+  const fn = String(filename||'').replace(/^\/+/, '');
+  if (ASSET_BASE_URL) {
+    const base = ASSET_BASE_URL.replace(/\/$/, '');
+    return `${base}/prod-images/${cat}/${fn}`;
+  }
+  return `/assets/${cat}/${fn}`;
+}
 
 const repoRoot = process.cwd();
 const inputDir = path.join(repoRoot, 'import');
@@ -54,7 +67,7 @@ function normalize(rows) {
         ensureDir(assetsDir);
         const dst = path.join(assetsDir, path.basename(src));
         fs.copyFileSync(src, dst);
-        cover = '/assets/' + path.basename(src);
+        cover = assetUrl('', path.basename(src));
       }
     }
     products.push({ id: `p_${idx+1}`, categoryId: catId, name, price, brief, cover });
@@ -74,4 +87,3 @@ const rows = loadRows();
 const data = normalize(rows);
 writeJs(data);
 console.log('Catalog generated at', path.relative(repoRoot, outJs));
-

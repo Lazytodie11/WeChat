@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -64,7 +68,7 @@ function getAllAnchoredImages(sheet, workbook){
   }).sort((a,b)=>(a.tlr-b.tlr)||(a.tlc-b.tlc));
 }
 
-function importFromLocalFallback(slug){ if(!FALLBACK_DIRS.length) return []; const files=fs.readdirSync(FALLBACK_DIRS[0]).filter(f=>/\.(jpe?g|png|webp)$/i.test(f)); const copied=[]; files.forEach((f,i)=>{ const ext0=path.extname(f).slice(1).toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const dst=path.join(ASSET_DIR,`boys-cake-${slug}-${i+1}.${ext}`); fs.copyFileSync(path.join(FALLBACK_DIRS[0],f),dst); copied.push(`/assets/boys-cake/${path.basename(dst)}`); }); return copied; }
+function importFromLocalFallback(slug){ if(!FALLBACK_DIRS.length) return []; const files=fs.readdirSync(FALLBACK_DIRS[0]).filter(f=>/\.(jpe?g|png|webp)$/i.test(f)); const copied=[]; files.forEach((f,i)=>{ const ext0=path.extname(f).slice(1).toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const dst=path.join(ASSET_DIR,`boys-cake-${slug}-${i+1}.${ext}`); fs.copyFileSync(path.join(FALLBACK_DIRS[0],f),dst); copied.push(assetUrl('boys-cake', path.basename(dst))); }); return copied; }
 
 async function main(){
   if(!fs.existsSync(EXCEL_PATH)) throw new Error(`Excel not found: ${EXCEL_PATH}`);
@@ -86,9 +90,9 @@ async function main(){
     const rawName=String(bRaw && bRaw.richText? bRaw.richText.map(x=>x.text).join('') : bRaw || '').trim(); const displayName=cleanDisplayName(rawName); const brief= rawName || String(cText||'').trim() || displayName;
     const variants=parseVariantsFromE(String(eText && eText.richText? eText.richText.map(x=>x.text).join('') : eText || '')); const price=variants.length? Math.min(...variants.map(v=>Number(v.price||0))) : 0; const slug=slugify(displayName);
     const range=ranges[i]; const hits=anchored.filter(h=> (h.tlr+1)>=range.start && (h.tlr+1)<=range.end);
-    let images=[]; if(hits.length){ hits.forEach((h,idx)=>{ const found=media.find(m=>m&&m.index===h.img.imageId); if(!found) return; const buffer=found.buffer||(found.base64?Buffer.from(found.base64,'base64'):null); if(!buffer) return; const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const fn=`boys-cake-${slug}-${idx+1}.${ext}`; fs.writeFileSync(path.join(ASSET_DIR,fn), buffer); images.push(`/assets/boys-cake/${fn}`); }); sourceMap[`boys-cake-${slug}`]='excel'; } else { images=importFromLocalFallback(slug); sourceMap[`boys-cake-${slug}`]= images.length? 'fallback':'none'; }
+    let images=[]; if(hits.length){ hits.forEach((h,idx)=>{ const found=media.find(m=>m&&m.index===h.img.imageId); if(!found) return; const buffer=found.buffer||(found.base64?Buffer.from(found.base64,'base64'):null); if(!buffer) return; const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const fn=`boys-cake-${slug}-${idx+1}.${ext}`; fs.writeFileSync(path.join(ASSET_DIR,fn), buffer); images.push(assetUrl('boys-cake', fn)); }); sourceMap[`boys-cake-${slug}`]='excel'; } else { images=importFromLocalFallback(slug); sourceMap[`boys-cake-${slug}`]= images.length? 'fallback':'none'; }
     console.log(`row ${r} -> images:${images.length}, from:${sourceMap[`boys-cake-${slug}`]}`);
-    const cover=images[0] || '/assets/p1.jpg';
+    const cover=images[0] || (ASSET_BASE_URL? assetUrl('', 'p1.jpg') : '/assets/p1.jpg');
     outProducts.push({ id:`boys-cake-${slug}`, categoryId:CATEGORY_ID, name:displayName, brief, images, cover, price:Number(price), variants: variants.length?variants:[{size:'默认',price:Number(price)}] });
   }
 

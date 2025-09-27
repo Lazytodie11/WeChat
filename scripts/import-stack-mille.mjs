@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -83,7 +87,7 @@ async function main() {
     const dstName = `stack-mille-${idx}.${ext}`;
     const src = path.join(SRC_DIR, f);
     const dst = path.join(ASSET_DIR, dstName);
-    try { fs.copyFileSync(src, dst); outImages.push(`/assets/stack-mille/${dstName}`); } catch(e) { console.warn('[COPY_FAIL]', f, e.message); }
+    try { fs.copyFileSync(src, dst); outImages.push(assetUrl('stack-mille', dstName)); } catch(e) { console.warn('[COPY_FAIL]', f, e.message); }
   });
 
   // Read price and options
@@ -107,7 +111,7 @@ async function main() {
     name: NAME_CONST,
     brief: NAME_CONST,
     images: outImages,
-    cover: outImages[0] || '/assets/p1.jpg',
+  cover: outImages[0] || (ASSET_BASE_URL? assetUrl('', 'p1.jpg') : '/assets/p1.jpg'),
     price,
     variants,
     options,

@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+function assetUrl(category, filename){ const cat=String(category||'').replace(/^\/+|\/+$/g,''); const fn=String(filename||'').replace(/^\/+/, ''); if(ASSET_BASE_URL){ const base=ASSET_BASE_URL.replace(/\/$/,''); return `${base}/prod-images/${cat}/${fn}`;} return `/assets/${cat}/${fn}`; }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -69,8 +73,8 @@ async function main(){
     const displayName=cleanDisplayName(rawName); const brief= rawName || String(rawC||'').trim() || displayName; const variants=parseVariantsFromE(String(rawE&&rawE.richText? rawE.richText.map(x=>x.text).join('') : rawE || ''));
     const price=variants.length? Math.min(...variants.map(v=>Number(v.price||0))) : 0; const slug=slugify(displayName);
     const range=ranges[i]; const hits=anchored.filter(h=> (h.tlr+1)>=range.start && (h.tlr+1)<=range.end);
-    const images=[]; for(let k=0;k<hits.length;k++){ const found=hits[k].media.find(m=>m&&m.index===hits[k].img.imageId); if(!found) continue; const buf=found.buffer||(found.base64?Buffer.from(found.base64,'base64'):null); if(!buf) continue; const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const fn=`eight-inch-cake-${slug}-${k+1}.${ext}`; fs.writeFileSync(path.join(ASSET_DIR,fn),buf); images.push(`/assets/eight-inch-cake/${fn}`);} 
-    outProducts.push({ id:`eight-inch-cake-${slug}`, categoryId:CATEGORY_ID, name:displayName, brief, images, cover: images[0]||'/assets/p1.jpg', price:Number(price), variants: variants.length?variants:[{size:'默认',price:Number(price)}] });
+    const images=[]; for(let k=0;k<hits.length;k++){ const found=hits[k].media.find(m=>m&&m.index===hits[k].img.imageId); if(!found) continue; const buf=found.buffer||(found.base64?Buffer.from(found.base64,'base64'):null); if(!buf) continue; const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const fn=`eight-inch-cake-${slug}-${k+1}.${ext}`; fs.writeFileSync(path.join(ASSET_DIR,fn),buf); images.push(assetUrl('eight-inch-cake', fn));}
+    outProducts.push({ id:`eight-inch-cake-${slug}`, categoryId:CATEGORY_ID, name:displayName, brief, images, cover: images[0]|| (ASSET_BASE_URL? assetUrl('', 'p1.jpg'):'/assets/p1.jpg'), price:Number(price), variants: variants.length?variants:[{size:'默认',price:Number(price)}] });
   }
 
   const products=others.concat(outProducts); saveCatalog(categories, products);
@@ -78,4 +82,3 @@ async function main(){
 }
 
 main().catch(e=>{ console.error(e); process.exit(1); });
-

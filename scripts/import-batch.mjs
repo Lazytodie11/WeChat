@@ -3,6 +3,19 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { ASSET_BASE_URL } = require('./config.cjs');
+
+function assetUrl(category, filename){
+  const cat = String(category||'').replace(/^\/+|\/+$/g,'');
+  const fn = String(filename||'').replace(/^\/+/, '');
+  if (ASSET_BASE_URL) {
+    const base = ASSET_BASE_URL.replace(/\/$/, '');
+    return `${base}/prod-images/${cat}/${fn}`;
+  }
+  return `/assets/${cat}/${fn}`;
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
@@ -97,10 +110,10 @@ async function importSeries({ workbook, sheetIndex, rows, cols, categoryId, cate
         const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; 
         const fn=`${categoryId}-${slug}-${idx+1}.${ext}`; 
         fs.writeFileSync(path.join(assetsDir,fn), buffer); 
-        images.push(`/assets/${categoryId}/${fn}`); 
+        images.push(assetUrl(categoryId, fn)); 
       });
     }
-    if(images.length===0){ images=[`/assets/p1.jpg`]; }
+    if(images.length===0){ images=[ASSET_BASE_URL? assetUrl('', 'p1.jpg') : `/assets/p1.jpg`]; }
     const cover=images[0];
     outProducts.push({ id:`${categoryId}-${slug}`, categoryId, name:displayName, brief, images, cover, price:Number(price), variants: variants.length?variants:[{size:'默认',price:Number(price)}] });
   }
@@ -144,4 +157,3 @@ async function main(){
 }
 
 main().catch(e=>{ console.error(e); process.exit(1); });
-

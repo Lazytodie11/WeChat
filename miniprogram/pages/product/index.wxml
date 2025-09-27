@@ -45,16 +45,16 @@
   <!-- 新：分组选项（口味/夹心等），渲染在可选尺寸区域下 -->
   <block wx:if="{{product.groups && product.groups.length}}">
     <view class="card variants">
-      <block wx:for="{{product.groups}}" wx:key="key">
+      <block wx:for="{{product.groups}}" wx:key="key" wx:for-item="group">
         <view class="v-title">
-          {{item.title}}
-          <text class="hint" wx:if="{{item.type==='multi'}}">最多可选{{item.max}}种</text>
+          {{group.title}}
+          <text class="hint" wx:if="{{group.type==='multi'}}">最多可选{{group.max}}种</text>
         </view>
         <view class="chip-wrap">
-          <block wx:for="{{item.items}}" wx:key="id">
-            <view class="chip {{ isGroupSelected(item.key, index) ? 'chip--active' : '' }} {{ !isGroupSelected(item.key, index) && groupSelectedCount(item.key)>=item.max && item.type==='multi' ? 'chip--disabled' : '' }}"
-                  data-gkey="{{item.key}}" data-oid="{{item.items[index].id}}" bindtap="onTapGroupItem">
-              {{item.items[index].name}}
+          <block wx:for="{{group.items}}" wx:key="id" wx:for-item="opt">
+            <view class="chip {{ isGroupSelected(group.key, index) ? 'chip--active' : '' }} {{ !isGroupSelected(group.key, index) && groupSelectedCount(group.key)>=group.max && group.type==='multi' ? 'chip--disabled' : '' }}"
+                  data-gkey="{{group.key}}" data-oid="{{opt.id}}" bindtap="onTapGroupItem">
+              {{opt.name}}
             </view>
           </block>
         </view>

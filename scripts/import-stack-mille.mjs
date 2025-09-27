@@ -121,7 +121,9 @@ async function main() {
   // Merge into catalog
   const { categories: cat0 = [], products: prod0 = [] } = loadCatalog();
   const categories = Array.isArray(cat0) ? [...cat0] : [];
-  if (!categories.find(c => c.id === 'stack-mille')) categories.push({ id: 'stack-mille', name: '堆堆千层' });
+  const existing = categories.find(c => c.id === 'stack-mille');
+  if (!existing) categories.push({ id: 'stack-mille', name: 'T·y堆堆千层系列' });
+  else existing.name = 'T·y堆堆千层系列';
 
   const others = (Array.isArray(prod0) ? prod0 : []).filter(p => p.id !== 'stack-mille');
   const product = {

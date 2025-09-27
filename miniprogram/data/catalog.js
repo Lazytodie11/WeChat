@@ -10,7 +10,7 @@ const categories = [
   },
   {
     "id": "stack-mille",
-    "name": "堆堆千层"
+    "name": "T·y堆堆千层系列"
   }
 ];
 

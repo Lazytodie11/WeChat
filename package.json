@@ -10,7 +10,9 @@
     "import:girls-local": "node scripts/import-girls-cake-local.mjs",
     "verify:girls": "node scripts/verify-girls-cake.mjs",
     "import:stack": "node scripts/import-stack-mille.mjs",
-    "verify:stack": "node scripts/verify-stack-mille.mjs"
+    "verify:stack": "node scripts/verify-stack-mille.mjs",
+    "import:ty": "node scripts/import-ty-stack-cake.mjs",
+    "verify:ty": "node scripts/verify-ty-stack-cake.mjs"
   },
   "devDependencies": {
     "csv-parse": "^5.5.6",

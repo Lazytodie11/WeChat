@@ -11,6 +11,10 @@ const categories = [
   {
     "id": "stack-mille",
     "name": "T·y堆堆千层系列"
+  },
+  {
+    "id": "ty-stack-cake",
+    "name": "T·y堆堆蛋糕"
   }
 ];
 
@@ -1700,6 +1704,192 @@ const products = [
       {
         "name": "莓果库里",
         "selected": false
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-生椰拿铁",
+    "categoryId": "ty-stack-cake",
+    "name": "生椰拿铁",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 138
+      },
+      {
+        "size": "8寸",
+        "price": 198
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-榴芒与白糯",
+    "categoryId": "ty-stack-cake",
+    "name": "榴芒与白糯",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 178,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 178
+      },
+      {
+        "size": "8寸",
+        "price": 268
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-薄荷巧克力",
+    "categoryId": "ty-stack-cake",
+    "name": "薄荷巧克力",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 138
+      },
+      {
+        "size": "8寸",
+        "price": 198
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-杨枝甘露",
+    "categoryId": "ty-stack-cake",
+    "name": "杨枝甘露",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 138
+      },
+      {
+        "size": "8寸",
+        "price": 198
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-斑斓芋芒",
+    "categoryId": "ty-stack-cake",
+    "name": "斑斓芋芒",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 128,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 128
+      },
+      {
+        "size": "8寸",
+        "price": 188
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-桃之夭夭",
+    "categoryId": "ty-stack-cake",
+    "name": "桃之夭夭",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 138,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 138
+      },
+      {
+        "size": "8寸",
+        "price": 198
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-斑斓芋芒",
+    "categoryId": "ty-stack-cake",
+    "name": "斑斓芋芒",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 128,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 128
+      },
+      {
+        "size": "8寸",
+        "price": 188
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-生椰拿铁",
+    "categoryId": "ty-stack-cake",
+    "name": "生椰拿铁",
+    "brief": "生椰拿铁",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 0,
+    "variants": [
+      {
+        "size": "默认",
+        "price": 0
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-开心的榴莲",
+    "categoryId": "ty-stack-cake",
+    "name": "开心的榴莲",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 189,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 189
+      },
+      {
+        "size": "8寸",
+        "price": 289
+      }
+    ]
+  },
+  {
+    "id": "ty-stack-cake-巧可遇蓝莓",
+    "categoryId": "ty-stack-cake",
+    "name": "巧可遇蓝莓",
+    "brief": "可做6/8寸",
+    "images": [],
+    "cover": "/assets/p1.jpg",
+    "price": 128,
+    "variants": [
+      {
+        "size": "6寸",
+        "price": 128
+      },
+      {
+        "size": "8寸",
+        "price": 188
       }
     ]
   }

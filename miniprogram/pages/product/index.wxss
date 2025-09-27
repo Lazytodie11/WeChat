@@ -35,3 +35,12 @@
 .btn-plain{ background:#f6f1ea; color:#6B4A2B; border-radius:16px; padding: 4px 10px; }
 .btn-danger{ background:#d9534f; color:#fff; border-radius:16px; padding: 4px 10px; }
 .sheet-empty { text-align:center; color:#999; padding: 16px 0; }
+
+/* fillings */
+.card-title { color:#6B4A2B; font-weight:600; margin-bottom:16rpx; display:flex; align-items:center; gap:8rpx; }
+.card-title .hint { color:#9c8a7a; font-size:24rpx; }
+.chip-wrap { display:flex; flex-wrap:wrap; gap:16rpx; }
+.chip { padding:10rpx 20rpx; border:1rpx solid #e6dacd; color:#6B4A2B; border-radius:999rpx; }
+.chip--active { background:#f2e7dc; border-color:#6B4A2B; }
+.chip--disabled { opacity: .5; }
+.dev-flag { margin: 8px 12px; color:#b36b00; font-size: 12px; }

@@ -10,11 +10,13 @@
         <view class="col">
           <text>{{item.name}}</text>
           <text wx:if="{{item.variantSize}}">（{{item.variantSize}}）</text>
+          <text wx:if="{{item.optionName}}" style="color:#999;margin-left:6px;">口味：{{item.optionName}}</text>
+          <view class="subline">{{ item.optionsDesc || '默认' }}</view>
         </view>
         <view class="row-actions">
-          <button size="mini" bindtap="dec" data-id="{{item.id}}" data-size="{{item.variantSize}}">-</button>
+          <button size="mini" bindtap="dec" data-id="{{item.id}}" data-size="{{item.variantSize}}" data-sig="{{item.optionsSignature||''}}">-</button>
           <text class="count">{{item.displayQty}}</text>
-          <button size="mini" type="primary" bindtap="inc" data-id="{{item.id}}" data-size="{{item.variantSize}}" data-name="{{item.name}}" data-price="{{item.price}}">+</button>
+          <button size="mini" type="primary" bindtap="inc" data-id="{{item.id}}" data-size="{{item.variantSize}}" data-name="{{item.name}}" data-price="{{item.price}}" data-sig="{{item.optionsSignature||''}}">+</button>
         </view>
         <view class="price">¥{{item.subtotal}}</view>
       </view>

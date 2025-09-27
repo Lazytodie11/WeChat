@@ -1,0 +1,14 @@
+{
+  "excel": "/Users/yipengli/Desktop/cake_name3.xlsx",
+  "columns": { "name": "B", "brief": "C", "images": "D", "price": "E" },
+  "series": [
+    { "categoryId": "basque",         "categoryName": "巴斯克蛋糕",     "sheet": 1, "rowStart": 65,  "rowEnd": 73  },
+    { "categoryId": "tiramisu",       "categoryName": "提拉米苏蛋糕",   "sheet": 1, "rowStart": 75,  "rowEnd": 80  },
+    { "categoryId": "ins-roll",       "categoryName": "Ins瑞士卷",      "sheet": 1, "rowStart": 82,  "rowEnd": 98  },
+    { "categoryId": "cake-parts",     "categoryName": "蛋糕配件",       "sheet": 1, "rowStart": 100, "rowEnd": 107 },
+    { "categoryId": "cake-4inch",     "categoryName": "4寸蛋糕",        "sheet": 1, "rowStart": 109, "rowEnd": 134 },
+    { "categoryId": "cake-8inch",     "categoryName": "8寸蛋糕",        "sheet": 1, "rowStart": 136, "rowEnd": 156 },
+    { "categoryId": "lava-waterfall", "categoryName": "爆浆瀑布蛋糕",   "sheet": 1, "rowStart": 158, "rowEnd": 162 }
+  ]
+}
+

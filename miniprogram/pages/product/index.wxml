@@ -20,7 +20,10 @@
     <view class="price-line">¥{{selectedVariant ? selectedVariant.price : (variants.length>0 ? variants[current].price : minPrice)}}</view>
   </view>
 
-  <view class="card variants" wx:if="{{variants.length>0}}">
+  <view wx:if="{{(product.groups || []).length}}" class="dev-flag">[groups enabled]</view>
+
+  <!-- 当存在 groups 时，优先使用新分组渲染；否则回退到旧 variants 渲染 -->
+  <view class="card variants" wx:if="{{!(product.groups && product.groups.length) && variants.length>0}}">
     <view class="v-title">可选尺寸</view>
     <view class="v-list">
       <block wx:for="{{variants}}" wx:key="size">
@@ -33,19 +36,31 @@
     <view class="selected clickable" wx:if="{{variants.length>0}}" bindtap="openSheet">
       <view>
         已选：{{selectedVariant ? selectedVariant.size : variants[current].size}} x {{count}}，单价 ¥{{selectedVariant ? selectedVariant.price : variants[current].price}}
+        <block wx:if="{{selectedDesc}}">｜{{selectedDesc}}</block>
       </view>
       <view class="arrow">管理</view>
     </view>
   </view>
 
-  <view class="card options" wx:if="{{options && options.length}}">
-    <view class="v-title">可选项</view>
-    <view class="opt-list">
-      <block wx:for="{{options}}" wx:key="name">
-        <view class="opt-tag {{item.selected?'active':''}}" data-name="{{item.name}}" bindtap="toggleOption">{{item.name}}</view>
+  <!-- 新：分组选项（口味/夹心等），渲染在可选尺寸区域下 -->
+  <block wx:if="{{product.groups && product.groups.length}}">
+    <view class="card variants">
+      <block wx:for="{{product.groups}}" wx:key="key">
+        <view class="v-title">
+          {{item.title}}
+          <text class="hint" wx:if="{{item.type==='multi'}}">最多可选{{item.max}}种</text>
+        </view>
+        <view class="chip-wrap">
+          <block wx:for="{{item.items}}" wx:key="id">
+            <view class="chip {{ isGroupSelected(item.key, index) ? 'chip--active' : '' }} {{ !isGroupSelected(item.key, index) && groupSelectedCount(item.key)>=item.max && item.type==='multi' ? 'chip--disabled' : '' }}"
+                  data-gkey="{{item.key}}" data-oid="{{item.items[index].id}}" bindtap="onTapGroupItem">
+              {{item.items[index].name}}
+            </view>
+          </block>
+        </view>
       </block>
     </view>
-  </view>
+  </block>
 
   <view class="card actions">
     <view class="qty">
@@ -68,11 +83,12 @@
             <view class="sheet-info">
               <text>{{item.name}}</text>
               <text class="muted">（{{item.variantSize}}）</text>
+              <text class="muted" wx:if="{{item.optionsDesc}}">｜{{item.optionsDesc}}</text>
             </view>
             <view class="sheet-actions">
-              <button size="mini" bindtap="sheetDec" data-size="{{item.variantSize}}">-</button>
+              <button size="mini" bindtap="sheetDec" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">-</button>
               <text class="count">{{item.count}}</text>
-              <button size="mini" type="primary" bindtap="sheetInc" data-size="{{item.variantSize}}">+</button>
+              <button size="mini" type="primary" bindtap="sheetInc" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">+</button>
               <text class="subtotal">¥{{item.subtotal}}</text>
             </view>
           </view>

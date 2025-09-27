@@ -73,16 +73,40 @@ async function main(){
   const {categories:cat0=[], products:prod0=[]}=loadCatalog(); const categories=Array.isArray(cat0)?[...cat0]:[]; if(!categories.find(c=>c.id===CATEGORY_ID)) categories.push({id:CATEGORY_ID,name:CATEGORY_NAME});
   const others=(Array.isArray(prod0)?prod0:[]).filter(p=>p.categoryId!==CATEGORY_ID);
   const outProducts=[]; const sourceMap={};
-  for(let r=ROW_START; r<=ROW_END; r++){
+
+  // starters: B 列非空即为商品起始行
+  const starters=[];
+  for(let r=ROW_START;r<=ROW_END;r++){
+    const bRaw=sheet.getCell(r,COL_B)?.value;
+    const raw=String(bRaw && bRaw.richText? bRaw.richText.map(x=>x.text).join('') : bRaw || '').trim();
+    if(raw) starters.push(r);
+  }
+  // 区间：当前起始行到下一起始行-1；最后一个到 ROW_END
+  const ranges=starters.map((p,i)=>({start:p,end:(i<starters.length-1? starters[i+1]-1 : ROW_END)}));
+
+  // 预取所有图片锚点
+  const imgs=(sheet.getImages?sheet.getImages():[]).map(img=>{
+    const range=img.range||{}; const tl=range.tl||range||{}; const br=range.br||range.tl||range||{};
+    const tlc=(tl.nativeCol??tl.col??range.col??0); const tlr=(tl.nativeRow??tl.row??range.row??0);
+    const brc=(br.nativeCol??br.col??tlc); const brr=(br.nativeRow??br.row??tlr);
+    return {img, tlc, tlr, brc, brr};
+  }).sort((a,b)=>(a.tlr-b.tlr)||(a.tlc-b.tlc));
+  const media=(wb.model&&wb.model.media)||[];
+
+  for(let i=0;i<starters.length;i++){
+    const r=starters[i];
     const bRaw=sheet.getCell(r,COL_B)?.value; const eText=sheet.getCell(r,COL_E)?.value; const cText=sheet.getCell(r,COL_C)?.value;
-    const rawName=String(bRaw && bRaw.richText? bRaw.richText.map(x=>x.text).join('') : bRaw || '').trim(); if(!rawName) continue;
+    const rawName=String(bRaw && bRaw.richText? bRaw.richText.map(x=>x.text).join('') : bRaw || '').trim();
     const displayName=cleanDisplayName(rawName); const brief= rawName || String(cText||'').trim() || displayName;
     const variants=parseVariantsFromE(String(eText && eText.richText? eText.richText.map(x=>x.text).join('') : eText || ''));
     const price=variants.length? Math.min(...variants.map(v=>Number(v.price||0))) : 0; const slug=slugify(displayName);
-    const buffers=getEmbeddedImagesForRow(sheet, wb, r);
-    let images=[]; if(buffers.length){ buffers.forEach((bin,idx)=>{ const filename=`french-mille-cake-${slug}-${idx+1}.${bin.ext}`; const abs=path.join(ASSET_DIR,filename); fs.writeFileSync(abs,bin.buffer); images.push(`/assets/french-mille-cake/${filename}`); }); sourceMap[`french-mille-cake-${slug}`]='excel'; } else { images=importFromLocalFallback(slug); sourceMap[`french-mille-cake-${slug}`]= images.length? 'fallback':'none'; }
+
+    const range=ranges[i];
+    const hits=imgs.filter(h=> (h.tlr+1)>=range.start && (h.tlr+1)<=range.end);
+    let images=[];
+    if(hits.length){ hits.forEach((h,idx)=>{ const found=media.find(m=>m&&m.index===h.img.imageId); if(!found) return; const buffer=found.buffer||(found.base64?Buffer.from(found.base64,'base64'):null); if(!buffer) return; const ext0=(found.extension||found.type||'jpeg').toLowerCase(); const ext=ext0==='jpg'?'jpeg':ext0; const fn=`french-mille-cake-${slug}-${idx+1}.${ext}`; const abs=path.join(ASSET_DIR,fn); fs.writeFileSync(abs,buffer); images.push(`/assets/french-mille-cake/${fn}`); }); sourceMap[`french-mille-cake-${slug}`]='excel'; } else { images=importFromLocalFallback(slug); sourceMap[`french-mille-cake-${slug}`]=images.length?'fallback':'none'; }
     console.log(`row ${r} -> images:${images.length}, from:${sourceMap[`french-mille-cake-${slug}`]}`);
-    const cover=images[0] || '/assets/p1.jpg';
+    const cover=images[0]||'/assets/p1.jpg';
     outProducts.push({ id:`french-mille-cake-${slug}`, categoryId:CATEGORY_ID, name:displayName, brief, images, cover, price:Number(price), variants: variants.length?variants:[{size:'默认',price:Number(price)}] });
   }
   const products=others.concat(outProducts); saveCatalog(categories,products);
@@ -91,4 +115,3 @@ async function main(){
 }
 
 main().catch(e=>{ console.error(e); process.exit(1); });
-

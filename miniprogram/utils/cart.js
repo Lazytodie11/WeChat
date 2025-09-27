@@ -51,12 +51,21 @@ function addItem(item, variant) {
   const cart = load();
   const size = variant?.size || (Array.isArray(item.variants) && item.variants[0]?.size) || item.size || '默认';
   const price = Number(variant?.price != null ? variant.price : (Array.isArray(item.variants) && item.variants[0]?.price != null ? item.variants[0].price : item.price || 0));
-  const variantKey = `${item.id}__${size}`;
+  const optName = variant?.optName || variant?.optionName || item.optionName || '';
+  const fillings = Array.isArray(variant?.fillings) ? variant.fillings : (Array.isArray(item?.fillings) ? item.fillings : []);
+  const fillKey = fillings && fillings.length ? `__fill:${fillings.join('|')}` : '';
+  const optionsSignature = variant?.optionsSignature || item?.optionsSignature || '';
+  const sigKey = optionsSignature ? `__sig:${optionsSignature}` : '';
+  const variantKey = `${item.id}__${size}__${optName}${fillKey}${sigKey}`;
   const idx = findIndex(cart, item.id, variantKey);
   if (idx >= 0) {
     cart[idx].count += 1;
   } else {
-    const toSave = { ...item, price, count: 1, variantSize: size, variantKey };
+    const toSave = { ...item, price, count: 1, variantSize: size, variantKey, optionName: optName };
+    if (fillings && fillings.length) toSave.fillings = fillings.slice();
+    if (optionsSignature) toSave.optionsSignature = optionsSignature;
+    if (variant?.options || item?.options) toSave.options = (variant?.options || item?.options);
+    if (variant?.optionsDesc || item?.optionsDesc) toSave.optionsDesc = (variant?.optionsDesc || item?.optionsDesc);
     // 减少冗余字段体积
     delete toSave.variants;
     cart.push(toSave);
@@ -70,7 +79,12 @@ function removeItem(id, variant) {
   let idx = -1;
   if (variant && (variant.size || variant.variantSize)) {
     const size = variant.size || variant.variantSize;
-    const variantKey = `${id}__${size}`;
+    const optName = variant.optName || variant.optionName || '';
+    const fillings = Array.isArray(variant?.fillings) ? variant.fillings : [];
+    const fillKey = fillings && fillings.length ? `__fill:${fillings.join('|')}` : '';
+    const optionsSignature = variant?.optionsSignature || '';
+    const sigKey = optionsSignature ? `__sig:${optionsSignature}` : '';
+    const variantKey = `${id}__${size}__${optName}${fillKey}${sigKey}`;
     idx = findIndex(cart, id, variantKey);
   }
   if (idx < 0) idx = findIndex(cart, id);

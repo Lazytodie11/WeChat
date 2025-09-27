@@ -30,15 +30,17 @@ Page({
     const size = e.currentTarget.dataset.size;
     const name = e.currentTarget.dataset.name;
     const price = Number(e.currentTarget.dataset.price || 0);
+    const sig = e.currentTarget.dataset.sig || '';
     if (!id || !size) return;
-    cart.addItem({ id, name }, { size, price });
+    cart.addItem({ id, name, optionsSignature: sig }, { size, price, optionsSignature: sig });
     this.updateFromStorage();
   },
   dec(e) {
     const id = e.currentTarget.dataset.id;
     const size = e.currentTarget.dataset.size;
+    const sig = e.currentTarget.dataset.sig || '';
     if (!id || !size) return;
-    cart.removeItem(id, { size });
+    cart.removeItem(id, { size, optionsSignature: sig });
     this.updateFromStorage();
   },
   onInput(e) {

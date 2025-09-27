@@ -13,8 +13,22 @@
     "verify:stack": "node scripts/verify-stack-mille.mjs",
     "import:french": "node scripts/import-french-mille-cake.mjs",
     "verify:french": "node scripts/verify-french-mille-cake.mjs",
+    "import:boys": "node scripts/import-boys-cake.mjs",
+    "verify:boys": "node scripts/verify-boys-cake.mjs",
+    "import:ins-roll": "node scripts/import-ins-swiss-roll.mjs",
+    "import:accessories": "node scripts/import-cake-accessories.mjs",
+    "verify:accessories": "node scripts/verify-cake-accessories.mjs",
+    "import:basque": "node scripts/import-basque-cake.mjs",
+    "verify:basque": "node scripts/verify-basque-cake.mjs",
+    "import:tiramisu": "node scripts/import-tiramisu-cake.mjs",
+    "verify:tiramisu": "node scripts/verify-tiramisu-cake.mjs",
+    "import:eight-inch": "node scripts/import-eight-inch-cake.mjs",
     "import:ty": "node scripts/import-ty-stack-cake.mjs",
-    "verify:ty": "node scripts/verify-ty-stack-cake.mjs"
+    "verify:ty": "node scripts/verify-ty-stack-cake.mjs",
+    "import:batch": "node scripts/import-batch.mjs",
+    "verify:batch": "node scripts/verify-batch.mjs",
+    "fix:cats": "node scripts/fix-duplicate-categories.mjs",
+    "verify:cats": "node scripts/verify-categories.mjs"
   },
   "devDependencies": {
     "csv-parse": "^5.5.6",

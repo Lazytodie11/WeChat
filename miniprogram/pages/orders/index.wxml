@@ -33,8 +33,15 @@
         <view>
           <block wx:for="{{item.items}}" wx:key="id">
             <view class="row" style="justify-content:space-between;margin:4px 0;">
-              <text>{{item2.name}} x {{item2.displayQty}}</text>
-              <text>¥{{item2.subtotal}}</text>
+              <view>
+                <text>{{item2.name}}</text>
+                <text wx:if="{{item2.variantSize}}">（{{item2.variantSize}}）</text>
+                <view wx:if="{{item2.fillings && item2.fillings.length}}" style="color:#9c8a7a;font-size:12px;">口味夹心：{{item2.fillings.join('、')}}</view>
+              </view>
+              <view>
+                <text>x {{item2.displayQty}}</text>
+                <text style="margin-left:8px;">¥{{item2.subtotal}}</text>
+              </view>
             </view>
           </block>
         </view>

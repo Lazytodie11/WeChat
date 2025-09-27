@@ -22,8 +22,12 @@ Component({
     refreshSheet() {
       const list = cart.getCart();
       const items = list.map(x => {
+        let displayName = x.name || '';
+        if (x.optionName) {
+          try { displayName = displayName.replace(/（.*?）$/, ''); } catch(_) {}
+        }
         const subtotal = Number(((Number(x.price || 0)) * (Number(x.count || 0))).toFixed(2));
-        return { id: x.id, name: x.name, variantSize: x.variantSize, price: Number(x.price || 0), count: x.count, subtotal, variantKey: x.variantKey };
+        return { id: x.id, name: x.name, displayName, variantSize: x.variantSize, optionName: x.optionName, price: Number(x.price || 0), count: x.count, subtotal, variantKey: x.variantKey };
       });
       const total = items.reduce((s, it) => s + it.subtotal, 0);
       this.setData({ items, total: Number(total.toFixed(2)) });

@@ -1,6 +1,7 @@
 .title{font-weight:600;margin-bottom:8px}
 .form .form-item{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
 .form input{border:1px solid #eee;border-radius:6px;padding:8px 10px;flex:1;margin-left:10px}
+.subline { color:#8c755a; font-size: 24rpx; margin-top: 6rpx; }
 .row{display:flex}
 .row .col{flex:1}
 .row .row-actions{display:flex;gap:8px;align-items:center}

@@ -21,8 +21,9 @@
       <block wx:for="{{items}}" wx:key="variantKey">
         <view class="sheet-row">
           <view class="sheet-info">
-            <text>{{item.name}}</text>
-            <text class="muted">（{{item.variantSize}}）</text>
+            <text>{{item.displayName}}</text>
+            <text wx:if="{{item.optionName}}">（{{item.optionName}}）</text>
+            <text class="muted" wx:elif="{{item.variantSize}}">（{{item.variantSize}}）</text>
           </view>
           <view class="sheet-actions">
             <button size="mini" bindtap="sheetDec" data-id="{{item.id}}" data-size="{{item.variantSize}}">-</button>

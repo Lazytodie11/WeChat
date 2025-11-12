@@ -1,101 +1,101 @@
-# 甜品店作品展示微信小程序（无支付）
+# Dessert Showcase WeChat Mini Program (No Payments)
 
-一个可运行的微信小程序示例：浏览作品 → 加入已选 → “查看”页面展示已选清单 → 云函数写入 `orders` → 企业微信群机器人通知店主。全局价格文案均为“仅供展示使用”，方便通过审核后再行开启真实售价流程。
+This repository contains a production-ready WeChat Mini Program template. Shoppers can browse desserts, add them to a local “Selected” list, review the list on the checkout page, and submit an order form that is persisted through the `orders` collection plus an Enterprise WeChat robot notification. All prices are labeled “for display only” so the project can pass review before real payments are enabled.
 
-## 功能概览
-- 左侧竖向分类 + 右侧作品卡片 + 底部“已选”浮条
-- 底部 3 个 Tab：首页/作品/我的
-- 云函数：`cloudfunctions/createOrder` 写入订单并通过企业微信机器人 Webhook 通知
-- 无支付，演示“展示 → 留资”流程（可按需改回下单）
+## Feature Highlights
+- Left-hand vertical categories, right-hand product cards, and a bottom “Selected” bar.
+- Three tabs only: Home / Works / Profile.
+- Cloud Functions: `cloudfunctions/createOrder` writes orders and pings a WeCom robot webhook.
+- No payment capability. The flow demonstrates “showcase → capture lead info” but can be reverted to a real checkout if needed.
 
-## 目录结构
-- `miniprogram/`：小程序前端
+## Project Layout
+- `miniprogram/`: Mini Program front end
   - `pages/{home,menu,profile,checkout,success}/`
   - `components/cart-bar/`
   - `utils/cart.js`
-  - `assets/` 占位图片（logo.png, p1.jpg~p8.jpg）
-- `cloudfunctions/createOrder/`：云函数代码
-- 工程化：`.github/workflows/ci.yml`、`.editorconfig`、`.gitignore`、`CODEOWNERS`
+  - `assets/` placeholder images (`logo.png`, `p1.jpg` … `p8.jpg`)
+- `cloudfunctions/createOrder/`: Cloud Function implementation
+- Tooling: `.github/workflows/ci.yml`, `.editorconfig`, `.gitignore`, `CODEOWNERS`
 
-## 快速开始
-1) 拉起微信开发者工具，选择“导入项目”，将项目根目录指向本仓库根目录。
+## Quick Start
+1. Open the WeChat Developer Tools, choose **Import Project**, and point the root to this repository.
 
-2) 开通云开发（TCB）
-- 在开发者工具顶部“云开发”面板中开通云开发，记下环境 ID（例如 `prod-abc123`）。
-- 建议将数据库权限设置为：`orders` 集合「仅创建者可读写」。
+2. Enable Cloud Development (TCB)
+   - Activate Cloud Development in the top “云开发” panel and note the Environment ID (e.g., `prod-abc123`).
+   - Recommended DB permission: set the `orders` collection to “Only creator can read/write”.
 
-3) 创建数据库集合 `orders`
-- 在“数据库”中新建集合 `orders`。
+3. Create the `orders` collection
+   - In the “Database” tab, add a new collection named `orders`.
 
-4) 部署云函数 `createOrder`
-- 在微信开发者工具左侧“云开发”→“云函数”中创建名为 `createOrder` 的云函数，并将 `cloudfunctions/createOrder` 目录代码上传并部署。
-- 进入云函数的「环境变量」设置，新增：
-  - `WEWORK_WEBHOOK`：企业微信群机器人 Webhook（禁止硬编码，使用环境变量）。
+4. Deploy the `createOrder` Cloud Function
+   - In “云开发” → “云函数”, create a function called `createOrder` and upload the code from `cloudfunctions/createOrder`.
+   - Under the function’s environment variables, add:
+     - `WEWORK_WEBHOOK`: Enterprise WeChat robot webhook (never hard-code it into source files).
 
-5) 配置前端云环境
-- 打开 `miniprogram/app.js`，将：
-  ```js
-  wx.cloud.init({ env: 'your-env-id', traceUser: true });
-  ```
-  中的 `your-env-id` 替换为你的真实环境 ID。
+5. Configure the client environment
+   - Open `miniprogram/app.js` and replace:
+     ```js
+     wx.cloud.init({ env: 'your-env-id', traceUser: true });
+     ```
+     with your actual environment ID.
 
-6) 本地预览
-- 在“云开发”面板中：
-  - 数据库 `orders` 已创建。
-  - 云函数 `createOrder` 已部署成功。
-- 在模拟器中切换到“作品”，添加作品，点击底部“查看”，确认已选列表后点击“完成展示”。提交成功后：
-  - `orders` 集合新增一条记录；
-  - 若云函数环境变量 `WEWORK_WEBHOOK` 已设置，企业微信群机器人会收到新订单通知。
+6. Preview locally
+   - Confirm the `orders` collection exists and the `createOrder` function deploys successfully.
+   - In the simulator, switch to “Works”, add items, tap the bottom “View” bar, confirm the list, and submit “Complete Showcase”. On success:
+     - A new document is inserted into `orders`.
+     - If `WEWORK_WEBHOOK` is configured, the robot receives a markdown notification.
 
-## UI 截图（占位）
-- 在 `miniprogram/assets/` 自行替换 `logo.png`、`p1.jpg~p8.jpg` 为真实图片。
-- 截图建议：
-  - 首页（home）
-  - 作品页（menu，含左侧分类、右侧作品卡片、已选浮条）
-  - 查看页（checkout，展示“已选”列表与联系信息）
+## UI Screenshots (Placeholders)
+- Replace `logo.png` and `p1.jpg` ~ `p8.jpg` in `miniprogram/assets/` with your real assets.
+- Suggested screenshots:
+  - Home page (`home`)
+  - Works page (`menu`) showing categories, product cards, and the Selected bar
+  - Checkout page (`checkout`) showing the Selected list and contact info
 
-## 在作品页新增分类和商品
-作品页现为完全数据驱动，数据源位于 `miniprogram/data/catalog.js`：
+## Adding Categories and Products
+The Works page is completely data-driven via `miniprogram/data/catalog.js`.
 
-- 新增分类：向 `categories` 追加 `{ id, name }`（id 建议英文短横线写法，例如 `cheese-cake`）。
-- 新增作品：向 `products` 追加 `{ id, categoryId, name, brief, cover, images, variants }`，其中 `categoryId` 指向对应分类的 id，`variants` 内的尺寸/口味字段仅作为展示。
-- 图片：放入 `miniprogram/assets/`（示例：`/assets/p1.jpg`），或使用公网 URL（若为企业环境请确保已配置白名单）。
+- Add categories by pushing `{ id, name }` into `categories` (use slug-style IDs, e.g., `cheese-cake`).
+- Add products by pushing `{ id, categoryId, name, brief, cover, images, variants }` into `products`.
+  - `categoryId` must match an existing category.
+  - `variants` only describe display sizes/flavors (no pricing logic).
+- Images can live under `miniprogram/assets/` (e.g., `/assets/p1.jpg`) or any public URL that your WeChat account allows.
 
-页面行为说明：
-- 左侧分类列表来自 `categories`；默认选中第一项；
-- 右侧商品列表为 `products.filter(p => p.categoryId === activeCategoryId)`；
-- 当某一类暂无商品时，右侧显示“ 不含商品，敬请期待 ”；
-- 加购/减购按钮与底部“已选”浮条联动，本地持久化于 `wx.setStorageSync('cart')`。
+Page behavior:
+- The left pane renders `categories`, selecting the first entry by default.
+- The right pane renders `products.filter(p => p.categoryId === activeCategoryId)`.
+- When a category has no products, the right pane shows a “No items yet” placeholder.
+- Add/remove buttons sync with the bottom “Selected” bar and persist to `wx.setStorageSync('cart')`.
 
-## 代码说明
-- 前端 `menu` 页加入“已选”，数据存储于 `wx.setStorageSync('cart')`，在 `checkout` 页聚合展示。
-- `checkout` 调用 `wx.cloud.callFunction({ name: 'createOrder', data: {...} })`。
-- 云函数使用 `wx-server-sdk` 写入 `orders` 集合，并从 `process.env.WEWORK_WEBHOOK` 读取机器人 Webhook，调用机器人接口推送 Markdown 消息。
-- 若仍需订单列表，可自行接入历史版本中的 orders 页面模板。
+## Code Notes
+- `menu` handles local selections and stores them in `wx.setStorageSync('cart')`; `checkout` aggregates them for submission.
+- `checkout` calls `wx.cloud.callFunction({ name: 'createOrder', data: { ... } })`.
+- The cloud function uses `wx-server-sdk` to write `orders` and pulls the robot webhook from `process.env.WEWORK_WEBHOOK`.
+- If you still need an orders list page, reuse the template from an earlier commit or build a new admin page.
 
-## 注意事项
-- 本示例不包含支付能力。
-- 若需要查看云端记录，请确保数据库集合 `orders` 权限设置为「仅创建者可读写」或合适的读规则。
-- 机器人 Webhook 的安全由企业微信侧控制，切勿将 Webhook 明文写入代码仓库。
+## Things to Keep in Mind
+- Payments are intentionally omitted.
+- To inspect orders in the cloud, keep the `orders` collection permissions at “Only creator can read/write” (or a suitable rule).
+- Robot webhook security is managed on the WeCom side; never hard-code the webhook URL in the repo.
 
-## 常见问题
-- 报错“基础库版本过低”：请升级微信开发者工具基础库 ≥ 2.2.3。
-- 云函数没有推送：检查函数环境变量 `WEWORK_WEBHOOK` 是否正确配置；或查看云函数日志。
-- 读取订单为空：检查集合权限；确认已成功下单并写入 `orders`。
+## FAQ
+- **“Base library version too low”**: upgrade the WeChat Developer Tools base library to ≥ 2.2.3.
+- **Robot didn’t receive the notification**: verify `WEWORK_WEBHOOK` and review the Cloud Function logs.
+- **`orders` appears empty**: double-check collection permissions and confirm the checkout succeeded.
 
-## 版本与协议
-- 版本：1.0.0
-- 许可证：MIT
+## Version & License
+- Version: 1.0.0
+- License: MIT
 
-## 维护脚本：批量修复 cover 为 fileID
+## Maintenance Script: Fix `cover` to FileID
 
-将产品集合中 cover 为 http(s) URL 的记录，批量修正为云存储 fileID。
+This script rewrites any `products.cover` that still uses `http(s)` URLs and replaces them with cloud storage fileIDs.
 
-依赖：
-- @cloudbase/node-sdk、dotenv
-- 环境变量：`TCB_ENV_ID`、`TCB_SECRET_ID`、`TCB_SECRET_KEY`、`TCB_BUCKET`
+Dependencies:
+- `@cloudbase/node-sdk`, `dotenv`
+- Environment variables: `TCB_ENV_ID`, `TCB_SECRET_ID`, `TCB_SECRET_KEY`, `TCB_BUCKET`
 
-运行方式：
+Usage:
 
 ```
 TCB_ENV_ID=xxx \
@@ -105,37 +105,37 @@ TCB_BUCKET=636c-cloud1-... \
 node scripts/fix-cover-to-fileid.js
 ```
 
-脚本逻辑：
-- 连接云数据库（`products` 集合）。
-- 查询 `cover` 以 `http`/`https` 开头的记录。
-- 若 `images[0]` 已是 `cloud://` fileID，则用其覆盖 `cover`。
-- 否则从 `cover` URL 提取文件名，并依据 `categoryId` 通过映射（`CATEGORY_NAME_FROM_ID`）获取中文类目名，调用 `buildFileID(中文类目名, 文件名)` 生成 fileID。
-- 若映射缺失，会尝试从 URL 路径 `/prod-images/<目录>/...` 提取目录作为中文类目名。
-- 打印处理统计与失败清单。
+How it works:
+- Connects to the `products` collection.
+- Queries documents whose `cover` starts with `http` or `https`.
+- If `images[0]` already contains a `cloud://` fileID, it reuses that value for `cover`.
+- Otherwise, it derives the file name from the URL, maps `categoryId` to the Chinese directory, and calls `buildFileID(dir, filename)`.
+- When the mapping is missing, it extracts the directory portion from `/prod-images/<dir>/...`.
+- Prints processing stats and a failure list.
 
-## 导入/更新：Excel → DB（products）
+## Import/Update Products from Excel → DB
 
-从两张 Excel 将产品导入/更新到云数据库 `products` 集合，仅处理指定行区间。
+Import products from two Excel spreadsheets into the `products` collection, processing only the specified row ranges.
 
-列定义：
-- A 列：分类中文名（用 `CATEGORY_MAP` 映射到 `categoryId`）
-- B 列：商品名
-- C 列：可做尺寸（用分隔符 `/`、`、`、`，`、`；` 拆分）
-- D 列：图片文件名（可多个，用 `/` 或 `，` 分隔）
-- E 列：价格（基价）
+Column definitions:
+- **A**: Category name in Chinese (mapped to `categoryId` via `CATEGORY_MAP`).
+- **B**: Product name.
+- **C**: Supported sizes (split by `/`, `、`, `，`, `；` as delimiters).
+- **D**: Image filenames (multiple values separated by `/` or `，`).
+- **E**: Price (base price for every variant in that row).
 
-文档生成规则：
-- `_id`：`${categoryId}-${slugify(name)}`
-- `variants`：C 列 → `[{id,name,price}]`，`price` 统一取 E 列
-- `images`：D 列文件名映射为 `buildFileID(中文类目名, 文件名)`
-- `cover`：`images[0]` 或空
-- `sort`：按读取顺序自减，越上方越大
-- `status`：1
-- `options`：
-  - `ins-roll`：`single` 类型口味选项（内置口味清单）
-  - `four-inch`/`eight-inch`：`multi` 类型夹心选项（min=1, max=2，内置清单）
+Document rules:
+- `_id`: ``${categoryId}-${slugify(name)}``
+- `variants`: derived from column C and normalized to `{ id, name, price }`, using column E for price.
+- `images`: map column D filenames through `buildFileID(中文目录, 文件名)`.
+- `cover`: first entry in `images`, if any.
+- `sort`: descending order (higher value for earlier rows).
+- `status`: `1`
+- `options`:
+  - `ins-roll`: single-choice flavor options (built-in list).
+  - `four-inch` / `eight-inch`: multi-choice fillings (`min=1`, `max=2`).
 
-运行示例：
+Run example:
 
 ```
 node scripts/import-products-from-excel.js \
@@ -143,26 +143,26 @@ node scripts/import-products-from-excel.js \
   --excel "/Users/yipengli/Desktop/cake_name3.xlsx:2-9,11-28,30-39,41-63,65-73,75-80,82-98,100-107,109-134,136-156,158-162"
 ```
 
-环境变量（不要写死在代码里）：
-- `TCB_ENV_ID`、`TCB_SECRET_ID`、`TCB_SECRET_KEY`、`TCB_BUCKET`
+Required environment variables (never hard-code them):
+- `TCB_ENV_ID`, `TCB_SECRET_ID`, `TCB_SECRET_KEY`, `TCB_BUCKET`
 
-## 检查与报表（Audit）
+## Audit & Reporting
 
-巡检 `products` 数据，并输出统计与问题清单，可选自动修复明显问题。
+`scripts/audit-products.js` inspects the `products` collection, prints statistics, and optionally fixes obvious issues.
 
-检查项：
-- `images`/`cover` 是否为 `cloud://` 开头
-- 批量调用云存储临时链接接口校验 fileID 可用性
-- `categoryId` 是否存在于 `categories` 集合
-- `variants` 与 `options` 数据结构是否符合预期
+Checks performed:
+- `images` / `cover` must start with `cloud://`.
+- Every fileID can be converted to a valid temporary URL.
+- `categoryId` exists in the `categories` collection.
+- `variants` and `options` follow the expected schema.
 
-运行：
+Usage:
 
 ```
-node scripts/audit-products.js         # 仅检查
-node scripts/audit-products.js --fix   # 检查并自动修复：cover 为空但 images[0] 是 fileID 时设置 cover
+node scripts/audit-products.js         # report only
+node scripts/audit-products.js --fix   # also auto-fix cover when images[0] already has a fileID
 ```
 
-输出：
-- 汇总统计：总数、images 为空、cover 非 fileID、fileID 无法转临时链接、category 丢失、variants/options 异常
-- 明细清单：各类问题的 `_id` 列表（必要时附带详情）
+Output:
+- Summary counts: total products, missing images, cover not fileID, invalid fileIDs, missing category, malformed variants/options.
+- Detailed lists: `_id` arrays per issue type (with extra notes when helpful).

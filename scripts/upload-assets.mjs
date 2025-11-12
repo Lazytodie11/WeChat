@@ -6,7 +6,7 @@ import { createRequire } from 'node:module';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const { ASSET_BASE_URL } = require('./config.cjs');
+const { ASSET_BASE_URL, ASSET_SUBDIR } = require('./config.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'miniprogram', 'assets');
@@ -32,7 +32,12 @@ function relUnderAssets(abs) {
 
 function urlFor(rel) {
   const relClean = rel.replace(/^\/+/, '');
-  if (ASSET_BASE_URL) return `${ASSET_BASE_URL.replace(/\/$/, '')}/prod-images/${relClean}`;
+  if (ASSET_BASE_URL) {
+    const base = ASSET_BASE_URL.replace(/\/$/, '');
+    const sub = String(ASSET_SUBDIR||'').replace(/^\/+|\/+$/g,'');
+    const mid = sub? `/${sub}` : '';
+    return `${base}${mid}/${relClean}`;
+  }
   return `/assets/${relClean}`;
 }
 
@@ -58,4 +63,3 @@ async function main() {
 }
 
 main().catch((e)=>{ console.error(e); process.exit(1); });
-

@@ -1,4 +1,6 @@
 <view class="container">
+  <splash-overlay id="splash" />
+  <auth-overlay id="auth" bind:authed="onAuthAuthed" bind:skipped="onAuthSkipped" />
   <block wx:if="{{loading && orders.length===0}}">
     <view class="skeleton">
       <block wx:for="{{[1,2,3]}}" wx:key="*this">
@@ -12,7 +14,7 @@
   </block>
   <block wx:elif="{{orders.length===0}}">
     <view class="empty">
-      <image class="empty-img" src="/assets/empty.png" mode="widthFix"></image>
+      <image wx:if="{{emptyUrl}}" class="empty-img" src="{{emptyUrl}}" mode="widthFix"></image>
       <view class="empty-tips">{{needLogin ? '请登录后查看订单' : '无订单'}}</view>
       <button wx:if="{{needLogin}}" size="mini" bindtap="goLogin">去登录</button>
     </view>
@@ -30,6 +32,7 @@
           <text class="status">{{item.statusText}}</text>
         </view>
         <view style="color:#888;margin:6px 0;">{{item.createdAtStr}}</view>
+        <view wx:if="{{item.userNick}}" style="color:#9c8a7a;margin:2px 0;">用户：{{item.userNick}}</view>
         <view>
           <block wx:for="{{item.items}}" wx:key="id">
             <view class="row" style="justify-content:space-between;margin:4px 0;">

@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "我的"
+  "navigationBarTitleText": "我的",
+  "usingComponents": {
+    "splash-overlay": "/components/splash-overlay/index",
+    "auth-overlay": "/components/auth-overlay/index"
+  }
 }
-

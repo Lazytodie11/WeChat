@@ -1,11 +1,11 @@
 const cart = require('../../utils/cart');
 const { isCloudEnabled } = require('../../utils/env');
+const user = require('../../utils/user');
 
 Page({
   data: {
     cart: [],
     summary: cart.getSummary(),
-    contact: { name: '', phone: '', note: '' },
     submitting: false
   },
   onLoad() {
@@ -19,9 +19,8 @@ Page({
   updateFromStorage() {
     const list = cart.getCart().map((it) => {
       const qty = (it.qty != null ? it.qty : it.count) || 0;
-      const price = Number(it.price || 0);
-      const subtotal = Number((qty * price).toFixed(2));
-      return { ...it, displayQty: qty, subtotal };
+      const { price, subtotal, ...rest } = it;
+      return { ...rest, displayQty: qty };
     });
     this.setData({ cart: list, summary: cart.getSummary() });
   },
@@ -29,10 +28,9 @@ Page({
     const id = e.currentTarget.dataset.id;
     const size = e.currentTarget.dataset.size;
     const name = e.currentTarget.dataset.name;
-    const price = Number(e.currentTarget.dataset.price || 0);
     const sig = e.currentTarget.dataset.sig || '';
     if (!id || !size) return;
-    cart.addItem({ id, name, optionsSignature: sig }, { size, price, optionsSignature: sig });
+    cart.addItem({ id, name, optionsSignature: sig }, { size, optionsSignature: sig });
     this.updateFromStorage();
   },
   dec(e) {
@@ -43,18 +41,10 @@ Page({
     cart.removeItem(id, { size, optionsSignature: sig });
     this.updateFromStorage();
   },
-  onInput(e) {
-    const field = e.currentTarget.dataset.field;
-    this.setData({ [`contact.${field}`]: e.detail.value });
-  },
   async submitOrder() {
-    const { name, phone } = this.data.contact;
-    if (!name || !phone) {
-      wx.showToast({ title: '请填写姓名和手机', icon: 'none' });
-      return;
-    }
+    const contact = { name: '', phone: '', note: '' };
     if (this.data.summary.totalCount === 0) {
-      wx.showToast({ title: '购物车为空', icon: 'none' });
+      wx.showToast({ title: '已选为空', icon: 'none' });
       return;
     }
     this.setData({ submitting: true });
@@ -66,8 +56,8 @@ Page({
         const order = {
           _id: orderId,
           items: this.data.cart,
-          totalPrice: this.data.summary.totalPrice,
-          contact: this.data.contact,
+          totalPrice: 0,
+          contact,
           status: 'pending',
           createdAt: now,
         };
@@ -80,12 +70,18 @@ Page({
         cart.clear();
         wx.redirectTo({ url: `/pages/success/index?orderId=${orderId}` });
       } else {
+        // 可选带上用户微信昵称/头像（若已授权）
+        const profile = user.getStoredUser() || {};
         const res = await wx.cloud.callFunction({
           name: 'createOrder',
           data: {
             items: this.data.cart,
-            totalPrice: this.data.summary.totalPrice,
-            contact: this.data.contact
+            totalPrice: 0,
+            contact,
+            userProfile: {
+              nickName: profile.nickName || '',
+              avatarUrl: profile.avatarUrl || ''
+            }
           }
         });
         const orderId = (res && res.result && res.result.orderId) || '';

@@ -4,20 +4,20 @@
     <view class="title">商品详情</view>
   </view>
   <view class="gallery card">
-    <swiper circular autoplay interval="3000" duration="500" indicator-dots wx:if="{{images.length>0}}">
-      <block wx:for="{{images}}" wx:key="*this">
+    <swiper circular autoplay interval="3000" duration="500" indicator-dots wx:if="{{imageUrls.length>0}}">
+      <block wx:for="{{imageUrls}}" wx:key="*this">
         <swiper-item>
           <image class="slide" src="{{item}}" mode="aspectFill" />
         </swiper-item>
       </block>
     </swiper>
-    <image wx:else class="slide" src="/assets/p1.jpg" mode="aspectFill" />
+    <!-- 无图时不再加载占位远程图片，避免 404 噪音；直接不渲染占位图即可 -->
   </view>
 
   <view class="card info">
     <view class="name">{{product.name}}</view>
     <view class="brief">{{product.brief}}</view>
-    <view class="price-line">¥{{selectedVariant ? selectedVariant.price : (variants.length>0 ? variants[current].price : minPrice)}}</view>
+    <view class="price-line">仅供展示使用</view>
   </view>
 
   <view wx:if="{{product.groups && product.groups.length > 0}}" class="dev-flag">[groups enabled]</view>
@@ -29,13 +29,12 @@
       <block wx:for="{{variants}}" wx:key="size">
         <view class="v-item {{index===current?'active':''}}" bindtap="chooseVariant" data-idx="{{index}}">
           <text>{{item.size}}</text>
-          <text>¥{{item.price}}</text>
         </view>
       </block>
     </view>
     <view class="selected clickable" wx:if="{{variants.length>0}}" bindtap="openSheet">
       <view>
-        已选：{{selectedVariant ? selectedVariant.size : variants[current].size}} x {{count}}，单价 ¥{{selectedVariant ? selectedVariant.price : variants[current].price}}
+        已选：{{selectedVariant ? selectedVariant.size : variants[current].size}} x {{count}}
         <block wx:if="{{selectedDesc}}">｜{{selectedDesc}}</block>
       </view>
       <view class="arrow">管理</view>
@@ -62,7 +61,7 @@
     </view>
     <view class="selected clickable" bindtap="openSheet">
       <view>
-        已选：{{selectedVariant ? selectedVariant.size : (variants.length>0 ? variants[current].size : '默认')}} x {{count}}，单价 ¥{{selectedVariant ? selectedVariant.price : (variants.length>0 ? variants[current].price : minPrice)}}
+        已选：{{selectedVariant ? selectedVariant.size : (variants.length>0 ? variants[current].size : '默认')}} x {{count}}
         <block wx:if="{{selectedDesc}}">｜{{selectedDesc}}</block>
       </view>
       <view class="arrow">管理</view>
@@ -95,20 +94,19 @@
               <view class="options-desc" wx:if="{{item.optionsDesc}}">{{item.optionsDesc}}</view>
               <view class="options-desc" wx:elif="{{item.variantSize}}">可选尺寸：{{item.variantSize}}</view>
             </view>
-            <view class="sheet-actions">
-              <button size="mini" bindtap="sheetDec" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">-</button>
-              <text class="count">{{item.count}}</text>
-              <button size="mini" type="primary" bindtap="sheetInc" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">+</button>
-              <text class="subtotal">¥{{item.subtotal}}</text>
-            </view>
+          <view class="sheet-actions">
+            <button size="mini" bindtap="sheetDec" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">-</button>
+            <text class="count">{{item.count}}</text>
+            <button size="mini" type="primary" bindtap="sheetInc" data-size="{{item.variantSize}}" data-optname="{{item.optionName}}" data-sig="{{item.optionsSignature||''}}">+</button>
           </view>
-        </block>
-        <view class="sheet-footer">
-          <text>合计：¥{{sheetTotal}}</text>
-          <view class="ops">
-            <button size="mini" class="btn-plain" bindtap="clearCurrent">清空本商品</button>
-            <button size="mini" class="btn-danger" bindtap="clearAll">清空全部</button>
-          </view>
+        </view>
+      </block>
+      <view class="sheet-footer">
+        <text class="note">仅供展示使用</text>
+        <view class="ops">
+          <button size="mini" class="btn-plain" bindtap="clearCurrent">清空本商品</button>
+          <button size="mini" class="btn-danger" bindtap="clearAll">清空全部</button>
+        </view>
         </view>
       </block>
       <view wx:else class="sheet-empty">暂无已选</view>

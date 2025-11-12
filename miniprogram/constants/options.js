@@ -1,4 +1,4 @@
-// 统一的口味/夹心常量（仅用于 Ins 瑞士卷、4/8 寸）
+// 统一的口味/夹心常量（Ins 瑞士卷、堆堆千层、4/8 寸）
 const INS_ROLL_FLAVORS = [
   { id: 'qiaokelicuipi', name: '巧克力脆皮瑞士卷' },
   { id: 'hongsiling', name: '红丝绒瑞士卷' },
@@ -10,6 +10,37 @@ const INS_ROLL_FLAVORS = [
   { id: 'jixin-yuni-plus-mangguo', name: '夹心芋泥＋芒果' },
   { id: 'banlianyezi', name: '斑斓椰子瑞士卷' },
   { id: 'bojuanhongcha', name: '伯爵红茶瑞士' }
+];
+
+// 堆堆千层（T·y/T.y）可选“口味/夹心”列表（单选）
+const TY_MILLE_FLAVORS = [
+  { id: 'mashu', name: '麻薯' },
+  { id: 'xuenoumi', name: '血糯米' },
+  { id: 'yuni', name: '芋泥' },
+  { id: 'aoliao', name: '奥利奥' },
+  { id: 'hazelnut-choco-sauce', name: '榛子巧克力酱' },
+  { id: 'sea-salt-oreo-mousse', name: '海盐奥利奥奶芙' },
+  { id: 'pistachio-mousse', name: '开心果奶芙' },
+  { id: 'mango', name: '芒果' },
+  { id: 'blueberry', name: '蓝莓' },
+  { id: 'red-grape', name: '红提' },
+  { id: 'green-grape', name: '青提' },
+  { id: 'pineapple', name: '凤梨' },
+  { id: 'strawberry', name: '草莓' },
+  { id: 'yellow-peach', name: '黄桃（罐头）' },
+  { id: 'durian-80g', name: '榴莲（80g)' },
+  { id: 'hami-melon', name: '哈密瓜' },
+  { id: 'banana', name: '香蕉' },
+  { id: 'nuts-granola', name: '坚果燕麦脆' },
+  { id: 'almond-granola', name: '杏仁燕麦脆' },
+  { id: 'matcha-mousse', name: '抹茶慕斯' },
+  { id: 'mulberry-mousse', name: '桑葚慕斯' },
+  { id: 'cocoa-panna', name: '可可奶冻' },
+  { id: 'earlgrey-panna', name: '伯爵红茶奶冻' },
+  { id: 'pistachio-panna', name: '开心果奶冻' },
+  { id: 'coconut-panna', name: '椰奶冻' },
+  { id: 'creme-brulee', name: '焦糖布雷' },
+  { id: 'berry-couli', name: '莓果库里' }
 ];
 
 const CAKE_FILLINGS = [
@@ -35,5 +66,5 @@ const CAKE_FILLINGS = [
   { id: 'banana-choco', name: '香蕉巧克力' }
 ];
 
-module.exports = { INS_ROLL_FLAVORS, CAKE_FILLINGS };
-
+module.exports = { INS_ROLL_FLAVORS, TY_MILLE_FLAVORS, CAKE_FILLINGS };
+ 

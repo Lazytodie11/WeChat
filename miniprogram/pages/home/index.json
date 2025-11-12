@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "甜品店"
+  "navigationBarTitleText": "甜品店",
+  "usingComponents": {
+    "splash-overlay": "/components/splash-overlay/index",
+    "auth-overlay": "/components/auth-overlay/index"
+  }
 }
-

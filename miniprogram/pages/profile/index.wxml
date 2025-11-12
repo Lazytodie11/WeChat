@@ -1,16 +1,20 @@
 <view class="container">
+  <splash-overlay id="splash" />
+  <auth-overlay id="auth" bind:authed="onAuthAuthed" bind:skipped="onAuthSkipped" />
   <view class="card profile">
-    <image class="avatar" src="{{user && user.avatarUrl ? user.avatarUrl : '/assets/logo.png'}}" mode="aspectFill" />
+    <image class="avatar" src="{{user && user.avatarUrl ? user.avatarUrl : ''}}" mode="aspectFill"
+           bindtouchstart="onAvatarTouchStart" bindtouchend="onAvatarTouchEnd" />
     <view class="info">
       <view class="name">{{user && user.nickName ? user.nickName : '未登录'}}</view>
-      <view class="desc">{{user ? '欢迎回来' : '登录后可查看个人订单'}}</view>
+      <view class="desc">{{user ? '欢迎回来' : '感谢您的使用'}}</view>
     </view>
     <button wx:if="{{!user}}" size="mini" bindtap="login">登录</button>
     <button wx:else size="mini" bindtap="logout">退出</button>
   </view>
 
   <view class="card actions">
-    <button class="btn" bindtap="goOrders">我的订单</button>
+    <button class="btn" bindtap="goOrders">示例展示</button>
+    <button class="btn" wx:if="{{(isCreator || isAdmin) && user && user.nickName}}" bindtap="goAdmin">管理员管理</button>
   </view>
 
   <view class="card about">

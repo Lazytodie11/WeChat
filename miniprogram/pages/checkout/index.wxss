@@ -1,12 +1,10 @@
 .title{font-weight:600;margin-bottom:8px}
-.form .form-item{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
-.form input{border:1px solid #eee;border-radius:6px;padding:8px 10px;flex:1;margin-left:10px}
 .subline { color:#8c755a; font-size: 24rpx; margin-top: 6rpx; }
 .row{display:flex}
 .row .col{flex:1}
 .row .row-actions{display:flex;gap:8px;align-items:center}
 .row .count{min-width:24px;text-align:center}
-.row .price{width:80px;text-align:right}
 .nav{position: sticky; top:0; height:88rpx; background:#FBF5EC; display:flex; align-items:center; z-index:10}
 .back{padding:0 24rpx; color:#6B4A2B}
 .title{font-weight:700; color:#6B4A2B}
+.note{margin-top:12px;color:#6a6a6a;font-size:26rpx}

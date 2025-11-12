@@ -31,8 +31,12 @@
     "verify:cats": "node scripts/verify-categories.mjs",
     "migrate:cdn": "node scripts/migrate-images-to-cdn.mjs",
     "verify:cdn": "node scripts/verify-cdn-images.mjs",
+    "fill:from-cloud": "node scripts/fill-excel-from-cloud-dir.mjs",
+    "retarget:catalog": "node scripts/retarget-catalog-from-excel.mjs",
     "fill:excel": "node scripts/fill-excel-images.mjs",
     "upload:assets": "node scripts/upload-assets.mjs",
+    "export:db": "node scripts/export-catalog-to-json.mjs",
+    "seed:db": "node scripts/seed-with-tcb.cjs",
     "import:all": "npm run import:flavor && npm run import:girls-assets && npm run import:girls-local && npm run import:stack && npm run import:french && npm run import:boys && npm run import:ins-roll && npm run import:accessories && npm run import:basque && npm run import:tiramisu && npm run import:eight-inch && npm run import:ty && npm run import:batch"
   },
   "devDependencies": {
@@ -40,6 +44,9 @@
     "xlsx": "^0.18.5"
   },
   "dependencies": {
-    "exceljs": "^4.3.0"
+    "@cloudbase/node-sdk": "^3.10.1",
+    "dotenv": "^17.2.3",
+    "exceljs": "^4.3.0",
+    "minimist": "^1.2.8"
   }
 }

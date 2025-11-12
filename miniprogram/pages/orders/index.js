@@ -12,6 +12,7 @@ function enrichOrders(orders = []) {
 }
 
 const { isCloudEnabled } = require('../../utils/env');
+const { HOME_COMMON_IMAGES, HOME_COMMON_OVERRIDE, HOME_EMPTY_IMAGE } = require('../../config');
 const user = require('../../utils/user');
 
 Page({
@@ -24,12 +25,34 @@ Page({
     statusFilter: 'all',
     touristMode: false,
     touristTips: '游客模式暂不支持订单同步',
-    needLogin: false
+    needLogin: false,
+    emptyUrl: ''
   },
   onShow() {
+    try {
+      const s = this.selectComponent('#splash');
+      const cfg = require('../../config');
+      const fid = (cfg && cfg.LOADING_SPLASH_FILEID) || '';
+      this._splashStart = Date.now();
+      if (s && s.show) s.show({ fileId: fid });
+    } catch(_) {}
     const tourist = !isCloudEnabled();
     this.setData({ touristMode: tourist });
     this.resetAndFetch();
+    // 准备空态图片（从云存储 prod-images/common 读取）
+    this.loadEmptyImage();
+  },
+  async loadEmptyImage(){
+    try{
+      const env = (HOME_COMMON_OVERRIDE && HOME_COMMON_OVERRIDE.envId) || '';
+      const bucket = (HOME_COMMON_OVERRIDE && HOME_COMMON_OVERRIDE.bucket) || '';
+      const file = HOME_EMPTY_IMAGE || '';
+      if (!env || !bucket || !file) return;
+      const fid = `cloud://${env}.${bucket}/prod-images/common/${file}`;
+      const { fileList } = await wx.cloud.getTempFileURL({ fileList: [fid] });
+      const url = (fileList && fileList[0] && fileList[0].tempFileURL) || '';
+      if (url) this.setData({ emptyUrl: url });
+    }catch(_){ }
   },
   resetAndFetch() {
     this.setData({ orders: [], page: 0, hasMore: true });
@@ -77,7 +100,8 @@ Page({
       const list = res.data.map(o => ({
         ...o,
         createdAtStr: this.formatTime(o.createdAt || o.createTime),
-        statusText: o.status || 'pending'
+        statusText: o.status || 'pending',
+        userNick: (o.userProfile && o.userProfile.nickName) || ''
       }));
       const enriched = enrichOrders(list);
       const newList = page === 0 ? enriched : this.data.orders.concat(enriched);
@@ -107,6 +131,21 @@ Page({
       }
     } finally {
       this.setData({ loading: false });
+      // 控制最小显示时长，避免过快闪烁或长时间停留
+      try {
+        const s = this.selectComponent('#splash');
+        const MIN_MS = 600; const elapsed = Date.now() - (this._splashStart||Date.now());
+        const left = Math.max(0, MIN_MS - elapsed);
+        setTimeout(()=>{ 
+          try{ s && s.hide && s.hide(); }catch(_){ }
+          // 隐藏加载图后再尝试展示授权引导
+          try {
+            const app = getApp && getApp();
+            const needAuth = !!(app && app.globalData && app.globalData.needAuth);
+            if (needAuth) { const gate = this.selectComponent('#auth'); gate && gate.show && gate.show(); }
+          } catch(_) {}
+        }, left);
+      } catch(_) {}
     }
   },
   loadMore() {
@@ -131,5 +170,8 @@ Page({
     } catch (e) {
       return '';
     }
-  }
+  },
+  // 授权组件事件：统一落地 needAuth=false
+  onAuthAuthed(){ try{ const app = getApp && getApp(); if(app){ app.globalData = app.globalData||{}; app.globalData.needAuth=false; } }catch(_){} },
+  onAuthSkipped(){ try{ const app = getApp && getApp(); if(app){ app.globalData = app.globalData||{}; app.globalData.needAuth=false; } }catch(_){} }
 });

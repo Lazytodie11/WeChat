@@ -6,7 +6,7 @@
 .card { background: #fff; border-radius: 14px; padding: 12px; margin: 10px; box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
 .info .name { font-weight: 700; font-size: 18px; color: #2B2B2B; }
 .info .brief { color: #6a6a6a; margin-top: 6px; }
-.price-line { color: #6B4A2B; font-weight: 700; margin-top: 8px; }
+.price-line { color: #6a6a6a; font-size: 13px; margin-top: 8px; }
 .variants .v-title { font-weight: 700; margin-bottom: 8px; color: #2B2B2B; }
 .v-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .v-item { border: 1px solid #F3E7D6; border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; color: #6B4A2B; }
@@ -31,8 +31,8 @@
 .sheet-info .muted { color:#999; margin-left: 6px; }
 .sheet-info .options-desc { color:#9c8a7a; margin-top: 4px; white-space: normal; word-break: break-word; }
 .sheet-actions { display:flex; gap:10px; align-items:center; margin-left:8px; }
-.sheet-actions .subtotal { margin-left:auto; color:#2B2B2B; font-weight:600; }
-.sheet-footer { display:flex; justify-content:flex-end; padding-top:8px; font-weight:700; color:#2B2B2B; }
+.sheet-footer { display:flex; align-items:center; justify-content:space-between; padding-top:8px; color:#2B2B2B; }
+.sheet-footer .note { color:#6a6a6a; font-size:12px; font-weight:400; }
 .sheet-footer .ops{ margin-left:auto; display:flex; gap:8px; font-weight:400; }
 .btn-plain{ background:#f6f1ea; color:#6B4A2B; border-radius:16px; padding: 4px 10px; }
 .btn-danger{ background:#d9534f; color:#fff; border-radius:16px; padding: 4px 10px; }

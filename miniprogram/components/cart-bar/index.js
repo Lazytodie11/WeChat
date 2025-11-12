@@ -4,8 +4,7 @@ Component({
   data: {
     summary: cart.getSummary(),
     showSheet: false,
-    items: [],
-    total: 0
+    items: []
   },
   lifetimes: {
     attached() {
@@ -26,11 +25,18 @@ Component({
         if (x.optionName) {
           try { displayName = displayName.replace(/（.*?）$/, ''); } catch(_) {}
         }
-        const subtotal = Number(((Number(x.price || 0)) * (Number(x.count || 0))).toFixed(2));
-        return { id: x.id, name: x.name, displayName, variantSize: x.variantSize, optionName: x.optionName, price: Number(x.price || 0), count: x.count, subtotal, variantKey: x.variantKey };
+        return {
+          id: x.id,
+          name: x.name,
+          displayName,
+          variantSize: x.variantSize,
+          optionName: x.optionName,
+          optionsDesc: x.optionsDesc || '',
+          count: x.count,
+          variantKey: x.variantKey
+        };
       });
-      const total = items.reduce((s, it) => s + it.subtotal, 0);
-      this.setData({ items, total: Number(total.toFixed(2)) });
+      this.setData({ items });
     },
     openSheet() {
       this.refreshSheet();
@@ -46,9 +52,8 @@ Component({
       const id = e.currentTarget.dataset.id;
       const size = e.currentTarget.dataset.size;
       const name = e.currentTarget.dataset.name;
-      const price = Number(e.currentTarget.dataset.price || 0);
       if (!id || !size) return;
-      cart.addItem({ id, name }, { size, price });
+      cart.addItem({ id, name }, { size });
       this.refreshSheet();
     },
     sheetDec(e) {

@@ -4,5 +4,5 @@
       {{item.name}}
     </view>
   </block>
+  <view class="bottom-gap"></view>
 </scroll-view>
-

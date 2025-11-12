@@ -1,0 +1,8 @@
+<view wx:if="{{visible}}" class="auth-mask" catchtouchmove="true">
+  <image wx:if="{{logoUrl}}" class="logo" src="{{logoUrl}}" mode="widthFix" />
+  <view class="title">授权登录以完善资料</view>
+  <view class="sub">用于显示昵称与历史订单，不会读取隐私信息</view>
+  <button class="btn btn-primary" bindtap="onAuthorizeTap">授权登录</button>
+  <button class="btn btn-plain" bindtap="onSkip">暂不登录</button>
+</view>
+

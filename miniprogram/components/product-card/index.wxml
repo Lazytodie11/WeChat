@@ -1,12 +1,12 @@
-<view class="card">
+<view wx:if="{{!!item}}" class="card">
   <view class="cover" catchtap="detailTap">
-    <image class="img" src="{{viewItem.cover}}" mode="aspectFill"></image>
+    <image class="img" src="{{ item.coverUrl || item.cover || viewItem.cover || '' }}" mode="aspectFill" binderror="onImgError"></image>
     <view class="title">{{item.name}}</view>
   </view>
   <view class="meta">
     <view class="desc">{{item.brief}}</view>
     <view class="bottom">
-      <view class="price">¥{{item.price}}</view>
+      <view class="price-note">仅供展示使用</view>
       <view class="actions">
         <button class="btn btn-plain" size="mini" catchtap="dec" data-id="{{item.id}}">-</button>
         <text class="count">{{count}}</text>

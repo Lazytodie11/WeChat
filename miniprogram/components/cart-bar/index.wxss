@@ -28,8 +28,9 @@
 .sheet-row:last-child { border-bottom: none; }
 .sheet-info .muted { color:#999; margin-left: 6px; }
 .sheet-actions { display:flex; gap:10px; align-items:center; width: 50%; }
-.sheet-actions .subtotal { margin-left:auto; color:#2B2B2B; font-weight:600; }
 .sheet-empty { text-align:center; color:#999; padding: 16px 0; }
 .left.clickable { cursor: pointer; }
+.sheet-footer { display:flex; align-items:center; justify-content:space-between; padding-top: 10px; border-top: 1px solid #f6f6f6; }
+.sheet-footer .note { color:#6a6a6a; font-size: 12px; }
 .sheet-footer .ops{ margin-left:auto; display:flex; gap:8px; }
 .btn-danger{ background:#d9534f; color:#fff; border-radius:16px; padding: 4px 10px; }

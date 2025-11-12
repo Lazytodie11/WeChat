@@ -2,10 +2,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import xlsx from 'xlsx';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
-const CATALOG = path.resolve(process.cwd(), 'miniprogram', 'data', 'catalog.js');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-function loadCatalog(){ const src=fs.readFileSync(CATALOG,'utf8'); const m={exports:{}}; const fn=new Function('module','exports',src+'\n;return module.exports;'); return fn(m,m.exports)||{}; }
+function loadCatalog(){
+  const catalogPath = path.resolve(__dirname, '../miniprogram/data/catalog.js');
+  const src = fs.readFileSync(catalogPath,'utf8');
+  const m = { exports: {} };
+  const req = createRequire(catalogPath);
+  const fn = new Function('module','exports','require', src + '\n;return module.exports;');
+  const mod = fn(m, m.exports, req) || {};
+  const categories = mod.categories || [];
+  const products = mod.products || [];
+  return { categories, products };
+}
 
 function toHalfWidth(str=''){ return String(str).replace(/[\uFF01-\uFF5E]/g, ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0)).replace(/\u3000/g,' ');} 
 function cleanDisplayName(raw=''){ let s=toHalfWidth(String(raw)); s=s.replace(/[\s\u3000]+/g,' ').trim(); const patterns=[/^\s*(\d+(?:\.\d+)?\s*寸(?:\s*加高)?)\s*/i,/^\s*(\d+\s*\+\s*\d+\s*寸)\s*/i,/^\s*(\d+(?:\.\d+)?\s*层)\s*/i,/^\s*(\d+(?:\.\d+)?)\s*寸[-/]*\s*/i]; let changed=true; while(changed){changed=false; for(const re of patterns){ const ns=s.replace(re,''); if(ns!==s){s=ns; changed=true;}} s=s.replace(/^[\-_/|·•—–、，,.;:：。]+/,'').replace(/[\s\u3000]+/g,' ').trim();} return s; }
@@ -15,18 +28,17 @@ function backupExcel(file){ const buf=fs.readFileSync(file); const ts=new Date()
 function cellText(cell){ if(!cell) return ''; const v=cell.v!=null?cell.v:cell.w; return String(v||'').trim(); }
 
 function processRanges(file, ranges){
-  const bak=backupExcel(file);
+  backupExcel(file);
   const wb=xlsx.readFile(file);
   const ws=wb.Sheets[wb.SheetNames[0]];
   const { categories=[], products=[] } = loadCatalog();
   const catNameToId=new Map(categories.map(c=>[String(c.name).trim(), c.id]));
-  let totalMatch=0; const misses=[];
   for(const r of ranges){
     const expectCatId = catNameToId.get(r.categoryName) || '';
     let ok=0; const miss=[];
     for(let row=r.start; row<=r.end; row++){
-      const b = cellText(ws['B'+row]); // name
-      const a = cellText(ws['A'+row]); // category with UI text (may equal r.categoryName)
+      const b = cellText(ws['B'+row]);
+      const a = cellText(ws['A'+row]);
       const nameClean = cleanDisplayName(b);
       const catId = expectCatId || catNameToId.get(a) || '';
       let found=null;
@@ -37,12 +49,9 @@ function processRanges(file, ranges){
       ws['D'+row] = { t:'s', v: cover };
       ok++;
     }
-    totalMatch+=ok;
     const list=miss.slice(0,20).map(m=>`#${m.row} ${m.a} / ${m.b}${m.reason? ' - '+m.reason:''}`).join('\n  ');
     console.log(`[fill:excel] ${path.basename(file)} rows ${r.start}-${r.end} | matched: ${ok} | misses: ${miss.length}${miss.length? '\n  '+list:''}`);
   }
-  // update range
-  xlsx.utils.book_append_sheet(wb, ws, wb.SheetNames[0]); // noop but keeps ws
   xlsx.writeFile(wb, file);
 }
 

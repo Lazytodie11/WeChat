@@ -1,0 +1,32 @@
+<view class="container">
+  <splash-overlay id="splash" />
+
+  <view class="card">
+    <view class="row"><text>我的 OpenID</text><text selectable>{{myOpenId}}</text></view>
+    <view class="row"><text>创作者</text><text selectable>{{creatorOpenId || '-'}}</text></view>
+    <view class="row"><text>是否创作者</text><text>{{isCreator ? '是' : '否'}}</text></view>
+    <view class="row"><text>是否管理员</text><text>{{isAdmin ? '是' : '否'}}</text></view>
+  </view>
+
+  <view class="card">
+    <view class="title">管理员列表</view>
+    <view wx:if="{{admins && admins.length}}">
+      <block wx:for="{{admins}}" wx:key="*this">
+        <view class="row">
+          <text selectable>{{item}}</text>
+          <button size="mini" class="btn-danger" bindtap="remove" data-oid="{{item}}" wx:if="{{isCreator}}">移除</button>
+        </view>
+      </block>
+    </view>
+    <view wx:else class="empty">暂无管理员</view>
+  </view>
+
+  <view class="card" wx:if="{{isCreator}}">
+    <view class="title">添加管理员</view>
+    <input class="input" placeholder="输入对方 openid" value="{{target}}" bindinput="onInput" />
+    <button class="btn-primary" bindtap="add">添加</button>
+  </view>
+
+  <view class="tips" wx:if="{{!isCreator}}">仅创作者可添加/移除管理员。你当前可以仅查看列表。</view>
+</view>
+

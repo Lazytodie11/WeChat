@@ -1,11 +1,25 @@
 const cart = require('../../utils/cart');
 const { products } = require('../../data/catalog');
-const { INS_ROLL_FLAVORS, CAKE_FILLINGS } = require('../../constants/options');
+const { toTempURLs } = require('../../utils/fileurl');
+const { INS_ROLL_FLAVORS, TY_MILLE_FLAVORS, CAKE_FILLINGS } = require('../../constants/options');
+const { USE_DB } = require('../../config');
+
+function sanitizeVariants(list = [], fallbackSize = '默认') {
+  if (Array.isArray(list) && list.length) {
+    return list.map((v) => {
+      if (!v || typeof v !== 'object') return v;
+      const { price, priceLowest, priceText, ...rest } = v;
+      return rest;
+    });
+  }
+  return [{ size: fallbackSize }];
+}
 
 Page({
   data: {
     product: {},
     images: [],
+    imageUrls: [],
     variants: [],
     minPrice: 0,
     current: 0,
@@ -19,35 +33,106 @@ Page({
   },
   onLoad(query) {
     const id = (query && query.id) ? query.id : '';
+    if (USE_DB) {
+      const db = wx.cloud.database();
+      db.collection('products').doc(id).get().then(async res => {
+        const p = (res && res.data) ? res.data : {};
+        // 将 _id 映射回 id，便于与现有购物车逻辑兼容
+        p.id = p._id || id;
+        const images = (Array.isArray(p.images) && p.images.length) ? p.images : (p.cover ? [p.cover] : []);
+        let imageUrls = images;
+        try {
+          const hasCloud = (images || []).some(x => typeof x === 'string' && x.indexOf('cloud://') === 0);
+          if (hasCloud) imageUrls = await toTempURLs(images);
+        } catch (e) { try { console.warn('[toTempURLs] failed', e); } catch(_) {} }
+        const variants = sanitizeVariants(p.variants, '默认');
+        const minPrice = 0;
+        // 使用后端提供的 options（若存在）；否则按旧规则构造 groups
+        if (Array.isArray(p.options) && p.options.length) {
+          // 将 options 标准化为前端使用的 groups：key 为 'variant' 或 'extras'
+          const mapped = [];
+          let variantSet = false;
+          (p.options || []).forEach(function(opt){
+            const type = opt && opt.type;
+            const title = (opt && (opt.title || opt.name)) || '';
+            const items = Array.isArray(opt && opt.items) ? opt.items.map(function(it){
+              return { id: (it && it.id) || String((it && it.name) || ''), name: (it && it.name) || String((it && it.id) || '') };
+            }) : [];
+            if (type === 'single' && !variantSet) {
+              mapped.push({ key:'variant', title: title || '可选项', type:'single', min:0, max:1, items });
+              variantSet = true;
+            } else if (type === 'multi') {
+              const min = (opt && typeof opt.min === 'number') ? opt.min : 1;
+              const max = (opt && typeof opt.max === 'number') ? opt.max : 2;
+              mapped.push({ key:'extras', title: title || '可选项', type:'multi', min, max, items });
+            }
+          });
+          p.groups = mapped;
+        } else {
+          const isInsRoll = (p.categoryId === 'ins-swiss-roll' || p.categoryId === 'ins-roll' || /瑞士卷/.test(p.name||''));
+          const isTyMille = (p.categoryId === 'ty-mille' || /堆堆千层/.test(p.name||''));
+          const isFour = (p.categoryId === 'cake-4inch' || p.categoryId === 'cake-4-inch');
+          const isEight = (p.categoryId === 'cake-8inch' || p.categoryId === 'cake-8-inch');
+          if (isInsRoll || isTyMille) {
+            p.groups = [ { key:'variant', title:'口味', type:'single', min:0, max:1, items: ((isTyMille?TY_MILLE_FLAVORS:INS_ROLL_FLAVORS)||[]).map(x=>({ id:x.id, name:x.name })) } ];
+          } else if (isFour || isEight) {
+            const vItems = sanitizeVariants(p.variants, '默认').map(v => ({ id: String(v.size || '默认'), name: String(v.size || '默认') }));
+            p.groups = [
+              { key:'variant', title:'可选尺寸', type:'single', min:1, max:1, items: vItems },
+              { key:'extras',  title:'蛋糕夹心', type:'multi',  min:1, max:2, items: (CAKE_FILLINGS||[]).map(x=>({ id:x.id, name:x.name })) }
+            ];
+          }
+        }
+        // 初始化选择
+        let defVariantId = '';
+        const g0 = (Array.isArray(p.groups) && p.groups.find(g=>g.key==='variant'));
+        if (g0 && Array.isArray(g0.items) && g0.items.length) defVariantId = g0.items[0].id;
+        const selected = { variant: defVariantId, extras: [] };
+        const groupsWithUI = this.computeGroupUI(p.groups || [], selected);
+        p.groups = groupsWithUI;
+        const initialDesc = this.buildOptionsDescFrom(p.groups || [], selected);
+        this.setData({ 
+          product: p, images, imageUrls, variants, minPrice, current: 0, selectedVariant: variants[0],
+          selected,
+          selectedDesc: initialDesc
+        });
+        try { console.log('[product.groups]', p.name, JSON.stringify(p.groups || [])); } catch(_) {}
+        this.refreshCount();
+      }).catch(err => {
+        console.warn('[DB] product get failed, fallback local', err);
+        this.loadFromLocal(id);
+      });
+    } else {
+      this.loadFromLocal(id);
+    }
+  },
+  loadFromLocal(id) {
     const p = products.find(x => x.id === id) || {};
-    const images = (p.images && p.images.length) ? p.images : (p.cover ? [p.cover] : ['/assets/p1.jpg']);
-    const variants = Array.isArray(p.variants) && p.variants.length ? p.variants : [{ size: '默认', price: Number(p.price || 0) }];
-    const firstPrice = Number((variants[0] && variants[0].price) != null ? variants[0].price : 0);
-    const minPrice = variants.reduce((m, v) => Math.min(m, Number(v.price||0)), firstPrice);
-    // 构造 groups：仅修改 Ins瑞士卷/4寸/8寸，其它不变
+    const images = (p.images && p.images.length) ? p.images : (p.cover ? [p.cover] : []);
+    const imageUrls = images;
+    const variants = sanitizeVariants(p.variants, '默认');
+    const minPrice = 0;
     const isInsRoll = (p.categoryId === 'ins-swiss-roll' || p.categoryId === 'ins-roll' || /瑞士卷/.test(p.name||''));
     const isFour = (p.categoryId === 'cake-4inch' || p.categoryId === 'cake-4-inch');
     const isEight = (p.categoryId === 'cake-8inch' || p.categoryId === 'cake-8-inch');
     if (isInsRoll) {
-      p.groups = [ { key:'variant', title:'可选尺寸', type:'single', min:0, max:1, items: (INS_ROLL_FLAVORS||[]).map(x=>({ id:x.id, name:x.name })) } ];
+      p.groups = [ { key:'variant', title:'口味', type:'single', min:0, max:1, items: (INS_ROLL_FLAVORS||[]).map(x=>({ id:x.id, name:x.name })) } ];
     } else if (isFour || isEight) {
-      const vItems = (Array.isArray(p.variants)&&p.variants.length ? p.variants : [{ size:'默认', price: Number(p.price||0) }]).map(v=>({ id:String(v.size||'默认'), name:String(v.size||'默认') }));
+      const vItems = sanitizeVariants(p.variants, '默认').map(v => ({ id: String(v.size || '默认'), name: String(v.size || '默认') }));
       p.groups = [
         { key:'variant', title:'可选尺寸', type:'single', min:1, max:1, items: vItems },
         { key:'extras',  title:'蛋糕夹心', type:'multi',  min:1, max:2, items: (CAKE_FILLINGS||[]).map(x=>({ id:x.id, name:x.name })) }
       ];
     }
-    // 初始化选择
     let defVariantId = '';
     const g0 = (Array.isArray(p.groups) && p.groups.find(g=>g.key==='variant'));
     if (g0 && Array.isArray(g0.items) && g0.items.length) defVariantId = g0.items[0].id;
     const selected = { variant: defVariantId, extras: [] };
-    // 初始化 UI 选中态
     const groupsWithUI = this.computeGroupUI(p.groups || [], selected);
     p.groups = groupsWithUI;
     const initialDesc = this.buildOptionsDescFrom(p.groups || [], selected);
     this.setData({ 
-      product: p, images, variants, minPrice, current: 0, selectedVariant: variants[0],
+      product: p, images, imageUrls, variants, minPrice, current: 0, selectedVariant: variants[0],
       selected,
       selectedDesc: initialDesc
     });
@@ -173,7 +258,7 @@ Page({
         return;
       }
     }
-    const variant = this.data.selectedVariant || this.data.variants[this.data.current] || { size: '默认', price: Number(item.price || 0) };
+    const variant = this.data.selectedVariant || this.data.variants[this.data.current] || { size: '默认' };
     const optionsSignature = this.buildOptionsSignature();
     const optionsDesc = this.buildOptionsDesc();
     const selected = this.data.selected || {};
@@ -192,16 +277,40 @@ Page({
         return items.filter(function(o){ return sel.indexOf(o.id) >= 0; }).map(function(o){ return {id:o.id, name:o.name}; });
       }).call(this)
     };
-    cart.addItem({ ...item, optionsSignature, options: optObj, optionsDesc }, { ...variant, optionsSignature, options: optObj, optionsDesc });
+    // 将口味名称作为 optName 传入购物车，便于列表页展示
+    const chosenVariantName = optObj.variantName || '';
+    const variantPayload = {
+      size: (variant && variant.size) || '默认',
+      optName: chosenVariantName,
+      optionsSignature,
+      options: optObj,
+      optionsDesc
+    };
+    cart.addItem({ ...item, optionsSignature, options: optObj, optionsDesc }, variantPayload);
     this.setData({ count: this.data.count + 1 });
   },
   dec() {
     const item = this.data.product;
     if (!item || !item.id) return;
-    const variant = this.data.selectedVariant || this.data.variants[this.data.current] || { size: '默认', price: Number(item.price || 0) };
+    const variant = this.data.selectedVariant || this.data.variants[this.data.current] || { size: '默认' };
     const optionsSignature = this.buildOptionsSignature();
     const optionsDesc = this.buildOptionsDesc();
-    cart.removeItem(item.id, { ...variant, optionsSignature, optionsDesc });
+    const groups = this.data.product.groups || [];
+    const selected = this.data.selected || {};
+    let variantName = '';
+    const g = groups.find(function(x){ return x.key==='variant'; });
+    if (g) {
+      const items = Array.isArray(g.items) ? g.items : [];
+      const target = items.find(function(o){ return o.id === selected.variant; });
+      variantName = (target && target.name) || '';
+    }
+    const variantPayload = {
+      size: (variant && variant.size) || '默认',
+      optName: variantName,
+      optionsSignature,
+      optionsDesc
+    };
+    cart.removeItem(item.id, variantPayload);
     this.setData({ count: Math.max(0, this.data.count - 1) });
   },
   // Bottom sheet logic
@@ -209,7 +318,6 @@ Page({
     const list = cart.getCart();
     const id = (this.data.product && this.data.product.id) ? this.data.product.id : '';
     const items = list.filter(x => x.id === id).map(x => {
-      const subtotal = Number(((Number(x.price || 0)) * (Number(x.count || 0))).toFixed(2));
       const desc = this.buildCartItemDesc(x);
       return {
         name: x.name,
@@ -219,13 +327,10 @@ Page({
         optionsSignature: x.optionsSignature,
         optionsDesc: desc,
         count: x.count,
-        price: Number(x.price || 0),
-        subtotal,
         variantKey: x.variantKey
       };
     });
-    const sheetTotal = items.reduce((sum, it) => sum + it.subtotal, 0);
-    this.setData({ showSheet: true, sheetItems: items, sheetTotal: Number(sheetTotal.toFixed(2)) });
+    this.setData({ showSheet: true, sheetItems: items });
   },
   closeSheet() { this.setData({ showSheet: false }); },
   noop() {},

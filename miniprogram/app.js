@@ -1,5 +1,6 @@
 const ENV_ID = '';
 const user = require('./utils/user');
+const splash = require('./utils/splash');
 
 App({
   onLaunch() {
@@ -16,7 +17,12 @@ App({
     // 读取本地用户档案与 openid
     const profile = user.getStoredUser();
     const openid = user.getStoredOpenId();
-    this.globalData = { cartCount: 0, envId: ENV_ID, cloudEnabled: false, user: profile, openid };
+    const skipped = (()=>{ try{return wx.getStorageSync('auth_skipped')||false;}catch(_){return false;} })();
+    const needAuth = !(profile && profile.nickName) && !skipped;
+    this.globalData = { cartCount: 0, envId: ENV_ID, cloudEnabled: false, user: profile, openid, needAuth };
+
+    // 预加载全局加载图临时 URL，避免首次进入页面时闪烁
+    try { splash.preloadSplash(); } catch(_) {}
 
     // 探测云可用性：尝试调用 login 云函数，并检测管理员
     try {

@@ -5,7 +5,7 @@
 .meta { padding: 10px; color: #2B2B2B; }
 .desc { color: #6a6a6a; font-size: 12px; }
 .bottom { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; }
-.price { color: #6B4A2B; font-weight: 700; }
+.price-note { color: #6a6a6a; font-size: 12px; }
 .actions { display: flex; align-items: center; gap: 8px; }
 .count { width: 20px; text-align: center; }
 .btn { border-radius: 999px; }
@@ -13,4 +13,3 @@
 .btn-primary:active { background: #836046; }
 .btn-plain { background: #F3E7D6; color: #6B4A2B; }
 .btn-plain:active { background: #e6d7c1; }
-

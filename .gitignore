@@ -6,6 +6,22 @@ node_modules/
 npm-debug.log*
 yarn-error.log
 
+# Large media / binary artifacts (omit from GitHub)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.heic
+*.bmp
+*.psd
+WechatIMG*
+
+# Spreadsheet / tabular exports
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+
 # WeChat Mini Program
 miniprogram/miniprogram_npm/
 project.private.config.json
@@ -21,3 +37,5 @@ cloudfunctions/**/node_modules/
 .idea/
 .vscode/
 
+# Local secrets (do not commit)
+.env.tcb

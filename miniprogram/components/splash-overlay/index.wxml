@@ -1,0 +1,4 @@
+<view wx:if="{{visible}}" class="splash" catchtouchmove="true">
+  <image class="img" src="{{url}}" mode="aspectFill" />
+</view>
+

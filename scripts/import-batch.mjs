@@ -5,14 +5,17 @@ import { fileURLToPath } from 'node:url';
 import ExcelJS from 'exceljs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const { ASSET_BASE_URL } = require('./config.cjs');
+const { ASSET_BASE_URL, ASSET_SUBDIR } = require('./config.cjs');
 
+function enc(x){ return encodeURIComponent(String(x)); }
 function assetUrl(category, filename){
   const cat = String(category||'').replace(/^\/+|\/+$/g,'');
   const fn = String(filename||'').replace(/^\/+/, '');
   if (ASSET_BASE_URL) {
     const base = ASSET_BASE_URL.replace(/\/$/, '');
-    return `${base}/prod-images/${cat}/${fn}`;
+    const sub = String(ASSET_SUBDIR||'').replace(/^\/+|\/+$/g,'');
+    const mid = sub ? `/${sub}` : '';
+    return `${base}${mid}/${enc(cat)}/${enc(fn)}`;
   }
   return `/assets/${cat}/${fn}`;
 }

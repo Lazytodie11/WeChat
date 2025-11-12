@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "splash-overlay": "/components/splash-overlay/index",
+    "auth-overlay": "/components/auth-overlay/index"
+  },
+  "navigationBarTitleText": "管理员管理"
+}
+

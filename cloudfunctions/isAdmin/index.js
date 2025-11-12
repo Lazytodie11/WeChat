@@ -15,11 +15,19 @@ exports.main = async (event, context) => {
     }
 
     // 2) Check database collection 'admins'
-    // Support two styles:
-    //  - a) docs with field `openids: [ ... ]`
-    //  - b) one doc per admin with field `openid: 'xxx'`
+    // Support styles:
+    //  - a) sys_admins doc with field `openids: [ ... ]` or `creatorOpenId`
+    //  - b) any doc per admin with field `openid: 'xxx'`
     let found = false;
     try {
+      try {
+        const meta = await db.collection('admins').doc('sys_admins').get();
+        const openids = (meta && meta.data && Array.isArray(meta.data.openids)) ? meta.data.openids : [];
+        const creatorOpenId = meta && meta.data && meta.data.creatorOpenId;
+        if ((openids && openids.includes(OPENID)) || (creatorOpenId && creatorOpenId === OPENID)) {
+          found = true;
+        }
+      } catch(_) {}
       const resA = await db.collection('admins').where({ openids: db.command.all([OPENID]) }).limit(1).get();
       if (resA.data && resA.data.length) found = true;
     } catch (_) {}
@@ -35,4 +43,3 @@ exports.main = async (event, context) => {
     return { isAdmin: false };
   }
 };
-

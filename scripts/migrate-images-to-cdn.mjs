@@ -1,22 +1,33 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
-const require = createRequire(import.meta.url);
-const { ASSET_BASE_URL } = require('./config.cjs');
-
-const CATALOG = path.resolve(process.cwd(), 'miniprogram', 'data', 'catalog.js');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const requireCJS = createRequire(import.meta.url);
+const { ASSET_BASE_URL, ASSET_SUBDIR, assetUrl, categoryDirName } = requireCJS('./config.cjs');
+const ARGS = process.argv.slice(2);
+const FORCE = ARGS.includes('--force');
+const RETARGET = (ARGS.find(a=>a.startsWith('--retarget='))||'').split('=')[1]||'';
+const CATALOG = path.resolve(__dirname, '../miniprogram/data/catalog.js');
 
 if (!ASSET_BASE_URL) {
   console.error('[migrate:cdn] ASSET_BASE_URL not set');
 }
 
 function loadCatalog() {
-  const src = fs.readFileSync(CATALOG, 'utf8');
+  const catalogPath = path.resolve(__dirname, '../miniprogram/data/catalog.js');
+  // Evaluate as CJS with a bound require to preserve relative requires
+  const src = fs.readFileSync(catalogPath, 'utf8');
   const m = { exports: {} };
-  const fn = new Function('module', 'exports', src + '\n;return module.exports;');
-  return { mod: fn(m, m.exports) || {}, raw: src };
+  const req = createRequire(catalogPath);
+  const fn = new Function('module','exports','require', src + '\n;return module.exports;');
+  const mod = fn(m, m.exports, req) || {};
+  const categories = mod.categories || [];
+  const products = mod.products || [];
+  return { categories, products };
 }
 
 function backup() {
@@ -26,7 +37,10 @@ function backup() {
   return bak;
 }
 
-function encSeg(s = '') { return encodeURIComponent(String(s)); }
+function encSeg(s = '') {
+  try { return encodeURIComponent(decodeURIComponent(String(s))); } catch(_) { return encodeURIComponent(String(s)); }
+}
+function escRe(s=''){ return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 function assetToCdn(u) {
   // expect /assets/<category>/<filename>
   const m = String(u).match(/^\/?assets\/(.+?)\/(.+)$/);
@@ -35,15 +49,36 @@ function assetToCdn(u) {
   const file = m[2];
   const base = (ASSET_BASE_URL || '').replace(/\/$/, '');
   if (!base) return u; // leave as is if no base
-  return `${base}/prod-images/${encSeg(cat)}/${encSeg(file)}`;
+  const sub = String(ASSET_SUBDIR||'').replace(/^\/+|\/+$/g,'');
+  const mid = sub ? `/${sub}` : '';
+  return `${base}${mid}/${encSeg(cat)}/${encSeg(file)}`;
+}
+
+function retargetHttp(u){
+  if (!FORCE || RETARGET !== 'strip-prod-images') return null;
+  const base = (ASSET_BASE_URL || '').replace(/\/$/, ''); if(!base) return null;
+  const sub = String(ASSET_SUBDIR||'').replace(/^\/+|\/+$/g,'');
+  const mid = sub ? `/${sub}` : '';
+  const re = new RegExp('^'+escRe(base+mid)+'/prod-images/([^/]+)/(.+)$');
+  const m = String(u).match(re);
+  if(!m) return null;
+  const cat=m[1], file=m[2];
+  return `${base}${mid}/${encSeg(cat)}/${encSeg(file)}`;
+}
+
+function filenameFromUrl(u){
+  const last = String(u).split('/').pop() || '';
+  try { return decodeURIComponent(last); } catch(_) { return last; }
+}
+function toChineseDir(p, u){
+  const file = filenameFromUrl(u);
+  return assetUrl(p.categoryId, file);
 }
 
 function isHttp(s){ return /^https?:\/\//i.test(String(s)); }
 
 function migrate() {
-  const { mod } = loadCatalog();
-  const categories = Array.isArray(mod.categories) ? mod.categories : [];
-  const products = Array.isArray(mod.products) ? mod.products : [];
+  const { categories, products } = loadCatalog();
 
   let changedProducts = 0;
   const sampleByCat = new Map();
@@ -55,7 +90,17 @@ function migrate() {
     const imgs = Array.isArray(p.images) ? [...p.images] : [];
     for (let i = 0; i < imgs.length; i++) {
       const old = imgs[i];
-      if (isHttp(old)) { httpCount.images++; continue; }
+      if (RETARGET === 'to-chinese-dir') {
+        const nu = toChineseDir(p, old);
+        if (!sampleByCat.has(p.categoryId)) sampleByCat.set(p.categoryId, { old, nu });
+        imgs[i] = nu; changed = true; continue;
+      }
+      if (isHttp(old)) {
+        const nu = retargetHttp(old);
+        if (nu && nu!==old) { imgs[i]=nu; changed=true; }
+        else { httpCount.images++; }
+        continue;
+      }
       if (/^\/assets\//.test(old)) {
         const nu = assetToCdn(old.replace(/^\//, ''));
         if (!sampleByCat.has(p.categoryId)) sampleByCat.set(p.categoryId, { old, nu });
@@ -66,8 +111,13 @@ function migrate() {
     out.images = imgs;
     // cover
     const coverOld = p.cover;
-    if (isHttp(coverOld)) {
-      httpCount.cover++;
+    if (RETARGET === 'to-chinese-dir') {
+      out.cover = imgs[0] ? imgs[0] : toChineseDir(p, coverOld);
+      changed = true;
+    } else if (isHttp(coverOld)) {
+      const nu = retargetHttp(coverOld);
+      if (nu && nu!==coverOld) { out.cover = nu; changed = true; }
+      else httpCount.cover++;
     } else if (typeof coverOld === 'string' && /^\/assets\//.test(coverOld)) {
       const nu = assetToCdn(coverOld.replace(/^\//, ''));
       out.cover = nu;
@@ -86,6 +136,10 @@ function migrate() {
 
   console.log(`[migrate:cdn] backup: ${path.relative(process.cwd(), bak)}`);
   console.log(`[migrate:cdn] products total: ${products.length}, changed: ${changedProducts}`);
+  // unmapped categoryIds
+  const cats = Array.from(new Set(products.map(p=>p.categoryId)));
+  const unknown = cats.filter(id => categoryDirName(id) === id);
+  if (unknown.length) console.warn('[warn] unmapped categoryIds:', JSON.stringify(unknown));
   let shown = 0;
   for (const [cat, v] of sampleByCat.entries()) {
     if (shown >= 10) break;
@@ -95,4 +149,3 @@ function migrate() {
 }
 
 migrate();
-

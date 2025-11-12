@@ -6,10 +6,10 @@
     "es6": true,
     "enhance": true,
     "postcss": true,
-    "minified": false,
+    "minified": true,
     "compileWorklet": false,
     "uglifyFileName": false,
-    "uploadWithSourceMap": true,
+    "uploadWithSourceMap": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
     "minifyWXSS": true,
@@ -32,7 +32,17 @@
   "packOptions": {
     "ignore": [
       { "type": "glob", "value": "miniprogram/assets/**" },
-      { "type": "glob", "value": "**/*.psd" }
+      { "type": "glob", "value": "**/*.psd" },
+      { "type": "glob", "value": "miniprogram/data/catalog.bak.*.js" },
+      { "type": "glob", "value": "miniprogram/data/catalog.bak.*" },
+      { "type": "glob", "value": "miniprogram/data/*bak*.*" },
+      { "type": "glob", "value": "miniprogram/data/**bak**.*" },
+      { "type": "glob", "value": "out/**" },
+      { "type": "glob", "value": "exports/**" },
+      { "type": "glob", "value": "tmp/**" },
+      { "type": "glob", "value": "node_modules/**" },
+      { "type": "glob", "value": ".git/**" },
+      { "type": "glob", "value": "scripts/**" }
     ],
     "include": []
   },

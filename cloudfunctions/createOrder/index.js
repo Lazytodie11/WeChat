@@ -6,15 +6,19 @@ const db = cloud.database();
 
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
-  const { items = [], totalPrice = 0, contact = {} } = event || {};
+  const { items = [], totalPrice = 0, contact = {}, userProfile = {} } = event || {};
   if (!Array.isArray(items) || items.length === 0) {
     return { ok: false, error: 'EMPTY_ITEMS' };
   }
   const now = new Date();
   const order = {
     items,
-    totalPrice: Number(totalPrice || 0),
+    totalPrice: 0,
     contact,
+    userProfile: {
+      nickName: (userProfile && userProfile.nickName) || '',
+      avatarUrl: (userProfile && userProfile.avatarUrl) || ''
+    },
     status: 'pending',
     _openid: wxContext.OPENID,
     createTime: now,
@@ -30,11 +34,12 @@ exports.main = async (event, context) => {
     if (webhook) {
       const lines = [];
       lines.push(`【新订单】#${orderId}`);
-      lines.push(`金额：¥${order.totalPrice}`);
-      lines.push(`客户：${contact.name || ''} ${contact.phone || ''}`);
+      lines.push('金额：待确认');
+      const nick = (order.userProfile && order.userProfile.nickName) || '';
+      lines.push(`客户：${nick || contact.name || ''} ${contact.phone || ''}`);
       if (contact.note) lines.push(`备注：${contact.note}`);
       lines.push('商品：');
-      items.forEach(it => lines.push(`- ${it.name} x ${it.count} = ¥${(it.count * it.price).toFixed(2)}`));
+      items.forEach(it => lines.push(`- ${it.name} x ${it.count}`));
       const content = lines.join('\n');
       try {
         await fetch(webhook, {

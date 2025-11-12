@@ -1,9 +1,9 @@
-.menu-page { display: flex; height: 100vh; }
-.left { width: 28%; height: 100vh; }
-.right-wrap { flex: 1; display: flex; flex-direction: column; height: 100vh; }
+.menu-page { display: flex; height: 100vh; overflow-x: hidden; }
+.left { width: 100rpx; height: 100vh; }
+.right-wrap { flex: 1; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
 .sticky-title { position: sticky; top: 0; background: #FBF5EC; z-index: 5; padding: 10px; font-weight: 700; color: #6B4A2B; display:flex; align-items:center; gap:8px; }
 .tiny-logo { width: 20px; height: 20px; display:block; }
-.right { flex: 1; padding: 10px; height: 100%; padding-bottom: 70px; }
+.right { flex: 1; padding: 10px; height: 100%; padding-bottom: 70px; box-sizing: border-box; }
 .section-title { font-weight: 700; color: #6B4A2B; margin: 8px 0; }
 .section { padding-bottom: 10px; }
 .empty { color:#6a6a6a; text-align:center; padding: 24px 0; }

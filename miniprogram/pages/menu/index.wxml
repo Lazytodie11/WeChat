@@ -1,12 +1,14 @@
 <view class="menu-page">
+  <splash-overlay id="splash" />
+  <auth-overlay id="auth" bind:authed="onAuthAuthed" bind:skipped="onAuthSkipped" />
   <category-sidebar class="left" categories="{{categories}}" current-id="{{currentCatId}}" bind:select="onSelectCategory" />
 
   <view class="right-wrap">
     <view class="sticky-title">
-      <image class="tiny-logo" src="/assets/logo.png" mode="widthFix"></image>
+    <image class="tiny-logo" src="" mode="widthFix"></image>
       <text>{{currentCatName}}</text>
     </view>
-    <scroll-view class="right" scroll-y scroll-with-animation bindscroll="onScroll">
+    <scroll-view class="right" scroll-y scroll-with-animation bindscroll="onScroll" lower-threshold="60" bindscrolltolower="onScrollLower">
       <block wx:if="{{filteredProducts.length > 0}}">
         <block wx:for="{{filteredProducts}}" wx:key="id">
           <view class="prod-item" data-id="{{item.id}}">

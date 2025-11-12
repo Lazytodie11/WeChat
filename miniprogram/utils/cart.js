@@ -15,11 +15,8 @@ function load() {
       if (!it.variantKey && it.id) {
         it.variantKey = `${it.id}__${it.variantSize}`;
       }
-      if (it.price == null) {
-        // 尝试从 variants 补充价格
-        const price = (Array.isArray(it.variants) && it.variants[0] && it.variants[0].price) || it.price || 0;
-        it.price = Number(price);
-      }
+      if (it.price != null) delete it.price;
+      if (it.priceLowest != null) delete it.priceLowest;
     });
     return arr;
   } catch (e) {
@@ -50,7 +47,6 @@ function addItem(item, variant) {
   if (!item || !item.id) return;
   const cart = load();
   const size = (variant && variant.size) || (Array.isArray(item.variants) && item.variants[0] && item.variants[0].size) || item.size || '默认';
-  const price = Number((variant && variant.price != null) ? variant.price : (Array.isArray(item.variants) && item.variants[0] && item.variants[0].price != null ? item.variants[0].price : item.price || 0));
   const optName = (variant && (variant.optName || variant.optionName)) || item.optionName || '';
   const fillings = Array.isArray(variant && variant.fillings) ? variant.fillings : (Array.isArray(item && item.fillings) ? item.fillings : []);
   const fillKey = fillings && fillings.length ? `__fill:${fillings.join('|')}` : '';
@@ -61,7 +57,11 @@ function addItem(item, variant) {
   if (idx >= 0) {
     cart[idx].count += 1;
   } else {
-    const toSave = { ...item, price, count: 1, variantSize: size, variantKey, optionName: optName };
+    const baseItem = { ...item };
+    delete baseItem.price;
+    delete baseItem.priceLowest;
+    delete baseItem.priceText;
+    const toSave = { ...baseItem, count: 1, variantSize: size, variantKey, optionName: optName };
     if (fillings && fillings.length) toSave.fillings = fillings.slice();
     if (optionsSignature) toSave.optionsSignature = optionsSignature;
     if ((variant && variant.options) || (item && item.options)) toSave.options = (variant && variant.options) || (item && item.options);
@@ -113,12 +113,10 @@ function getCart() {
 function getSummary() {
   const cart = load();
   let totalCount = 0;
-  let totalPrice = 0;
   cart.forEach((x) => {
     totalCount += x.count;
-    totalPrice += x.count * x.price;
   });
-  return { totalCount, totalPrice: Number(totalPrice.toFixed(2)) };
+  return { totalCount, totalPrice: 0 };
 }
 
 function subscribe(fn) {

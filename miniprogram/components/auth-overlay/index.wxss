@@ -1,0 +1,8 @@
+.auth-mask{position:fixed;left:0;top:0;right:0;bottom:0;background:#fff;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.auth-mask .logo{width:120px;margin-bottom:16px}
+.auth-mask .title{font-size:16px;font-weight:600;margin-top:8px}
+.auth-mask .sub{font-size:12px;color:#888;margin:8px 0 16px}
+.auth-mask .btn{width:200px;margin:6px 0}
+.auth-mask .btn-primary{background:#6B4A2B;color:#fff}
+.auth-mask .btn-plain{background:#f2f2f2;color:#333}
+

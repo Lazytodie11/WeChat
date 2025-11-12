@@ -1,8 +1,10 @@
 {
-  "navigationBarTitleText": "点单",
+  "navigationBarTitleText": "作品",
   "usingComponents": {
     "cart-bar": "/components/cart-bar/index",
     "category-sidebar": "/components/category-sidebar/index",
-    "product-card": "/components/product-card/index"
+    "product-card": "/components/product-card/index",
+    "splash-overlay": "/components/splash-overlay/index",
+    "auth-overlay": "/components/auth-overlay/index"
   }
 }

@@ -3,8 +3,7 @@
 A production-ready WeChat Mini Program template for dessert browsing and lead capture: **showcase → local selection → submit order form** (no payments).
 
 ## 🎬 Demo
-- Demo Video: (add Loom/YouTube link)
-- Screenshots: (add 3–6 screenshots under `docs/screenshots/`)
+👉 [2-min Demo (Loom)](https://www.loom.com/share/486d91bc5c7e419d85a6c095c7cf837e)
 
 ## ⭐ Highlights
 - Category browsing UI: left categories + right product cards + bottom “Selected” bar

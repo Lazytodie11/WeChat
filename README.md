@@ -1,5 +1,35 @@
 # Dessert Showcase WeChat Mini Program (No Payments)
 
+A production-ready WeChat Mini Program template for dessert browsing and lead capture: **showcase → local selection → submit order form** (no payments).
+
+## 🎬 Demo
+- Demo Video: (add Loom/YouTube link)
+- Screenshots: (add 3–6 screenshots under `docs/screenshots/`)
+
+## ⭐ Highlights
+- Category browsing UI: left categories + right product cards + bottom “Selected” bar
+- Local cart persistence via `wx.setStorageSync('cart')`
+- Cloud Function `createOrder`: writes to `orders` collection + sends **WeCom robot** notification
+- Review-friendly: all prices labeled **“for display only”**, no payment flow
+
+## 🧱 Tech Stack
+- WeChat Mini Program (WXML/WXSS/JS)
+- WeChat Cloud Development (TCB): Database + Cloud Functions
+- WeCom robot webhook notification
+
+## 🚀 Quick Start (1-minute)
+1. Import this repo into **WeChat Developer Tools**
+2. Enable Cloud Development (TCB) and copy your **Environment ID**
+3. Create DB collection: `orders`
+4. Deploy Cloud Function: `cloudfunctions/createOrder`
+5. Set env var `WEWORK_WEBHOOK` in the cloud function (never hard-code)
+6. Update `miniprogram/app.js`:
+   ```js
+   wx.cloud.init({ env: 'your-env-id', traceUser: true });
+
+<details> <summary>📚 Full documentation (setup, data model, scripts, FAQ)</summary> ```
+# Dessert Showcase WeChat Mini Program (No Payments)
+
 This repository contains a production-ready WeChat Mini Program template. Shoppers can browse desserts, add them to a local “Selected” list, review the list on the checkout page, and submit an order form that is persisted through the `orders` collection plus an Enterprise WeChat robot notification. All prices are labeled “for display only” so the project can pass review before real payments are enabled.
 
 ## Feature Highlights
@@ -166,3 +196,5 @@ node scripts/audit-products.js --fix   # also auto-fix cover when images[0] alre
 Output:
 - Summary counts: total products, missing images, cover not fileID, invalid fileIDs, missing category, malformed variants/options.
 - Detailed lists: `_id` arrays per issue type (with extra notes when helpful).
+
+</details>

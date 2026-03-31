@@ -27,7 +27,7 @@ A production-ready WeChat Mini Program template for dessert browsing and lead ca
    ```js
    wx.cloud.init({ env: 'your-env-id', traceUser: true });
 
-<details> <summary>📚 Full documentation (setup, data model, scripts, FAQ)</summary> ```
+<details> <summary>📚 Full documentation (setup, data model, scripts, FAQ)</summary>
 # Dessert Showcase WeChat Mini Program (No Payments)
 
 This repository contains a production-ready WeChat Mini Program template. Shoppers can browse desserts, add them to a local “Selected” list, review the list on the checkout page, and submit an order form that is persisted through the `orders` collection plus an Enterprise WeChat robot notification. All prices are labeled “for display only” so the project can pass review before real payments are enabled.
